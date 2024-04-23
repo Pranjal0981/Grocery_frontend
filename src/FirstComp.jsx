@@ -46,9 +46,9 @@ const FirstComp = () => {
             </Link>
             </div>
 
-            <div className="second w-full h-[50vh]">
+            <div className="second w-full ">
                 <div className="head flex flex-col items-center justify-center">
-                    <h1 className='bg-orange-200 p-[6px] rounded-full'>We Love them</h1>
+                    <h1 className='bg-orange-200 px-4 py-2 rounded-full'>We Love them</h1>
                     <h1 className='text-4xl uppercase m-[10px]'>Top Selling Products</h1>
                     <div className="tabs flex gap-[20px]">
                         <h1
@@ -72,6 +72,7 @@ const FirstComp = () => {
                             Trending
                         </h1>
                     </div>
+
                 </div>
             </div>
         </div>
