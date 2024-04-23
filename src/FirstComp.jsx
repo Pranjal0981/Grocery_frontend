@@ -39,33 +39,35 @@ const FirstComp = () => {
     };
 
     return (
-        <div className="w-full h-auto">
+        <div className="w-full h-auto flex flex-col justify-center items-center">
+            <div className='border-2 w-[90vw] shadow-lg m-4'>
             <Link to="https://reeplayerindia.com/">
                 <img src="../public/HomeLogo.png" alt="Home Logo" />
             </Link>
+            </div>
 
             <div className="second w-full h-[50vh]">
                 <div className="head flex flex-col items-center justify-center">
                     <h1 className='bg-orange-200 p-[6px] rounded-full'>We Love them</h1>
-                    <h1 className='text-4xl uppercase mt-[10px]'>Top Selling Products</h1>
+                    <h1 className='text-4xl uppercase m-[10px]'>Top Selling Products</h1>
                     <div className="tabs flex gap-[20px]">
                         <h1
                             onClick={() => handleTabClick('Show All')}
-                            className={`tab rounded-full px-4 py-2 ${activeTab === 'Show All' ? 'bg-lime-500 text-white' : 'text-black'}`}
+                            className={`tab cursor-pointer rounded-full px-4 py-2 ${activeTab === 'Show All' ? 'bg-lime-500 text-white' : 'text-black'}`}
                         >
                             Show All
                         </h1>
 
                         <h1
                             onClick={() => handleTabClick('New Products')}
-                            className={`tab rounded-full px-4 py-2 ${activeTab === 'New Products' ? 'bg-lime-500 text-white' : 'text-black'}`}
+                            className={`cursor-pointer tab rounded-full px-4 py-2 ${activeTab === 'New Products' ? 'bg-lime-500 text-white' : 'text-black'}`}
                         >
                             New Products
                         </h1>
 
                         <h1
                             onClick={() => handleTabClick('Trending')}
-                            className={`tab rounded-full px-4 py-2 ${activeTab === 'Trending' ? 'bg-lime-500 text-white' : 'text-black'}`}
+                            className={`cursor-pointer tab rounded-full px-4 py-2 ${activeTab === 'Trending' ? 'bg-lime-500 text-white' : 'text-black'}`}
                         >
                             Trending
                         </h1>
