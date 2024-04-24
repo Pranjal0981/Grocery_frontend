@@ -13,7 +13,7 @@ import { MdOutlineShoppingBag } from 'react-icons/md';
 import { FaInstagram, FaTwitter, FaFacebook, FaYoutube } from 'react-icons/fa';
 import {useSelector,useDispatch} from 'react-redux'
 import { asyncAdminRegister } from '../store/actions/adminAction';
-import { asyncSignIn, asyncSignupUser } from '../store/actions/userAction';
+import { asyncSignIn, asyncSignOut, asyncSignupUser } from '../store/actions/userAction';
 const Nav = () => {
     const [drawerOpen, setDrawerOpen] = React.useState(false);
     const [selectedTab, setSelectedTab] = React.useState(0);
@@ -24,7 +24,7 @@ const Nav = () => {
         name: '',
         email: '',
         password: '',
-        userType: '' // Add userType to the state
+        userType: '' 
     });
     const {user,isAuth}=useSelector((state)=>state.user)
     console.log(user)
@@ -69,12 +69,13 @@ const Nav = () => {
         { icon: <FaYoutube />, to: 'https://youtube.com' }
     ];
     const handleInputChange = (e) => {
-        // Update the corresponding field in the form data state
+        const { name, value } = e.target;
         setFormData({
             ...formData,
-            [e.target.name]: e.target.value
+            [name]: value
         });
     };
+
 
     const handleSubmit=(e)=>{
         e.preventDefault()
@@ -88,6 +89,11 @@ const Nav = () => {
     const handleLogin=(e)=>{
 e.preventDefault()
 dispatch(asyncSignIn({formData}))
+    }
+
+    const handleLogout=async(e)=>{
+        e.preventDefault()
+      await dispatch(asyncSignOut())
     }
     return (
         <>
@@ -319,7 +325,7 @@ dispatch(asyncSignIn({formData}))
                                     <ListItemText primary="COMPARE" />
                                 </ListItem>
                             </Link>
-                            <Link to="/logout" className="" style={{ textDecoration: 'none' }}>
+                            <Link to="/logout" className="" style={{ textDecoration: 'none' }}  onClick={handleLogout}>
                                 <ListItem button>
                                     <ListItemText primary="LOGOUT" />
                                 </ListItem>
@@ -341,10 +347,11 @@ dispatch(asyncSignIn({formData}))
                                     <div className='p-8'>
                                         {/* Sign In Form */}
                                         <form className="flex flex-col space-y-4" onSubmit={handleLogin}>
-                                            <input type="email" placeholder="Email" className="border border-gray-300 px-4 py-2 rounded focus:outline-none" onChange={handleInputChange} />
-                                            <input type="password" placeholder="Password" className="border border-gray-300 px-4 py-2 rounded focus:outline-none" onChange={handleInputChange} />
+                                            <input type="email" placeholder="Email" value={formData.email} name="email" className="border border-gray-300 px-4 py-2 rounded focus:outline-none" onChange={handleInputChange} />
+                                            <input type="password" placeholder="Password" value={formData.password} name='password' className="border border-gray-300 px-4 py-2 rounded focus:outline-none" onChange={handleInputChange} />
                                             <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition duration-200 focus:outline-none">Sign In</button>
                                         </form>
+                                        <Link to='/forget-password'>Forget Password</Link>
                                     </div>
                                 )}
                                 {selectedTab === 1 && (

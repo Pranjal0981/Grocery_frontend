@@ -8,7 +8,7 @@ export const asyncCurrentUser = (token) => async (dispatch, getState) => {
             headers: { Authorization: `Bearer ${token}` }
         });
         console.log(response);
-        dispatch(saveUser(response.data));
+        dispatch(saveUser(response.data.user));
     } catch (error) {
         console.error(error);
     }
@@ -30,9 +30,19 @@ export const asyncSignupUser=(data)=>async(dispatch,getState)=>{
 export const asyncSignIn=(data)=>async(dispatch,getState)=>{
     try {
         console.log(data)
-        const resposne=await axios.post('/user/login',data)
-        console.log(resposne)
-        dispatch(asyncCurrentUser())
+        const response=await axios.post('/user/login',data)
+        console.log(response)
+        dispatch(saveUser(response.data.token))
+        dispatch(asyncCurrentUser(response.data.token))
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+export const asyncSignOut=(data)=>async(dispacth,getState)=>{
+    try {
+        const response=await axios.get('/user/logout')
+        dispacth(removeUser())
     } catch (error) {
         console.log(error)
     }
@@ -102,5 +112,16 @@ export const asyncFetchCartProduct=(userId)=>async(dispatch,getState)=>{
         dispatch(saveProduct(response.data))
     } catch (error) {
         console.log(error)
+    }
+}
+
+
+export const asyncForgetPassword=(email)=>async(dispatch,getState)=>{
+    try {
+        const response =await axios.post('/user/forget-password',email)
+        console.log(response)
+    } catch (error) {
+        console.log(error)
+        
     }
 }
