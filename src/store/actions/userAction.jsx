@@ -1,7 +1,5 @@
 import { saveUser, removeUser } from "../reducers/userSlice";
 import axios from '../../config/axios'
-import { toast } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css';
 import { saveProduct } from "../reducers/productSlice";
 
 export const asyncCurrentUser = (token) => async (dispatch, getState) => {
@@ -10,18 +8,18 @@ export const asyncCurrentUser = (token) => async (dispatch, getState) => {
             headers: { Authorization: `Bearer ${token}` }
         });
         console.log(response);
-        dispatch(saveUser(response.data.user));
+        dispatch(saveUser(response.data));
     } catch (error) {
         console.error(error);
     }
 };
 
 
-export const asyncSignup=()=>async(dispatch,getState)=>{
+export const asyncSignupUser=(data)=>async(dispatch,getState)=>{
     try {
-        const response=await axios.post('/user/signup')
+        const response=await axios.post('/user/signup',data)
         console.log(response)
-        dispatch(saveUser(response.data.user));
+        dispatch(saveUser(response.data.token));
     } catch (error) {
         console.log(error)
         
@@ -31,7 +29,8 @@ export const asyncSignup=()=>async(dispatch,getState)=>{
 
 export const asyncSignIn=(data)=>async(dispatch,getState)=>{
     try {
-        const resposne=await axios.post('/user/signin',data)
+        console.log(data)
+        const resposne=await axios.post('/user/login',data)
         console.log(resposne)
         dispatch(asyncCurrentUser())
     } catch (error) {

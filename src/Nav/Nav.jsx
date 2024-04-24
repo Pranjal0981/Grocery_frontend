@@ -7,14 +7,27 @@ import ListItemText from '@mui/material/ListItemText';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import { Link } from 'react-router-dom';
+import { useState } from 'react';
 import { FaBars, FaUser, FaHeart, FaShoppingBag, FaSearchengin } from 'react-icons/fa';
 import { MdOutlineShoppingBag } from 'react-icons/md';
 import { FaInstagram, FaTwitter, FaFacebook, FaYoutube } from 'react-icons/fa';
-
+import {useSelector,useDispatch} from 'react-redux'
+import { asyncAdminRegister } from '../store/actions/adminAction';
+import { asyncSignIn, asyncSignupUser } from '../store/actions/userAction';
 const Nav = () => {
     const [drawerOpen, setDrawerOpen] = React.useState(false);
     const [selectedTab, setSelectedTab] = React.useState(0);
     const [secondOpen, setSecondOpen]=React.useState(false)
+    const dispatch=useDispatch()
+    
+    const [formData, setFormData] = useState({
+        name: '',
+        email: '',
+        password: '',
+        userType: '' // Add userType to the state
+    });
+    const {user,isAuth}=useSelector((state)=>state.user)
+    console.log(user)
     const toggleDrawer = (open) => (event) => {
         if (
             event.type === 'keydown' &&
@@ -55,7 +68,27 @@ const Nav = () => {
         { icon: <FaInstagram />, to: 'https://instagram.com' },
         { icon: <FaYoutube />, to: 'https://youtube.com' }
     ];
+    const handleInputChange = (e) => {
+        // Update the corresponding field in the form data state
+        setFormData({
+            ...formData,
+            [e.target.name]: e.target.value
+        });
+    };
 
+    const handleSubmit=(e)=>{
+        e.preventDefault()
+        if(formData.userType==='vendor'){
+            dispatch(asyncAdminRegister({formData}))
+        }
+        else{
+            dispatch(asyncSignupUser({formData}))
+        }
+    }
+    const handleLogin=(e)=>{
+e.preventDefault()
+dispatch(asyncSignIn({formData}))
+    }
     return (
         <>
             <div className="flex justify-around items-center h-[10vh] bg-[#96B415]">
@@ -247,39 +280,129 @@ const Nav = () => {
 
 
 
-            <Drawer anchor="right"
+            <Drawer
+                anchor="right"
                 open={secondOpen} // Adjust the width as needed
-                onClose={toggleSecondDrawer(false)}>
-
-                <div className='h-full w-[300px] p-[40px]'>
-                    
-                    <List className='flex flex-col w-full gap-[20px]'>
-                        <h1 className='text-center'>MY ACCOUNT</h1>
-                        <Link to="/dashboard" className="" style={{ textDecoration: 'none' }}>
-                            <ListItemText primary="Dashboard" />
-                        </Link>
-                        <Link to="/orders" className="" style={{ textDecoration: 'none' }}>
-                            <ListItemText primary="Orders" />
-                        </Link>
-                        <Link to="/address" className="" style={{ textDecoration: 'none' }}>
-                            <ListItemText primary="Addresses" />
-                        </Link>
-                        <Link to="/account-details" className="" style={{ textDecoration: 'none' }}>
-                            <ListItemText primary="ACCOUNT DETAILS" />
-                        </Link>
-                        <Link to="/wishlist" className="" style={{ textDecoration: 'none' }}>
-                            <ListItemText primary="WISHLIST" />
-                        </Link>
-                        <Link to="/compare" className="" style={{ textDecoration: 'none' }}>
-                            <ListItemText primary="COMPARE" />
-                        </Link>
-                        <Link to="/logout" className="" style={{ textDecoration: 'none' }}>
-                            <ListItemText primary="LOGOUT" />
-                        </Link>
-                    </List>
-
+                onClose={toggleSecondDrawer(false)}
+            >
+                {user  ? (
+                    <div className='h-full w-[300px] p-[40px]'>
+                        <List className='flex flex-col w-full gap-[20px]'>
+                            <h1 className='text-center'>MY ACCOUNT</h1>
+                            <Link to="/dashboard" className="" style={{ textDecoration: 'none' }}>
+                                <ListItem button>
+                                    <ListItemText primary="Dashboard" />
+                                </ListItem>
+                            </Link>
+                            <Link to="/orders" className="" style={{ textDecoration: 'none' }}>
+                                <ListItem button>
+                                    <ListItemText primary="Orders" />
+                                </ListItem>
+                            </Link>
+                            <Link to="/address" className="" style={{ textDecoration: 'none' }}>
+                                <ListItem button>
+                                    <ListItemText primary="Addresses" />
+                                </ListItem>
+                            </Link>
+                            <Link to="/account-details" className="" style={{ textDecoration: 'none' }}>
+                                <ListItem button>
+                                    <ListItemText primary="ACCOUNT DETAILS" />
+                                </ListItem>
+                            </Link>
+                            <Link to="/wishlist" className="" style={{ textDecoration: 'none' }}>
+                                <ListItem button>
+                                    <ListItemText primary="WISHLIST" />
+                                </ListItem>
+                            </Link>
+                            <Link to="/compare" className="" style={{ textDecoration: 'none' }}>
+                                <ListItem button>
+                                    <ListItemText primary="COMPARE" />
+                                </ListItem>
+                            </Link>
+                            <Link to="/logout" className="" style={{ textDecoration: 'none' }}>
+                                <ListItem button>
+                                    <ListItemText primary="LOGOUT" />
+                                </ListItem>
+                            </Link>
+                        </List>
+                    </div>
+                ) : (
+                        <div className="flex justify-center items-center h-screen">
+                            <div className="bg-gray-200 p-8 rounded-lg shadow-md">
+                                <Tabs
+                                    value={selectedTab}
+                                    onChange={handleTabChange}
+                                    sx={{ backgroundColor: '#dadada', color: 'black', width: '300px' }}
+                                >
+                                    <Tab label="Sign In" sx={{ color: 'black', width: '50%' }} />
+                                    <Tab label="Sign Up" sx={{ color: 'black', width: '50%' }} />
+                                </Tabs>
+                                {selectedTab === 0 && (
+                                    <div className='p-8'>
+                                        {/* Sign In Form */}
+                                        <form className="flex flex-col space-y-4" onSubmit={handleLogin}>
+                                            <input type="email" placeholder="Email" className="border border-gray-300 px-4 py-2 rounded focus:outline-none" onChange={handleInputChange} />
+                                            <input type="password" placeholder="Password" className="border border-gray-300 px-4 py-2 rounded focus:outline-none" onChange={handleInputChange} />
+                                            <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition duration-200 focus:outline-none">Sign In</button>
+                                        </form>
+                                    </div>
+                                )}
+                                {selectedTab === 1 && (
+                                    <div className='p-8'>
+                                        {/* Sign Up Form */}
+                                        <form className="flex flex-col space-y-4" onSubmit={handleSubmit}>
+                                            <input
+                                                type="email"
+                                                name="email"
+                                                value={formData.email}
+                                                placeholder="Email"
+                                                className="border border-gray-300 px-4 py-2 rounded focus:outline-none"
+                                                onChange={handleInputChange}
+                                            />
+                                            <input
+                                                type="password"
+                                                name="password"
+                                                value={formData.password}
+                                                placeholder="Password"
+                                                className="border border-gray-300 px-4 py-2 rounded focus:outline-none"
+                                                onChange={handleInputChange}
+                                            />
+                                            <div className="flex items-center space-x-4">
+                                                <label>
+                                                    <input
+                                                        type="radio"
+                                                        name="userType"
+                                                        value="customer"
+                                                        className="mr-2"
+                                                        onChange={handleInputChange}
+                                                    />
+                                                    Customer
+                                                </label>
+                                                <label>
+                                                    <input
+                                                        type="radio"
+                                                        name="userType"
+                                                        value="vendor"
+                                                        className="mr-2"
+                                                        onChange={handleInputChange}
+                                                    />
+                                                    Vendor
+                                                </label>
+                                            </div>
+                                            <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition duration-200 focus:outline-none">
+                                                Sign Up
+                                            </button>
+                                        </form>
+                                    </div>
+                                )}
+                            </div>
                         </div>
-                </Drawer>
+
+
+
+                )}
+            </Drawer>
+
         </>
     );
 };
