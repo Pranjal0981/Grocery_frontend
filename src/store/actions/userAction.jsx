@@ -1,7 +1,5 @@
 import { saveUser, removeUser } from "../reducers/userSlice";
 import axios from '../../config/axios'
-import { toast } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css';
 import { saveProduct } from "../reducers/productSlice";
 
 export const asyncCurrentUser = (token) => async (dispatch, getState) => {
@@ -17,11 +15,11 @@ export const asyncCurrentUser = (token) => async (dispatch, getState) => {
 };
 
 
-export const asyncSignup=()=>async(dispatch,getState)=>{
+export const asyncSignupUser=(data)=>async(dispatch,getState)=>{
     try {
-        const response=await axios.post('/user/signup')
+        const response=await axios.post('/user/signup',data)
         console.log(response)
-        dispatch(saveUser(response.data.user));
+        dispatch(saveUser(response.data.token));
     } catch (error) {
         console.log(error)
         
@@ -31,9 +29,20 @@ export const asyncSignup=()=>async(dispatch,getState)=>{
 
 export const asyncSignIn=(data)=>async(dispatch,getState)=>{
     try {
-        const resposne=await axios.post('/user/signin',data)
-        console.log(resposne)
-        dispatch(asyncCurrentUser())
+        console.log(data)
+        const response=await axios.post('/user/login',data)
+        console.log(response)
+        dispatch(saveUser(response.data.token))
+        dispatch(asyncCurrentUser(response.data.token))
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+export const asyncSignOut=(data)=>async(dispacth,getState)=>{
+    try {
+        const response=await axios.get('/user/logout')
+        dispacth(removeUser())
     } catch (error) {
         console.log(error)
     }
@@ -103,5 +112,16 @@ export const asyncFetchCartProduct=(userId)=>async(dispatch,getState)=>{
         dispatch(saveProduct(response.data))
     } catch (error) {
         console.log(error)
+    }
+}
+
+
+export const asyncForgetPassword=(email)=>async(dispatch,getState)=>{
+    try {
+        const response =await axios.post('/user/forget-password',email)
+        console.log(response)
+    } catch (error) {
+        console.log(error)
+        
     }
 }

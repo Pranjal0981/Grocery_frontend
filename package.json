@@ -14,7 +14,11 @@
     "@emotion/styled": "^11.11.5",
     "@mui/material": "^5.15.15",
     "@reduxjs/toolkit": "^2.2.3",
+<<<<<<< HEAD
     "gsap": "^3.12.5",
+=======
+    "axios": "^1.6.8",
+>>>>>>> e04eb22557df56f7b624115b163156fad6e8e2ab
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-icons": "^5.1.0",
