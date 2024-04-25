@@ -6,7 +6,7 @@ import { jsPDF } from 'jspdf'
 import 'jspdf-autotable'
 import QRCode from 'qrcode';
 import Swal from 'sweetalert2';
-import { asyncFetchCartProduct } from "../store/actions/userAction";
+import { asyncFetchCartProduct, asyncDeleteCheckoutCart } from "../store/actions/userAction";
 
 const generatePDF = async (checkOutCart, user) => {
     try {
@@ -109,8 +109,8 @@ const Cart = () => {
     const [showModal, setShowModal] = useState(false);
     const dispatch = useDispatch();
     const { checkOutCart, user } = useSelector((state) => state.user);
-    console.log(checkOutCart)
-   
+
+//    console.log(checkOutCart.data)
 
     const handlePlaceOrder = () => {
         setShowModal(true);
@@ -145,22 +145,22 @@ const Cart = () => {
 
     console.log(user)
     useEffect(() => {
-        dispatch(asyncFetchCartProduct(user._id));
+        dispatch(asyncFetchCartProduct(user?._id));
 
     }, [dispatch, user?._id]);
 
-    const handleDeleteItem = (itemId, productModel) => {
+    const handleDeleteItem = (itemId) => {
         console.log("Deleting item with ID:", itemId);
-        dispatch(asyncDeleteCheckoutCart(user?._id, productModel, itemId));
+        dispatch(asyncDeleteCheckoutCart(user?._id, itemId));
     };
 
     const checkoutHandler = async (amount) => {
         // Fetch bag if not already fetched
         if (!checkOutCart) {
-            dispatch(asyncFetchBag(user._id));
+            dispatch(asyncFetchBag(user?._id));
             return; // Wait for bag to be fetched before proceeding
         }
-        if (user.address && user.name && user.phone) {
+        if (user?.address && user?.name && user?.phone) {
             try {
                 const { data: { key } } = await axios.get("/api/getkey");
 
@@ -239,8 +239,6 @@ const Cart = () => {
 
     };
 
-
-
     return (
         <div className="container mx-auto px-4 py-8">
             <h2 className="text-3xl font-bold text-center mb-8 text-indigo-800">Checkout Cart</h2>
@@ -250,18 +248,21 @@ const Cart = () => {
                         {/* Combined Items */}
                         <div>
                             <h3 className="text-xl font-bold mb-4 text-blue-800">Items:</h3>
-                            {checkOutCart.length > 0 ? (
+                            {checkOutCart.data && checkOutCart.data.length > 0 ? (
                                 <ul>
-                                    {checkOutCart.map((product, index) => (
+                                    {checkOutCart.data.map((item, index) => (
                                         <li key={index} className="bg-white shadow-md rounded-lg overflow-hidden mb-4">
-                                            <img src={product.image.url} alt={product.ProductName} className="h-48 w-full object-cover" />
+                                            <img src={item.productId.image?.url} alt={item.productId.ProductName} className="h-48 w-full object-cover" />
                                             <div className="p-4">
-                                                <h2 className="text-xl font-bold mb-2">{product.ProductName}</h2>
-                                                <p className="text-gray-700 mb-2">{product.description}</p>
+                                                <h2 className="text-xl font-bold mb-2">{item.productId.ProductName}</h2>
+                                                <p className="text-gray-700 mb-2">{item.productId.description}</p>
                                                 <div className="flex justify-between items-center">
-                                                    <p className="text-gray-800 font-bold">RS {product.price}</p>
-                                                    <p className="text-gray-500">{product.category}</p>
+                                                    <p className="text-gray-800 font-bold">RS {item.productId.price}</p>
+                                                    <p className="text-gray-500">{item.productId.category}</p>
                                                 </div>
+                                                <button onClick={() => handleDeleteItem(item._id)} className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mt-2">
+                                                    Delete
+                                                </button>
                                             </div>
                                         </li>
                                     ))}
@@ -275,42 +276,26 @@ const Cart = () => {
                     {/* Total Grand Price */}
                     <div className="mt-8 flex justify-between items-center">
                         <h3 className="text-xl font-bold text-indigo-800">Total Grand Price:</h3>
-                        <p className="text-2xl font-bold text-indigo-900">Rs {checkOutCart?.TotalGrandPrice?.toFixed(2)}</p>
+                        <p className="text-2xl font-bold text-indigo-900">Rs {checkOutCart.totalGrandPrice?.toFixed(2)}</p>
                     </div>
 
                     {/* Action Buttons */}
                     <div className="flex justify-end mt-4">
                         <button
                             onClick={handlePlaceOrder}
-                            disabled={!checkOutCart || !checkOutCart.length}
-                            className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ${(!checkOutCart._id && 'opacity-50 cursor-not-allowed')}`}
+                            // disabled={!checkOutCart || checkOutCart.data.length === 0}
+                            className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ${(!checkOutCart._id )}`}
                         >
                             Place Order
                         </button>
-                    </div>
 
-                    {/* Payment Modal */}
-                    {showModal && (
-                        <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
-                            <div className="bg-white rounded-lg p-6">
-                                <h2 className="text-xl font-bold mb-4">Select Payment Method</h2>
-                                <button onClick={handleCashOnDelivery} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-4">
-                                    Cash on Delivery
-                                </button>
-                                <button onClick={() => checkoutHandler(checkOutCart?.TotalGrandPrice?.toFixed(2))} className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                                    Pay Now
-                                </button>
-                                <button onClick={handleCloseModal} className="absolute top-0 right-0 p-2 text-gray-500 hover:text-gray-700">
-                                    <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                                    </svg>
-                                </button>
-                            </div>
-                        </div>
-                    )}
+
+                    </div>
                 </div>
             )}
+
         </div>
+
     );
 
 

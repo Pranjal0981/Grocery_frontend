@@ -59,7 +59,7 @@ const Dashboard = () => {
                         <Link to='/address' className='bg-orange-500 flex items-center justify-center gap-[10px] text-white w-[250px] text-center p-[10px] pl-[10px] pr-[10px] rounded-full'>
                             <IoIosGlobe/>
                             Address</Link>
-                        <Link to='/edit-details' className='bg-orange-500 flex items-center justify-center gap-[10px] text-white w-[250px] text-center p-[10px] pl-[10px] pr-[10px] rounded-full'>
+                        <Link to='/account-details' className='bg-orange-500 flex items-center justify-center gap-[10px] text-white w-[250px] text-center p-[10px] pl-[10px] pr-[10px] rounded-full'>
                             <MdAccountCircle/>
                             Account Details</Link>
 

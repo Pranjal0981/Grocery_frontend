@@ -50,3 +50,25 @@ export const asyncSearch = (searchTerm, selectedCategory) => async (dispatch, ge
         console.log(error)
     }
 };
+
+export const asyncFetchStorePro = (store) => async (dispatch, getState) => {
+    try {
+        const response =await axios.get(`/products/store/${store}`)
+        console.log(response)
+        dispatch(saveProduct(response?.data?.data))
+
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+export const asyncFilterAll = (queryParams) => async (dispatch, getState) => {
+    try {
+        console.log(queryParams)
+        const response = await axios.get('/products/filter', { params: queryParams });
+        console.log(response)
+        dispatch(saveProduct(response.data.data))
+    } catch (error) {
+        toast.error(error)
+    }
+}

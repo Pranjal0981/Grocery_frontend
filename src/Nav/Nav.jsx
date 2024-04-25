@@ -84,7 +84,7 @@ const Nav = () => {
     };
     const links = [
         { label: 'All Departments Menu', to: '/all-departments' },
-        { label: 'Home', to: '/home' },
+        { label: 'Home', to: '/' },
         { label: 'Shop', to: '/shop' },
         { label: 'About Us', to: '/about-us' },
         { label: 'Blog', to: '/blog' },
@@ -261,7 +261,7 @@ const Nav = () => {
                                     placeholder="Search"
                                 />
                             </div>
-                            <Link to="/home" style={{ textDecoration: 'none', color: 'inherit' }}>
+                            <Link to="/" style={{ textDecoration: 'none', color: 'inherit' }}>
                                 <ListItem button>
                                     <ListItemText primary="Home" />
                                 </ListItem>
@@ -356,7 +356,7 @@ const Nav = () => {
                                     <ListItemText primary="Orders" />
                                 </ListItem>
                             </Link>
-                            <Link to="/address" className="" style={{ textDecoration: 'none' }}>
+                            <Link to="/edit-address" className="" style={{ textDecoration: 'none' }}>
                                 <ListItem button>
                                     <ListItemText primary="Addresses" />
                                 </ListItem>

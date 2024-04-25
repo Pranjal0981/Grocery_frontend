@@ -33,7 +33,7 @@ export const asyncSignIn=(data)=>async(dispatch,getState)=>{
         console.log(data)
         const response=await axios.post('/user/login',data)
         console.log(response)
-        dispatch(asyncCurrentUser(response.data.token))
+       await dispatch(asyncCurrentUser(response.data.token))
     } catch (error) {
         console.log(error)
     }
@@ -95,7 +95,7 @@ export const asyncFetchCartProduct=(userId)=>async(dispatch,getState)=>{
     try {
         const response=await axios.get(`/user/fetchCart/${userId}`)
         console.log(response)
-        dispatch(saveCheckOutCart(response.data.data))
+        dispatch(saveCheckOutCart(response.data))
     } catch (error) {
         console.log(error)
     }
@@ -120,3 +120,55 @@ export const asyncResetPassword = (id, password) => async (dispatch, getState) =
         console.log(error);
     }
 };
+
+export const asyncDeleteCheckoutCart=(userId,productId)=>async(dispatch,getState)=>{
+    try {
+        const response = await axios.delete(`/user/deleteFromCart/${userId}/${productId}`)
+        console.log(response)
+        dispatch(asyncFetchCartProduct(userId))
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+export const asyncAddAddress=(data)=>async(dispatch,getState)=>{
+    try {
+        const response=await axios.post(`/user/addAddress`,data)
+        console.log(response)
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+export const asyncDeleteAddress =(index,userId)=>async(dispatch,getState)=>{
+    try {
+        const response=await axios.delete(`/user/deleteAddress/${userId}/${index}`)
+        console.log(response)
+        dispatch(asyncCurrentUser(userId))
+    } catch (error) {
+        console.log(error)        
+    }
+}
+
+export const asyncUpdateUser=(data,userId)=>async(dispatch,getState)=>{
+    try {
+        console.log(data)
+        const response = await axios.post(`/user/update/${userId}`,data)
+        console.log(response)
+        await dispatch(asyncCurrentUser(userId))
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+
+export const asyncDeleteAccount = (userId) => async (dispatch, getState) => {
+    try {
+            const response = await axios.delete(`/user/deleteAccount/${userId}`)
+        console.log(response)
+        await dispatch(removeUser())
+    } catch (error) {
+        console.log(error)
+    }
+}
+

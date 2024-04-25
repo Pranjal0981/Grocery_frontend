@@ -15,18 +15,12 @@
     "@mui/icons-material": "^5.15.15",
     "@mui/material": "^5.15.15",
     "@reduxjs/toolkit": "^2.2.3",
-<<<<<<< HEAD
     "gsap": "^3.12.5",
-=======
     "axios": "^1.6.8",
-<<<<<<< HEAD
->>>>>>> e04eb22557df56f7b624115b163156fad6e8e2ab
-=======
     "framer-motion": "^11.1.7",
     "jspdf": "^2.5.1",
     "jspdf-autotable": "^3.8.2",
     "qrcode": "^1.5.3",
->>>>>>> f97a2d5 (Updation)
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-icons": "^5.1.0",

@@ -29,6 +29,7 @@ export const userSlice = createSlice({
             state.wishlist = action.payload
         },
         saveCheckOutCart:(state,action)=>{
+            console.log(action.payload)
             state.checkOutCart=action.payload
         }
     },

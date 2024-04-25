@@ -10,11 +10,15 @@ import Unauthorized from '../Unauthorized'
 import AllProducts from '../Admin/AllProducts'
 import AddProductForm from '../Admin/UploadProducts'
 import ExploreProductById from '../components/ExploreProductById'
-import Wishlist from '../Profile/Wishlist'
+import Wishlist from '../Profile/WIshlist'
 import CategoryProduct from '../components/CategorisedProduct'
 import SearchResult from '../components/SearchResult'
 import Cart from '../Profile/Cart'
 
+import Storeproduct from '../components/FetchByStore'
+import Product from '../components/Product'
+import { Address, AddressForm } from '../Profile/Address'
+import AccountDetails from '../Profile/AccountDetails'
 const Routing=()=>{
     const {user,isAuth}=useSelector((state)=>state.user)
     const isAdmin = isAuth && user.userType === 'Admin';
@@ -52,8 +56,12 @@ const Routing=()=>{
             ))}
      <Route path='*' element={<NotFound/>}/>
             <Route path="/search-results" element={<SearchResult/>} />
-            <Route path='/cart' element={<Cart/>}/>
-
+            <Route path='/cart' element={isUser?<Cart/>:<Unauthorized/>}/>
+<Route path='/edit-address' element={<AddressForm/>}/>
+<Route path='/address' element={<Address/>}/>
+<Route path='/store/:store' element={<Storeproduct/>}/>
+<Route path='/shop' element={<Product/>}/>
+<Route path='/account-details' element={<AccountDetails/>}/>
     </Routes>
     
     </>
