@@ -4,6 +4,9 @@ const savedUser = localStorage.getItem("user");
 const initialState = {
     user: savedUser ? JSON.parse(savedUser) : null,
     isAuth: savedUser ? true : false,
+    wishlist: null,
+    checkOutCart:null
+
 }
 
 export const userSlice = createSlice({
@@ -22,11 +25,16 @@ export const userSlice = createSlice({
             state.user = null;
             state.isAuth = false;
         },
-       
+        saveWishlist: (state, action) => {
+            state.wishlist = action.payload
+        },
+        saveCheckOutCart:(state,action)=>{
+            state.checkOutCart=action.payload
+        }
     },
 });
 
 
-export const { saveUser, removeUser } = userSlice.actions;
+export const { saveUser, removeUser, saveWishlist, saveCheckOutCart } = userSlice.actions;
 
 export default userSlice.reducer;

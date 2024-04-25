@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { asyncForgetPassword } from '../store/actions/userAction';
+import {  asyncSendForgetLink } from '../store/actions/userAction';
 
 const ForgetPassword = () => {
     const [email, setEmail] = useState('');
@@ -10,7 +10,7 @@ const ForgetPassword = () => {
         e.preventDefault();
 
         console.log('Form submitted with email:', email);
-        await  dispatch(asyncForgetPassword({email}))
+        await  dispatch(asyncSendForgetLink({email}))
     };
 
     return (

@@ -1,10 +1,11 @@
-import { saveUser, removeUser } from "../reducers/userSlice";
+import { saveUser, removeUser, saveWishlist, saveCheckOutCart } from "../reducers/userSlice";
 import axios from '../../config/axios'
 import { saveProduct } from "../reducers/productSlice";
 
 export const asyncCurrentUser = (token) => async (dispatch, getState) => {
     try {
-        const response = await axios.post('/user/currentUser', null, {
+        console.log("token",token)
+        const response = await axios.post('/user/currentUser', {
             headers: { Authorization: `Bearer ${token}` }
         });
         console.log(response);
@@ -32,7 +33,6 @@ export const asyncSignIn=(data)=>async(dispatch,getState)=>{
         console.log(data)
         const response=await axios.post('/user/login',data)
         console.log(response)
-        dispatch(saveUser(response.data.token))
         dispatch(asyncCurrentUser(response.data.token))
     } catch (error) {
         console.log(error)
@@ -48,10 +48,11 @@ export const asyncSignOut=(data)=>async(dispacth,getState)=>{
     }
 }
 
-export const asyncFetchWishlist=()=>async(dispatch,getState)=>{
+export const asyncFetchWishlist=(id)=>async(dispatch,getState)=>{
     try {
-        const response=await axios.get('/user/fetchWishlist')
-        dispatch(saveProduct(response.data))
+        const response=await axios.get(`/user/fetchWishlist/${id}`)
+        console.log(response)
+        dispatch(saveWishlist(response.data.data.products))
     } catch (error) {
         console.log(error)
     }
@@ -59,7 +60,7 @@ export const asyncFetchWishlist=()=>async(dispatch,getState)=>{
 
 export const asyncAddToWishlist=(userId,data)=>async(dispatch,getState)=>{
     try {
-        const resposne = await axios.post(`/addToCart/${userId}`,data)
+        const resposne = await axios.post(`/user/addToWishlist/${userId}`,data)
         console.log(resposne)
     } catch (error) {
         console.log(error)
@@ -67,39 +68,23 @@ export const asyncAddToWishlist=(userId,data)=>async(dispatch,getState)=>{
 }
 
 
-export const asyncDeleteFromWishlist=(userId,productId)=>async(dispatch,getState)=>{
-    try {
-        const response=await axios.delete(`/user/${userId}/${productId}`)
-        dispatch(saveProduct(response.data))
-    } catch (error) {
-        console.log(error)
-    }
-}
-
-
-export const asyncFetchCart = () => async (dispatch, getState) => {
-    try {
-        const response = await axios.get('/user/fetchWishlist')
-        dispatch(saveProduct(response.data))
-    } catch (error) {
-        console.log(error)
-    }
-}
 
 export const asyncAddToCart = (userId, data) => async (dispatch, getState) => {
     try {
-        const resposne = await axios.post(`/addToCart/${userId}`, data)
-        console.log(resposne)
+        const response = await axios.post(`/user/addToCart/${userId}`, data)
+        console.log(response)
+        dispatch(saveCheckOutCart(response.data))
     } catch (error) {
         console.log(error)
     }
 }
 
 
-export const asyncDeleteFromCart = (userId, productId) => async (dispatch, getState) => {
+export const asyncDeleteFromWishlist = (userId, productId) => async (dispatch, getState) => {
     try {
-        const response = await axios.delete(`/user/${userId}/${productId}`)
-        dispatch(saveProduct(response.data))
+        const response = await axios.delete(`/user/deleteFromWishlist/${userId}/${productId}`)
+        console.log(response)
+        dispatch(asyncFetchWishlist(userId))
     } catch (error) {
         console.log(error)
     }
@@ -108,20 +93,30 @@ export const asyncDeleteFromCart = (userId, productId) => async (dispatch, getSt
 
 export const asyncFetchCartProduct=(userId)=>async(dispatch,getState)=>{
     try {
-        const response=await axios.get(`/fetchCart/${userId}`)
-        dispatch(saveProduct(response.data))
+        const response=await axios.get(`/user/fetchCart/${userId}`)
+        console.log(response)
+        dispatch(saveCheckOutCart(response.data.data))
     } catch (error) {
         console.log(error)
     }
 }
 
 
-export const asyncForgetPassword=(email)=>async(dispatch,getState)=>{
+export const asyncSendForgetLink=(email)=>async(dispatch,getState)=>{
     try {
-        const response =await axios.post('/user/forget-password',email)
+        const response = await axios.post('/user/send-mail',email)
         console.log(response)
     } catch (error) {
         console.log(error)
         
     }
 }
+
+export const asyncResetPassword = (id, password) => async (dispatch, getState) => {
+    try {
+        const response = await axios.post(`/user/forget-link/${id}`, { password }); // Pass password as an object
+        console.log(response);
+    } catch (error) {
+        console.log(error);
+    }
+};

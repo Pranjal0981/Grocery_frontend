@@ -4,11 +4,11 @@ import { saveProduct } from '../reducers/productSlice';
 import { saveUser, removeUser } from '../reducers/userSlice'
 export const asyncCurrentAdmin = (token) => async (dispatch, getState) => {
     try {
-        const response = await axios.post('/admin', null, {
+        const response = await axios.post('/admin/currentAdmin', null, {
             headers: { Authorization: `Bearer ${token}` }
         });
         console.log(response);
-        await dispatch(saveUser(response.data.user));
+        await dispatch(saveUser(response.data.admin));
     } catch (error) {
         console.error(error);
     }
@@ -16,7 +16,8 @@ export const asyncCurrentAdmin = (token) => async (dispatch, getState) => {
 
 export const asyncAdminRegister=(data)=>async(dispatch,getState)=>{
     try {
-        const response=await axios.post('/signup',data)
+        console.log(data)
+        const response=await axios.post('/admin/signup',data)
         console.log(response)
         dispatch(saveUser(response.data))
     } catch (error) {
@@ -25,11 +26,11 @@ export const asyncAdminRegister=(data)=>async(dispatch,getState)=>{
 }
 
 
+
 export const asyncAdminLogin = (data, navigate) => async (dispatch, getState) => {
     try {
         const res = await axios.post('/admin/login', data);
         await dispatch(asyncCurrentAdmin(res.data.token));
-        navigate('/admin/dashboard/upload-product');
     } catch (error) {
         if (error.response && error.response.status === 401) {
             toast.error('Invalid email or password. Please try again.');
@@ -144,9 +145,9 @@ export const asyncDeleteProducts = (productId, productType) => async (dispatch, 
 }
 
 
-export const asyncDelProduct = (productId, productType) => async (dispatch, getState) => {
+export const asyncDelProduct = (productId) => async (dispatch, getState) => {
     try {
-        const response = await axios.delete(`/admin/deleteProducts/${productType}/${productId}`);
+        const response = await axios.delete(`/admin/deleteProducts/${productId}`);
         console.log(response)
         dispatch(asyncFetchAllProducts())
     } catch (error) {
@@ -224,5 +225,19 @@ export const asyncFetchAllProducts = (page, searchTerm = '', searchType = '') =>
     } catch (error) {
         console.error(error);
         dispatch(setLoading(false)); // Set loading state to false if an error occurs
+    }
+};
+
+export const asyncUploadProducts = (formData) => async (dispatch, getState) => {
+    try {
+        const response = await axios.post('/admin/upload-products', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data' // Set content type to multipart/form-data
+            }
+        });
+        console.log(response)
+    } catch (error) {
+        // Handle error
+        console.error('Error uploading products:', error);
     }
 };

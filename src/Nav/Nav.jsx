@@ -3,31 +3,59 @@ import Drawer from '@mui/material/Drawer';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
+import ListItemText from '@mui/material/ListItemText'
+import { Collapse, ListItemButton} from '@mui/material';
+import { ExpandLess, ExpandMore } from '@mui/icons-material';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { FaBars, FaUser, FaHeart, FaShoppingBag, FaSearchengin } from 'react-icons/fa';
 import { MdOutlineShoppingBag } from 'react-icons/md';
 import { FaInstagram, FaTwitter, FaFacebook, FaYoutube } from 'react-icons/fa';
-import {useSelector,useDispatch} from 'react-redux'
-import { asyncAdminRegister } from '../store/actions/adminAction';
+import { useSelector, useDispatch } from 'react-redux'
+import { asyncAdminLogin, asyncAdminRegister, asyncLogoutAdmin } from '../store/actions/adminAction';
 import { asyncSignIn, asyncSignOut, asyncSignupUser } from '../store/actions/userAction';
+import { asyncSearch } from '../store/actions/productAction';
+
+
 const Nav = () => {
+    const navigate=useNavigate()
     const [drawerOpen, setDrawerOpen] = React.useState(false);
     const [selectedTab, setSelectedTab] = React.useState(0);
-    const [secondOpen, setSecondOpen]=React.useState(false)
-    const dispatch=useDispatch()
-    
+    const [secondOpen, setSecondOpen] = React.useState(false)
+    const dispatch = useDispatch()
+    const [openStore, setOpenStore] = useState(false);
+    const [selectedCategory, setSelectedCategory] = useState('All categories');
+    const [searchResults, setSearchResults] = useState([]);
+    const [searchTerm,setSearchTerm]=useState([])
+    const stores = ["Minal Residency", "AwadhPuri","Rohit Nagar","Jhansi"];
+    const handleChangeSearchTerm = (event) => {
+        setSearchTerm(event.target.value);
+    };
+
+    const handleChangeCategory = (event) => {
+        setSelectedCategory(event.target.value);
+    };
+
+    const handleSearch = async(searchTerm, selectedCategory)=> {
+        console.log("search cliked")
+        await dispatch(asyncSearch(searchTerm, selectedCategory));
+        navigate(`/search-results?searchTerm=${searchTerm}&category=${selectedCategory}`)
+    }
+    const handleStoreClick = () => {
+        setOpenStore(!openStore);
+    };
     const [formData, setFormData] = useState({
         name: '',
         email: '',
         password: '',
-        userType: '' 
+        userType: ''
     });
-    const {user,isAuth}=useSelector((state)=>state.user)
+    const { user, isAuth } = useSelector((state) => state.user)
     console.log(user)
+    console.log(user)
+
     const toggleDrawer = (open) => (event) => {
         if (
             event.type === 'keydown' &&
@@ -77,24 +105,54 @@ const Nav = () => {
     };
 
 
-    const handleSubmit=(e)=>{
+    const handleSubmit = (e) => {
         e.preventDefault()
-        if(formData.userType==='vendor'){
-            dispatch(asyncAdminRegister({formData}))
+        if (formData.userType === 'vendor') {
+            dispatch(asyncAdminRegister({ formData }))
         }
-        else{
-            dispatch(asyncSignupUser({formData}))
+        else {
+            dispatch(asyncSignupUser({ formData }))
         }
     }
-    const handleLogin=(e)=>{
-e.preventDefault()
-dispatch(asyncSignIn({formData}))
+    const handleLogin = (e) => {
+        console.log(formData.userType)
+        e.preventDefault()
+        if (formData.userType === 'vendor') {
+            dispatch(asyncAdminLogin({ formData }))
+        }
+        if(formData.userType==='customer') {
+            dispatch(asyncSignIn({ formData }))
+        }
     }
 
-    const handleLogout=async(e)=>{
+    const handleLogout = async (e) => {
         e.preventDefault()
-      await dispatch(asyncSignOut())
+        if (user?.userType === 'Admin') {
+            dispatch(asyncLogoutAdmin({ formData }))
+        }
+        if (user?.userType === 'customer') {
+            dispatch(asyncSignOut({ formData }))
+        }
     }
+
+    const categories = [
+        { label: "Oral Care & Wellness", link: "/oral-care-wellness" },
+        { label: "Atta, Rice & Dal", link: "/atta-rice-dal" },
+        { label: "Household & Cleaning", link: "/household-cleaning" },
+        { label: "Spices, Salt & Sugar", link: "/spices-salt-sugar" },
+        { label: "Pooja Samagri", link: "/pooja-samagri" },
+        { label: "Oil & Ghee", link: "/oil-ghee" },
+        { label: "Dry Fruits, Nuts & Seeds", link: "/dry-fruits-nuts-seeds" },
+        { label: "Snacks & Packaged Food", link: "/snacks-packaged-food" },
+        { label: "Beverages", link: "/beverages" },
+        { label: "Chocolates & Sweets", link: "/chocolates-sweets" },
+        { label: "Laundry & Dishwash", link: "/laundry-dishwash" },
+        { label: "Body & Skin Care", link: "/body-skin-care" },
+        { label: "Hair Care", link: "/hair-care" },
+    ];
+
+
+ 
     return (
         <>
             <div className="flex justify-around items-center h-[10vh] bg-[#96B415]">
@@ -108,18 +166,25 @@ dispatch(asyncSignIn({formData}))
                 </div>
 
                 <div className="flex items-center rounded-full bg-white border border-gray-300">
-                    <select className="px-3 py-1 bg-transparent border-none focus:outline-none text-lg">
+                    <select
+                        className="px-3 py-1 bg-transparent border-none focus:outline-none text-lg"
+                        value={selectedCategory}
+                        onChange={handleChangeCategory}
+                    >
                         <option value="All categories">All categories</option>
-                        <option value="Category 1">Category 1</option>
-                        <option value="Category 2">Category 2</option>
-                        <option value="Category 3">Category 3</option>
+                        {categories.map((category, index) => (
+                            <option key={index} value={category.label}>{category.label}</option>
+                        ))}
                     </select>
+
                     <input
                         type="text"
                         className="w-full px-3 py-1 bg-transparent border-none focus:outline-none text-lg"
                         placeholder="Search"
+                        value={searchTerm}
+                        onChange={handleChangeSearchTerm}
                     />
-                    <button className="px-3 py-1 bg-transparent border-none focus:outline-none">
+                    <button className="px-3 py-1 bg-transparent border-none focus:outline-none" onClick={()=>handleSearch(searchTerm,selectedCategory)}>
                         <FaSearchengin className="text-lg" />
                     </button>
                 </div>
@@ -132,17 +197,17 @@ dispatch(asyncSignIn({formData}))
                 </div>
 
                 <div className="flex">
-                    <button className="flex gap-2 items-center text-white text-lg">
+                    <Link to='/wishlist' className="flex gap-2 items-center text-white text-lg">
                         <FaHeart />
                         Wishlist
-                    </button>
+                    </Link>
                 </div>
 
                 <div className="flex bg-white rounded-full w-[100px] h-[35px] justify-center ">
-                    <button className="flex gap-2 items-center text-white text-lg text-green-600">
+                    <Link to='/cart' className="flex gap-2 items-center  text-lg ">
                         <FaShoppingBag />
                         Cart
-                    </button>
+                    </Link>
                 </div>
             </div>
             <div className="flex justify-between p-[10px]">
@@ -244,27 +309,13 @@ dispatch(asyncSignIn({formData}))
                     <div className='h-full bg-[#96B415]'>
 
                         <List className='bg-[#96B415] h-full text-white' >
-                            {[
-                                { label: "Oral Care & Wellness", link: "/oral-care-wellness" },
-                                { label: "Atta, Rice & Dal", link: "/atta-rice-dal" },
-                                { label: "Household & Cleaning", link: "/household-cleaning" },
-                                { label: "Spices, Salt & Sugar", link: "/spices-salt-sugar" },
-                                { label: "Pooja Samagri", link: "/pooja-samagri" },
-                                { label: "Oil & Ghee", link: "/oil-ghee" },
-                                { label: "Dry Fruits, Nuts & Seeds", link: "/dry-fruits-nuts-seeds" },
-                                { label: "Snacks & Packaged Food", link: "/snacks-packaged-food" },
-                                { label: "Beverages", link: "/beverages" },
-                                { label: "Chocolates & Sweets", link: "/chocolates-sweets" },
-                                { label: "Laundry & Dishwash", link: "/laundry-dishwash" },
-                                { label: "Body & Skin Care", link: "/body-skin-care" },
-                                { label: "Hair Care", link: "/hair-care" },
-                            ].map(({ label, link }, index) => (
-                                <Link to={link} key={index} style={{ textDecoration: 'none', color: 'inherit' }}>
-                                    <ListItem button>
-                                        <ListItemText primary={label} />
-                                    </ListItem>
-                                </Link>
-                            ))}
+                                {categories.map(({ label, link }, index) => (
+                                    <Link to={`/category/${label}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                                        <ListItem button>
+                                            <ListItemText primary={label} />
+                                        </ListItem>
+                                    </Link>
+                                ))}
                             <div className="flex mt-auto mb-5">
                                 <a href="https://www.instagram.com/" target="_blank" rel="noopener noreferrer" className="text-white mx-2">
                                     <FaInstagram />
@@ -291,7 +342,7 @@ dispatch(asyncSignIn({formData}))
                 open={secondOpen} // Adjust the width as needed
                 onClose={toggleSecondDrawer(false)}
             >
-                {user  ? (
+                {user?.userType === "customer" ? (
                     <div className='h-full w-[300px] p-[40px]'>
                         <List className='flex flex-col w-full gap-[20px]'>
                             <h1 className='text-center'>MY ACCOUNT</h1>
@@ -325,85 +376,190 @@ dispatch(asyncSignIn({formData}))
                                     <ListItemText primary="COMPARE" />
                                 </ListItem>
                             </Link>
-                            <Link to="/logout" className="" style={{ textDecoration: 'none' }}  onClick={handleLogout}>
+                            <Link to="/logout" className="" style={{ textDecoration: 'none' }} onClick={handleLogout}>
                                 <ListItem button>
                                     <ListItemText primary="LOGOUT" />
                                 </ListItem>
                             </Link>
                         </List>
                     </div>
-                ) : (
-                        <div className="flex justify-center items-center h-screen">
-                            <div className="bg-gray-200 p-8 rounded-lg shadow-md">
-                                <Tabs
-                                    value={selectedTab}
-                                    onChange={handleTabChange}
-                                    sx={{ backgroundColor: '#dadada', color: 'black', width: '300px' }}
-                                >
-                                    <Tab label="Sign In" sx={{ color: 'black', width: '50%' }} />
-                                    <Tab label="Sign Up" sx={{ color: 'black', width: '50%' }} />
-                                </Tabs>
-                                {selectedTab === 0 && (
-                                    <div className='p-8'>
-                                        {/* Sign In Form */}
-                                        <form className="flex flex-col space-y-4" onSubmit={handleLogin}>
-                                            <input type="email" placeholder="Email" value={formData.email} name="email" className="border border-gray-300 px-4 py-2 rounded focus:outline-none" onChange={handleInputChange} />
-                                            <input type="password" placeholder="Password" value={formData.password} name='password' className="border border-gray-300 px-4 py-2 rounded focus:outline-none" onChange={handleInputChange} />
-                                            <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition duration-200 focus:outline-none">Sign In</button>
-                                        </form>
-                                        <Link to='/forget-password'>Forget Password</Link>
-                                    </div>
-                                )}
-                                {selectedTab === 1 && (
-                                    <div className='p-8'>
-                                        {/* Sign Up Form */}
-                                        <form className="flex flex-col space-y-4" onSubmit={handleSubmit}>
-                                            <input
-                                                type="email"
-                                                name="email"
-                                                value={formData.email}
-                                                placeholder="Email"
-                                                className="border border-gray-300 px-4 py-2 rounded focus:outline-none"
-                                                onChange={handleInputChange}
-                                            />
-                                            <input
-                                                type="password"
-                                                name="password"
-                                                value={formData.password}
-                                                placeholder="Password"
-                                                className="border border-gray-300 px-4 py-2 rounded focus:outline-none"
-                                                onChange={handleInputChange}
-                                            />
-                                            <div className="flex items-center space-x-4">
-                                                <label>
-                                                    <input
-                                                        type="radio"
-                                                        name="userType"
-                                                        value="customer"
-                                                        className="mr-2"
-                                                        onChange={handleInputChange}
-                                                    />
-                                                    Customer
-                                                </label>
-                                                <label>
-                                                    <input
-                                                        type="radio"
-                                                        name="userType"
-                                                        value="vendor"
-                                                        className="mr-2"
-                                                        onChange={handleInputChange}
-                                                    />
-                                                    Vendor
-                                                </label>
-                                            </div>
-                                            <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition duration-200 focus:outline-none">
-                                                Sign Up
-                                            </button>
-                                        </form>
-                                    </div>
-                                )}
-                            </div>
+                ) : user?.userType === "Admin" ? (
+                        <div className="admin-dashboard h-full w-[300px] p-[40px]">
+                            <List className='flex flex-col w-full gap-[20px]'>
+                                <h1 className='text-center'>ADMIN ACCOUNT</h1>
+                                <Link to="/admin/upload-products" className="" style={{ textDecoration: 'none' }}>
+                                    <ListItem button>
+                                        <ListItemText primary="Upload Products" />
+                                    </ListItem>
+                                </Link>
+                                <Link to="/admin-dashboard" className="" style={{ textDecoration: 'none' }}>
+                                    <ListItem button>
+                                        <ListItemText primary="Admin Dashboard" />
+                                    </ListItem>
+                                </Link>
+                                <Link to="/admin/fetchAllUsers" className="" style={{ textDecoration: 'none' }}>
+                                    <ListItem button>
+                                        <ListItemText primary="All Users" />
+                                    </ListItem>
+                                </Link>
+                                <Link to="/admin" className="" style={{ textDecoration: 'none' }}>
+                                    <ListItem button>
+                                        <ListItemText primary="Addresses" />
+                                    </ListItem>
+                                </Link>
+                                <Link to="/admin/allOrders" className="" style={{ textDecoration: 'none' }}>
+                                    <ListItem button>
+                                        <ListItemText primary="All Orders" />
+                                    </ListItem>
+                                </Link>
+
+                                <Link to="/admin/allproducts" className="" style={{ textDecoration: 'none' }}>
+                                    <ListItem button>
+                                        <ListItemText primary="All Orders" />
+                                    </ListItem>
+                                </Link>
+                                <Link to="/admin/activeMembers" className="" style={{ textDecoration: 'none' }}>
+                                    <ListItem button>
+                                        <ListItemText primary="Active Users" />
+                                    </ListItem>
+                                </Link>
+                                <Link to="/admin/inactiveMembers" className="" style={{ textDecoration: 'none' }}>
+                                    <ListItem button>
+                                        <ListItemText primary="InActive Users" />
+                                    </ListItem>
+                                </Link>
+                                {/* Store Section */}
+                                <ListItem button onClick={() => handleStoreClick()}>
+                                    <ListItemText primary="Stores" />
+                                    {openStore ? <ExpandLess /> : <ExpandMore />}
+                                </ListItem>
+                                <Collapse in={openStore} timeout="auto" unmountOnExit>
+                                    {stores.map((store, index) => (
+                                        <ListItemButton key={index} component={Link} to={`/admin/stores/${store}`}>
+                                            <ListItemText primary={store} />
+                                        </ListItemButton>
+                                    ))}
+                                </Collapse>
+
+                                {/* End of Store Section */}
+                                <Link to="/admin/logout" className="" style={{ textDecoration: 'none' }} onClick={handleLogout}>
+                                    <ListItem button>
+                                        <ListItemText primary="Logout" />
+                                    </ListItem>
+                                </Link>
+                            </List>
                         </div>
+
+                ) : (
+                    <div className="flex justify-center items-center h-screen">
+                        <div className="bg-gray-200 p-8 rounded-lg shadow-md">
+                            <Tabs
+                                value={selectedTab}
+                                onChange={handleTabChange}
+                                sx={{ backgroundColor: '#dadada', color: 'black', width: '300px' }}
+                            >
+                                <Tab label="Sign In" sx={{ color: 'black', width: '50%' }} />
+                                <Tab label="Sign Up" sx={{ color: 'black', width: '50%' }} />
+                            </Tabs>
+                            {selectedTab === 0 && (
+                                <div className='p-8'>
+                                    {/* Sign In Form */}
+                                    <form className="flex flex-col space-y-4" onSubmit={handleLogin}>
+                                        <input
+                                            type="email"
+                                            name="email"
+                                            value={formData.email}
+                                            placeholder="Email"
+                                            className="border border-gray-300 px-4 py-2 rounded focus:outline-none"
+                                            onChange={handleInputChange}
+                                        />
+                                        <input
+                                            type="password"
+                                            name="password"
+                                            value={formData.password}
+                                            placeholder="Password"
+                                            className="border border-gray-300 px-4 py-2 rounded focus:outline-none"
+                                            onChange={handleInputChange}
+                                        />
+                                        <div className="flex items-center space-x-4">
+                                            <label>
+                                                <input
+                                                    type="radio"
+                                                    name="userType"
+                                                    value="customer"
+                                                    className="mr-2"
+                                                    onChange={handleInputChange}
+                                                />
+                                                Customer
+                                            </label>
+                                            <label>
+                                                <input
+                                                    type="radio"
+                                                    name="userType"
+                                                    value="vendor"
+                                                    className="mr-2"
+                                                    onChange={handleInputChange}
+                                                />
+                                                Vendor
+                                            </label>
+                                        </div>
+                                        <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition duration-200 focus:outline-none">
+                                            Sign In
+                                        </button>
+                                    </form>
+                                    <Link to='/forget-password'>Forget Password</Link>
+                                </div>
+                            )}
+                            {selectedTab === 1 && (
+                                <div className='p-8'>
+                                    {/* Sign Up Form */}
+                                    <form className="flex flex-col space-y-4" onSubmit={handleSubmit}>
+                                        <input
+                                            type="email"
+                                            name="email"
+                                            value={formData.email}
+                                            placeholder="Email"
+                                            className="border border-gray-300 px-4 py-2 rounded focus:outline-none"
+                                            onChange={handleInputChange}
+                                        />
+                                        <input
+                                            type="password"
+                                            name="password"
+                                            value={formData.password}
+                                            placeholder="Password"
+                                            className="border border-gray-300 px-4 py-2 rounded focus:outline-none"
+                                            onChange={handleInputChange}
+                                        />
+                                        <div className="flex items-center space-x-4">
+                                            <label>
+                                                <input
+                                                    type="radio"
+                                                    name="userType"
+                                                    value="customer"
+                                                    className="mr-2"
+                                                    onChange={handleInputChange}
+                                                />
+                                                Customer
+                                            </label>
+                                            <label>
+                                                <input
+                                                    type="radio"
+                                                    name="userType"
+                                                    value="vendor"
+                                                    className="mr-2"
+                                                    onChange={handleInputChange}
+                                                />
+                                                Vendor
+                                            </label>
+                                        </div>
+                                        <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition duration-200 focus:outline-none">
+                                            Sign Up
+                                        </button>
+                                    </form>
+                                </div>
+                            )}
+                        </div>
+                    </div>
 
 
 
