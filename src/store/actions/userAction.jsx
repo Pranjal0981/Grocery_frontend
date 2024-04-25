@@ -9,7 +9,7 @@ export const asyncCurrentUser = (token) => async (dispatch, getState) => {
             headers: { Authorization: `Bearer ${token}` }
         });
         console.log(response);
-        dispatch(saveUser(response.data.user));
+      await dispatch(saveUser(response.data.user));
     } catch (error) {
         console.error(error);
     }
