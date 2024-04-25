@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import CategoryProduct from './components/CategorisedProduct';
 import Product from './components/Product';
-import HomePng from '/HomeLogo.png'
 const FirstComp = () => {
     const [activeTab, setActiveTab] = useState('Show All'); // Set "Show All" as the default active tab
 
