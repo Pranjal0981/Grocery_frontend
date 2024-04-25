@@ -38,16 +38,20 @@ const Div4 = () => {
         <>
         <div className="pleasure caveat w-full h-[55%]  mt-[20vh] flex " >
             <div className="pleasure-left w-[50%] h-full p-10 flex gap-[20px]">
-                <img src="https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjJ8fGhvdGVsc3xlbnwwfHwwfHx8MA%3D%3D" className="w-[14vw] h-[50vh] rounded-3xl	" alt="" />
-                <img src="https://images.unsplash.com/photo-1495365200479-c4ed1d35e1aa?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTl8fGhvdGVsc3xlbnwwfHwwfHx8MA%3D%3D" className="w-[14vw] h-[50vh] rounded-3xl translate-y-[-30%]	" alt="" />
-                <img src="https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTZ8fGhvdGVsc3xlbnwwfHwwfHx8MA%3D%3D" className="w-[14vw] h-[50vh] rounded-3xl	" alt="" />
+            <img src="https://plus.unsplash.com/premium_photo-1664202219210-abf6ae3bdf04?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8Z3JvY2VyeXxlbnwwfHwwfHx8MA%3D%3D" className="w-[14vw] h-[50vh] rounded-3xl	" alt="" />
+            <img src="https://images.unsplash.com/photo-1588964895597-cfccd6e2dbf9?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8Z3JvY2VyeXxlbnwwfHwwfHx8MA%3D%3D" className="w-[14vw] h-[50vh] rounded-3xl translate-y-[-30%]	" alt="" />
+            <img src="https://images.unsplash.com/photo-1579113800032-c38bd7635818?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTV8fGdyb2Nlcnl8ZW58MHx8MHx8fDA%3D" className="w-[14vw] h-[50vh] rounded-3xl	" alt="" />
 
             </div>
-            <div className="pleasure-right flex flex-col w-[50%] p-5">
-                <h1 className="text-2xl text-red-300	">Welcome to MRstudio Resort</h1>
-                <h1 className="text-6xl">Relaxing Pleasure</h1>
-                <p className="mt-10">Lorem ipsum dolor sit amet consectetur adipisicing elit. Dicta corrupti id minima repudiandae labore doloremque atque, quae eum cum commodi vitae, officia libero, hic asperiores? Fugiat dolorum voluptatem earum ut voluptas quod quas ea vel error autem, deleniti animi et suscipit itaque recusandae. In corporis quasi doloribus error. Eum quia veniam repellat rerum quasi aliquid cupiditate, suscipit odio illum soluta!</p>
-            </div>
+          <div className="pleasure-right flex flex-col w-[50%] p-5">
+            <h1 className="text-4xl text-red-300">Welcome to RGS Grocery</h1>
+            <h2 className="text-6xl font-bold">Discover Convenience with RGS Grocery</h2>
+            <p className="mt-8 text-lg">
+              At RGS Grocery, we strive to make your life easier by providing a seamless shopping experience.
+            
+            </p>
+          </div>
+
         </div>
         </>
     )
