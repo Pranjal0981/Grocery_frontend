@@ -43,7 +43,7 @@ const FirstComp = () => {
         <div className="w-full h-auto flex flex-col justify-center items-center">
             <div className='border-2 w-[90vw] shadow-lg m-4'>
             <Link to="https://reeplayerindia.com/">
-                <img src="/HomeLogo.png" alt="Home Logo" />
+                <img src="/Homelogo.png" alt="Home Logo" />
             </Link>
             </div>
 
