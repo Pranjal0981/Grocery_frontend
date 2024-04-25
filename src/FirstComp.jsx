@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import CategoryProduct from './components/CategorisedProduct';
 import Product from './components/Product';
-
+import HomePng from '/HomeLogo.png'
 const FirstComp = () => {
     const [activeTab, setActiveTab] = useState('Show All'); // Set "Show All" as the default active tab
 
@@ -44,7 +44,7 @@ const FirstComp = () => {
         <div className="w-full h-auto flex flex-col justify-center items-center">
             <div className='border-2 w-[90vw] shadow-lg m-4'>
             <Link to="https://reeplayerindia.com/">
-                <img src="../public/HomeLogo.png" alt="Home Logo" />
+                <img src="/HomeLogo.png" alt="Home Logo" />
             </Link>
             </div>
 
