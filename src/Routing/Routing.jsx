@@ -1,4 +1,4 @@
-import {Routes,Route, useParams} from 'react-router-dom'
+import { Routes, Route, useParams } from 'react-router-dom'
 import Dashboard from '../Profile/Dashboard'
 import HomePage from '../components/HomePage'
 import ForgetPassword from '../Profile/ForgetPassword'
@@ -14,16 +14,22 @@ import Wishlist from '../Profile/WIshlist'
 import CategoryProduct from '../components/CategorisedProduct'
 import SearchResult from '../components/SearchResult'
 import Cart from '../Profile/Cart'
-
+import UpdateProduct from '../Admin/UpdateProduct'
 import Storeproduct from '../components/FetchByStore'
 import Product from '../components/Product'
 import { Address, AddressForm } from '../Profile/Address'
 import AccountDetails from '../Profile/AccountDetails'
-const Routing=()=>{
-    const {user,isAuth}=useSelector((state)=>state.user)
+import AllUser from '../Admin/AllUsers'
+import OutOfStock from '../Admin/OutOfStock'
+import { ActiveUser, InactiveUser } from '../Admin/ActivityLogs'
+import AdminDashboard from '../Admin/Dashboard'
+import BrandProducts from '../components/BrandProduct'
+import ManageOrder from '../Admin/AllOrders'
+const Routing = () => {
+    const { user, isAuth } = useSelector((state) => state.user)
     const isAdmin = isAuth && user.userType === 'Admin';
     const isUser = isAuth && user.userType === 'customer';
-    const {  id } = useParams();
+    const { id } = useParams();
     const categories = [
         { label: "Oral Care & Wellness", link: "/oral-care-wellness" },
         { label: "Atta, Rice & Dal", link: "/atta-rice-dal" },
@@ -40,30 +46,38 @@ const Routing=()=>{
         { label: "Hair Care", link: "/hair-care" },
         // Add more categories as needed
     ];
-    return<>
-    <Routes>
-        <Route path='/' element={<HomePage/>}/>
-        <Route path='/dashboard' element={<Dashboard/>}/>
-        <Route path='/forget-password' element={<ForgetPassword/>}/>
-        <Route path="/forget-link/:id" element={<ResetPassword userType="user" />} />
-        <Route path={`/admin/stores/:store`} element={<ProductStore />} />
-        <Route path='/admin/allproducts' element={isAdmin ? <AllProducts /> : <Unauthorized />} />
-        <Route path='/admin/upload-products' element={isAdmin ? <AddProductForm /> : <Unauthorized />} />
-        <Route path='/wishlist' element={isUser?<Wishlist/>:<Unauthorized/>}/>
-        <Route path='/products/:id' element={<ExploreProductById />} />
+    return <>
+        <Routes>
+            <Route path='/' element={<HomePage />} />
+            <Route path='/brand/:title' element={<BrandProducts/>}/>
+            <Route path='/dashboard' element={<Dashboard />} />
+            <Route path='/forget-password' element={<ForgetPassword />} />
+            <Route path="/forget-link/:id" element={<ResetPassword userType="user" />} />
+            <Route path={`/admin/stores/:store`} element={<ProductStore />} />
+            <Route path='/admin/allproducts' element={isAdmin ? <AllProducts /> : <Unauthorized />} />
+            <Route path='/admin/upload-products' element={isAdmin ? <AddProductForm /> : <Unauthorized />} />
+            <Route path='/wishlist' element={isUser ? <Wishlist /> : <Unauthorized />} />
+            <Route path='/products/:id' element={<ExploreProductById />} />
             {categories.map((category, index) => (
                 <Route key={index} path={`/category/:category`} element={<CategoryProduct />} />
             ))}
-     <Route path='*' element={<NotFound/>}/>
-            <Route path="/search-results" element={<SearchResult/>} />
-            <Route path='/cart' element={isUser?<Cart/>:<Unauthorized/>}/>
-<Route path='/edit-address' element={<AddressForm/>}/>
-<Route path='/address' element={<Address/>}/>
-<Route path='/store/:store' element={<Storeproduct/>}/>
-<Route path='/shop' element={<Product/>}/>
-<Route path='/account-details' element={<AccountDetails/>}/>
-    </Routes>
-    
+            <Route path='*' element={<NotFound />} />
+            <Route path="/search-results" element={<SearchResult />} />
+            <Route path='/cart' element={isUser ? <Cart /> : <Unauthorized />} />
+            <Route path='/edit-address' element={<AddressForm />} />
+            <Route path='/address' element={<Address />} />
+            <Route path='/store/:store' element={<Storeproduct />} />
+            <Route path='/shop' element={<Product />} />
+            <Route path='/account-details' element={<AccountDetails />} />
+            <Route path='/admin/fetchallusers' element={isAdmin ? <AllUser /> : <Unauthorized />} />
+            <Route path='/admin/fetchOutOfStockProducts' element={isAdmin ? <OutOfStock /> : <Unauthorized />} />
+            <Route path='/admin/activeMembers' element={isAdmin ? <ActiveUser /> : <Unauthorized />} />
+            <Route path='/admin/inactiveMembers' element={isAdmin ? <InactiveUser /> : <Unauthorized />} />
+            <Route path='/admin/updateproduct/:id' element={isAdmin ? <UpdateProduct /> : <Unauthorized />} />
+            <Route path='/admin/dashboard' element={isAdmin ? <AdminDashboard /> : <Unauthorized />} />
+            <Route path='/admin/allOrders' element={isAdmin ?<ManageOrder/>:<Unauthorized/>}/>
+        </Routes>
+
     </>
 }
 export default Routing

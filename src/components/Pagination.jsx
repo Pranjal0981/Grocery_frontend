@@ -6,6 +6,7 @@ import { CiFilter } from "react-icons/ci";
 import {asyncFilterAll} from '../store/actions/productAction'
 const Pagination = ({ currentPage, onPageChange }) => {
     const { product, loading } = useSelector(state => state.product);
+    console.log(product)
     const [totalPages, setTotalPages] = useState(1); // Total
     const productsPerPage = 7; // Number of products per page
     const [showSpinner, setShowSpinner] = useState(true);

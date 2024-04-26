@@ -1,72 +1,74 @@
-import React from 'react'
-
+import React from 'react';
+import {useNavigate} from 'react-router-dom'
 const Shopbycategory = () => {
+  const navigate=useNavigate()
     const imageObjects = [
-      {
-        title: "Dove",
-        imageUrl: "https://images.unsplash.com/photo-1624377578244-098e7bf2d55a?q=80&w=1935&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-      },
-      {
-        title: "Himalaya Gel",
-        imageUrl: "https://images.unsplash.com/photo-1619451334792-150fd785ee74?q=80&w=1901&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-      },
-      {
-        title: " BLEU",
-        imageUrl: "https://images.unsplash.com/photo-1523293182086-7651a899d37f?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-      },
-      {
-        title: "Nevea",
-        imageUrl: "https://images.unsplash.com/photo-1567721913486-6585f069b332?q=80&w=1888&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-      },
-      {
-        title: "Scrubs",
-        imageUrl: "https://images.unsplash.com/photo-1564594218151-a67498fb2922?q=80&w=1886&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-      },
-      {
-        title: "Pears",
-        imageUrl: "https://images.unsplash.com/photo-1607006555987-49a12f7c0488?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-      },
-      {
-        title: "Organic ",
-        imageUrl: "https://images.unsplash.com/photo-1577161618325-2663fcfb4636?q=80&w=1929&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-      },
-      {
-        title: "Cheese gracy",
-        imageUrl: "https://images.unsplash.com/photo-1608611518153-f708d93fc1d8?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-      },
-      {
-        title: "Aloe Rose-Water",
-        imageUrl: "https://images.unsplash.com/photo-1601065873952-f999b9a62da7?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1yZWxhdGVkfDE4fHx8ZW58MHx8fHx8"
-      },
-      {
-        title: "Elemis",
-        imageUrl: "https://images.unsplash.com/photo-1609175214983-594001465d18?q=80&w=1964&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-      }
+        {
+            imageUrl: "https://rgsgrocery.com/wp-content/uploads/2024/04/AMUL.png",
+            title: "Amul"
+        },
+        {
+            imageUrl: "https://rgsgrocery.com/wp-content/uploads/2024/04/BAJAJ.png",
+            title: "Bajaj"
+        },
+        {
+            imageUrl: "https://rgsgrocery.com/wp-content/uploads/2024/04/BEARDO-1.png",
+            title: "Beardo"
+        },
+        {
+            imageUrl: "https://rgsgrocery.com/wp-content/uploads/2024/04/BEIERSDORF.png",
+            title: "Beiersdorf"
+        },
+        {
+            imageUrl: "https://rgsgrocery.com/wp-content/uploads/2024/04/BELLAVITA.png",
+            title: "Bellavita"
+        },
+        {
+            imageUrl: "https://rgsgrocery.com/wp-content/uploads/2024/04/BRITANIA.png",
+            title: "Britannia"
+        },
+        {
+            imageUrl: "https://rgsgrocery.com/wp-content/uploads/2024/04/DABUR-1.png",
+            title: "Dabur"
+        },
+        {
+            imageUrl: "https://rgsgrocery.com/wp-content/uploads/2024/04/DENVER.png",
+            title: "Denver"
+        },
+        {
+            imageUrl: "https://rgsgrocery.com/wp-content/uploads/2024/04/EMAMI.png",
+            title: "Emami"
+        },
+        {
+            imageUrl: "https://rgsgrocery.com/wp-content/uploads/2024/04/GODREJ.png",
+            title: "Godrej"
+        },
+        {
+            imageUrl: "https://rgsgrocery.com/wp-content/uploads/2024/04/HUL.png",
+            title: "HUL"
+        }
     ];
-      
+  const handleImageClick = (title) => {
+    // Logic to handle navigation to the specific brand
+    console.log(`Clicked on brand: ${title}`);
+    navigate(`/brand/${title}`)
+    
+  };
   return (
-    <div>
-    <div className='w-full h-[43vh]   flex flex-col  ' >
-        <div className="topheading h-[8vh]  flex items-center justify-center text-4xl font-regular">
-            <h1>SHOP BY BRAND</h1>
+    <div className="w-full h-auto flex flex-col">
+      <div className="topheading h-16 flex items-center justify-center text-4xl font-regular">
+        <h1>SHOP BY BRAND</h1>
+      </div>
+      <div className="overflow-x-auto w-full">
+        <div className="imagecategory flex p-4 gap-4" style={{ width: `${imageObjects.length * 200}px` }}>
+          {imageObjects.map((image, index) => (
+            <div key={index} className="imageparent flex flex-col items-center justify-end gap-2 bg-cover bg-no-repeat w-40 h-40 cursor-pointer" style={{ backgroundImage: `url(${image.imageUrl})` }} onClick={() => handleImageClick(image.title)}>
+              <h1 className="text-lg font-bold">{image.title}</h1>
+            </div>
+          ))}
         </div>
-        <div className="overflow-scroll">
-        <div className="w-[200vw]  h-[30vh]">
-        <div className="imagecategory flex  w-full h-[300px] p-[30px] w-[200vw]  gap-[40px] ">
-        {imageObjects.map((image, index) => (
-        <div key={index} className="imageparent bg-center bg-cover 	flex flex-col items-center justify-end gap-[20px] bg-no-repeat w-[25%]  bg-center" style={{ backgroundImage: `url(${image.imageUrl})` }}>
-          <h1 className='text-3xl font-bold 	' >{image.title}</h1>
-        </div>
-      ))}
-        </div>
-        </div>
-        </div>
-      
-        
+      </div>
     </div>
-
-    </div>
-  )
-}
-
-export default Shopbycategory
+  );
+};
+export default Shopbycategory;

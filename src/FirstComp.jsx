@@ -51,28 +51,7 @@ const FirstComp = () => {
                 <div className="head flex flex-col items-center justify-center">
                     <h1 className='bg-orange-200 px-4 py-2 rounded-full'>We Love them</h1>
                     <h1 className='text-4xl uppercase m-[10px]'>Top Selling Products</h1>
-                    <div className="tabs flex gap-[20px]">
-                        <h1
-                            onClick={() => handleTabClick('Show All')}
-                            className={`tab cursor-pointer rounded-full px-4 py-2 ${activeTab === 'Show All' ? 'bg-lime-500 text-white' : 'text-black'}`}
-                        >
-                            Show All
-                        </h1>
-
-                        <h1
-                            onClick={() => handleTabClick('New Products')}
-                            className={`cursor-pointer tab rounded-full px-4 py-2 ${activeTab === 'New Products' ? 'bg-lime-500 text-white' : 'text-black'}`}
-                        >
-                            New Products
-                        </h1>
-
-                        <h1
-                            onClick={() => handleTabClick('Trending')}
-                            className={`cursor-pointer tab rounded-full px-4 py-2 ${activeTab === 'Trending' ? 'bg-lime-500 text-white' : 'text-black'}`}
-                        >
-                            Trending
-                        </h1>
-                    </div>
+                    
 
                 </div>
             </div>

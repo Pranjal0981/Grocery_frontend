@@ -7,7 +7,7 @@ import 'jspdf-autotable'
 import QRCode from 'qrcode';
 import Swal from 'sweetalert2';
 import { asyncFetchCartProduct, asyncDeleteCheckoutCart } from "../store/actions/userAction";
-
+import rgsLogo from '/rgslogo.jpeg';
 const generatePDF = async (checkOutCart, user) => {
     try {
         const doc = new jsPDF();
@@ -48,12 +48,10 @@ const generatePDF = async (checkOutCart, user) => {
             if (checkOutCart.hasOwnProperty(category) && Array.isArray(checkOutCart[category])) {
                 for (const item of checkOutCart[category]) {
                     tableBody.push([
-                        item.product.brandName || '',
-                        item.color || '',
+                        item.product.brand || '',
                         item.quantity || '',
                         item.product.category || '',
                         item.product.subcategory || '',
-                        `Rs ${item.product.DiscountedPrice}`, // Format price
                         `Rs ${item.product.GST}`, // Format price
                         item.size || '',
                         `Rs ${item.totalPrice}` // Format total price
@@ -110,7 +108,7 @@ const Cart = () => {
     const dispatch = useDispatch();
     const { checkOutCart, user } = useSelector((state) => state.user);
 
-//    console.log(checkOutCart.data)
+   console.log(checkOutCart)
 
     const handlePlaceOrder = () => {
         setShowModal(true);
@@ -258,6 +256,8 @@ const Cart = () => {
                                                 <p className="text-gray-700 mb-2">{item.productId.description}</p>
                                                 <div className="flex justify-between items-center">
                                                     <p className="text-gray-800 font-bold">RS {item.productId.price}</p>
+                                                    <p className="text-gray-800 font-bold"> {item.productId.stock}</p>
+
                                                     <p className="text-gray-500">{item.productId.category}</p>
                                                 </div>
                                                 <button onClick={() => handleDeleteItem(item._id)} className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mt-2">
@@ -288,7 +288,24 @@ const Cart = () => {
                         >
                             Place Order
                         </button>
-
+                        {showModal && (
+                            <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
+                                <div className="bg-white rounded-lg p-6">
+                                    <h2 className="text-xl font-bold mb-4">Select Payment Method</h2>
+                                    ` <button onClick={handleCashOnDelivery} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-4">
+                                        Cash on Delivery
+                                    </button>`
+                         <button onClick={() => checkoutHandler(checkOutCart?.TotalGrandPrice?.toFixed(2))} className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                             Pay Now
+                        </button>
+                        <button onClick={handleCloseModal} className="absolute top-0 right-0 p-2 text-gray-500 hover:text-gray-700">
+                            <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            )}
 
                     </div>
                 </div>

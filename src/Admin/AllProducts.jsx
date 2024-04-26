@@ -10,7 +10,7 @@ const AllProducts = () => {
     const navigate = useNavigate();
     const [currentPage, setCurrentPage] = useState(1);
     const [searchTerm, setSearchTerm] = useState('');
-    const [searchType, setSearchType] = useState('brandName'); // Default search type
+    const [searchType, setSearchType] = useState('brand'); // Default search type
 
     useEffect(() => {
         dispatch(asyncFetchAllProducts(currentPage, searchTerm, searchType));
@@ -20,12 +20,12 @@ const AllProducts = () => {
         setCurrentPage(page);
     };
 
-    const handleDelete = (id, type) => {
-        dispatch(asyncDelProduct(type, id));
+    const handleDelete = async(id) => {
+       await dispatch(asyncDelProduct(id));
     };
 
-    const handleUpdate = (type, id) => {
-        navigate(`/admin/updateproduct/${type}/${id}`);
+    const handleUpdate = (id) => {
+        navigate(`/admin/updateproduct/${id}`);
     };
 
     const handleSearch = () => {
@@ -48,7 +48,7 @@ const AllProducts = () => {
                     onChange={(e) => setSearchType(e.target.value)}
                     className="px-4 py-2 border rounded-r bg-white mb-2 sm:mb-0 sm:mr-2 w-full sm:w-auto"
                 >
-                    <option value="brandName">Brand Name</option>
+                    <option value="brand">Brand</option>
                     <option value="store">Store</option>
                     <option value="productCode">Product Code</option>
                 </select>
@@ -59,21 +59,22 @@ const AllProducts = () => {
                     Search
                 </button>
             </div>
+
             {loading ? (
                 <CustomSpinner /> // Render spinner when loading is true
             ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
                     {Array.isArray(product) && product.map((prod) => (
                         <div key={prod._id} className="bg-white rounded-lg shadow-md overflow-hidden">
-                            <img src={prod.image.url} alt={prod.brandName} className="w-full h-64 object-cover" />
+                            <img src={prod.image.url} alt={prod.brand} className="w-full h-64 object-cover" />
                             <div className="p-4">
-                                <h2 className="text-xl font-semibold mb-2">{prod.brandName}</h2>
+                                <h2 className="text-xl font-semibold mb-2">{prod.brand}</h2>
                                 <p className="text-gray-600 mb-2">Category: {prod.category}</p>
                                 <p className="text-gray-600 mb-2">Price: ${prod.price}</p>
                                 <p className="text-gray-600 mb-2">Stock: {prod.stock}</p>
                                 <div className="flex justify-between">
-                                    <button className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-full" onClick={() => handleUpdate(prod.ProductModel, prod._id)}>Update</button>
-                                    <button className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-full" onClick={() => handleDelete(prod.ProductModel, prod._id)}>Delete</button>
+                                    <button className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-full" onClick={() => handleUpdate(prod._id)}>Update</button>
+                                    <button className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-full" onClick={() => handleDelete(prod._id)}>Delete</button>
                                 </div>
                             </div>
                         </div>

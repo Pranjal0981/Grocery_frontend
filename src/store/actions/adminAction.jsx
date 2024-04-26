@@ -155,9 +155,9 @@ export const asyncDelProduct = (productId) => async (dispatch, getState) => {
     }
 }
 
-export const asyncUpdateProduct = (id, type, updatedProduct) => async (dispatch, getState) => {
+export const asyncUpdateProduct = (id, updatedProduct) => async (dispatch, getState) => {
     try {
-        const response = await axios.put(`/admin/updateProduct/${type}/${id}`, updatedProduct);
+        const response = await axios.put(`/admin/updateProduct/${id}`, {updatedProduct});
         console.log(response.data);
         toast.success('Product updated successfully', {
             position: "top-right"
@@ -193,9 +193,9 @@ export const fetchDashBoardInfo = () => async (dispatch, getState) => {
     }
 }
 
-export const asyncAdminBlockUser = (email) => async (dispatch, getState) => {
+export const asyncAdminBlockUser = (userId) => async (dispatch, getState) => {
     try {
-        const response = await axios.post('/admin/blockUser', email)
+        const response = await axios.post(`/admin/blockUser/${userId}`)
         console.log(response)
         dispatch(asyncfetchAllusers())
     } catch (error) {
@@ -203,9 +203,11 @@ export const asyncAdminBlockUser = (email) => async (dispatch, getState) => {
     }
 }
 
-export const asyncAdminUnblockUser = (email) => async (dispatch, getState) => {
+
+
+export const asyncAdminUnblockUser = (userID) => async (dispatch, getState) => {
     try {
-        const response = await axios.post('/admin/unblockUser', email)
+        const response = await axios.post(`/admin/unblockUser/${userID}`)
         console.log(response)
         dispatch(asyncfetchAllusers())
     } catch (error) {

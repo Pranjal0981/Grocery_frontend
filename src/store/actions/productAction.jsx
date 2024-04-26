@@ -72,3 +72,13 @@ export const asyncFilterAll = (queryParams) => async (dispatch, getState) => {
         toast.error(error)
     }
 }
+
+export const asyncFetchProdByBrand=(brand)=>async(dispatch,getState)=>{
+    try {
+        const response=await axios.get(`/products/brand/${brand}`)
+        console.log(response)
+        dispatch(saveProduct(response.data.products))
+    } catch (error) {
+        console.log(error)
+    }
+}

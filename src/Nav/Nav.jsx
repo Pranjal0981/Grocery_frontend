@@ -134,6 +134,8 @@ const Nav = () => {
             dispatch(asyncSignOut({ formData }))
         }
     }
+    const isAdmin = isAuth && user.userType === 'Admin';
+    const isUser = isAuth && user.userType === 'customer';
 
     const categories = [
         { label: "Oral Care & Wellness", link: "/oral-care-wellness" },
@@ -392,7 +394,7 @@ const Nav = () => {
                                         <ListItemText primary="Upload Products" />
                                     </ListItem>
                                 </Link>
-                                <Link to="/admin-dashboard" className="" style={{ textDecoration: 'none' }}>
+                                <Link to="/admin/dashboard" className="" style={{ textDecoration: 'none' }}>
                                     <ListItem button>
                                         <ListItemText primary="Admin Dashboard" />
                                     </ListItem>
@@ -402,11 +404,7 @@ const Nav = () => {
                                         <ListItemText primary="All Users" />
                                     </ListItem>
                                 </Link>
-                                <Link to="/admin" className="" style={{ textDecoration: 'none' }}>
-                                    <ListItem button>
-                                        <ListItemText primary="Addresses" />
-                                    </ListItem>
-                                </Link>
+                                
                                 <Link to="/admin/allOrders" className="" style={{ textDecoration: 'none' }}>
                                     <ListItem button>
                                         <ListItemText primary="All Orders" />
@@ -415,7 +413,7 @@ const Nav = () => {
 
                                 <Link to="/admin/allproducts" className="" style={{ textDecoration: 'none' }}>
                                     <ListItem button>
-                                        <ListItemText primary="All Orders" />
+                                        <ListItemText primary="All Products" />
                                     </ListItem>
                                 </Link>
                                 <Link to="/admin/activeMembers" className="" style={{ textDecoration: 'none' }}>
@@ -426,6 +424,12 @@ const Nav = () => {
                                 <Link to="/admin/inactiveMembers" className="" style={{ textDecoration: 'none' }}>
                                     <ListItem button>
                                         <ListItemText primary="InActive Users" />
+                                    </ListItem>
+                                </Link>
+
+                                <Link to="/admin/fetchOutOfStockProducts" className="" style={{ textDecoration: 'none' }}>
+                                    <ListItem button>
+                                        <ListItemText primary="Out Of Stock" />
                                     </ListItem>
                                 </Link>
                                 {/* Store Section */}

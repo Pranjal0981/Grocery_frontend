@@ -15,7 +15,6 @@ const AddProductForm = () => {
     const [cgst, setCgst] = useState('');
     const [stock, setStock] = useState('');
     const [store, setStore] = useState('');
-
     const categories = [
         { label: "Oral Care & Wellness", link: "/oral-care-wellness" },
         { label: "Atta, Rice & Dal", link: "/atta-rice-dal" },
@@ -24,9 +23,27 @@ const AddProductForm = () => {
         { label: "Pooja Samagri", link: "/pooja-samagri" },
         { label: "Oil & Ghee", link: "/oil-ghee" },
         { label: "Dry Fruits, Nuts & Seeds", link: "/dry-fruits-nuts-seeds" },
-        { label: "Snacks & Packaged Food", link: "/snacks-packaged-food" }
+        { label: "Snacks & Packaged Food", link: "/snacks-packaged-food" },
+        { label: "Beverages", link: "/beverages" },
+        { label: "Chocolates & Sweets", link: "/chocolates-sweets" },
+        { label: "Laundry & Dishwash", link: "/laundry-dishwash" },
+        { label: "Body & Skin Care", link: "/body-skin-care" },
+        { label: "Hair Care", link: "/hair-care" },
     ];
-
+    const brands = [
+        "Hindustan Unilever",
+        "Emami",
+        "Godrej",
+        "Amul",
+        "Bajaj",
+        "Beardo",
+        "Britannia",
+        "Dabur",
+        "Denver",
+        "Beiersdorf",
+        "Belvita",
+        "Dettol"
+    ];
     const stores = ["AwadhPuri", "Minal Residency", "Jhansi", "Rohit Nagar"];
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -74,7 +91,12 @@ const AddProductForm = () => {
                 </div>
                 <div>
                     <label htmlFor="brand" className="block text-sm font-medium text-gray-700">Brand</label>
-                    <input type="text" id="brand" value={brand} onChange={(e) => setBrand(e.target.value)} className="form-input mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md" />
+                    <select id="brand" value={brand} onChange={(e) => setBrand(e.target.value)} className="form-select mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md">
+                        <option value="">Select Brand</option>
+                        {brands.map((brandName, index) => (
+                            <option key={index} value={brandName}>{brandName}</option>
+                        ))}
+                    </select>
                 </div>
                
                 <div>
