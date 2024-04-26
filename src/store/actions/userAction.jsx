@@ -172,3 +172,22 @@ export const asyncDeleteAccount = (userId) => async (dispatch, getState) => {
     }
 }
 
+export const asyncCustomerOrder=(data,userId)=>async(dispatch,getState)=>{
+try {
+    console.log(data)
+    const response=await axios.post(`/user/order/${userId}`,data.checkOutCart)
+    console.log(response)
+} catch (error) {
+    console.log(error)
+    
+}
+}
+
+export const asyncFetchCustomerOrder=(userId)=>async(dispatch,getState)=>{
+    try {
+        const resposne=await axios.get(`/user/fetchOrders/${userId}`)
+        console.log(resposne)
+    } catch (error) {
+        console.log(error)
+    }
+}

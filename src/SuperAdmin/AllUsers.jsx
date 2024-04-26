@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { asyncfetchAllusers, asyncAdminDeleteUser, asyncAdminBlockUser, asyncAdminUnblockUser } from '../store/actions/adminAction';
+import { asyncfetchAllusers, asyncSuperAdminDeleteUser, asyncSuperAdminBlockUser, asyncSuperAdminUnblockUser } from '../store/actions/superAdminAction';
 
 
 const AllUser = () => {
     const [currentPage, setCurrentPage] = useState(1);
-    const { users } = useSelector((state) => state.admin);
+    const { users } = useSelector((state) => state.superAdmin);
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -24,19 +24,19 @@ const AllUser = () => {
 
     const handleDeleteUser = (userId) => {
         if (window.confirm('Are you sure you want to delete this user?')) {
-            dispatch(asyncAdminDeleteUser(userId));
+            dispatch(asyncSuperAdminDeleteUser(userId));
         }
     };
 
     const handleBlockUser = (id) => {
         if (window.confirm('Are you sure you want to block this user?')) {
-            dispatch(asyncAdminBlockUser(id ));
+            dispatch(asyncSuperAdminBlockUser(id ));
         }
     }
 
     const handleUnblockUser =async (id) => {
         if (window.confirm('Are you sure you want to unblock this user?')) {
-            await dispatch(asyncAdminUnblockUser(id));
+            await dispatch(asyncSuperAdminUnblockUser(id));
         }
     }
 

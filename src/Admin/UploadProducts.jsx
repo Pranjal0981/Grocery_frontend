@@ -4,7 +4,9 @@ import { asyncUploadProducts } from '../store/actions/adminAction';
 
 const AddProductForm = () => {
     const dispatch=useDispatch()
-
+    const {user,isAuth}=useSelector((state)=>state.user)
+    console.log(user)
+    const [purchasePrice, setPurchasePrice] = useState('');
     const [productName, setProductName] = useState('');
     const [description, setDescription] = useState('');
     const [price, setPrice] = useState('');
@@ -14,7 +16,8 @@ const AddProductForm = () => {
     const [gst, setGst] = useState('');
     const [cgst, setCgst] = useState('');
     const [stock, setStock] = useState('');
-    const [store, setStore] = useState('');
+    const [store, setStore] = useState(user.store);
+    const [productCode,setProductCode]=useState('')
     const categories = [
         { label: "Oral Care & Wellness", link: "/oral-care-wellness" },
         { label: "Atta, Rice & Dal", link: "/atta-rice-dal" },
@@ -44,10 +47,10 @@ const AddProductForm = () => {
         "Belvita",
         "Dettol"
     ];
-    const stores = ["AwadhPuri", "Minal Residency", "Jhansi", "Rohit Nagar"];
     const handleSubmit = (e) => {
         e.preventDefault();
         const formData = new FormData();
+        formData.append('purchasePrice',purchasePrice)
         formData.append('productName', productName);
         formData.append('description', description);
         formData.append('price', price);
@@ -58,6 +61,8 @@ const AddProductForm = () => {
         formData.append('cgst', cgst);
         formData.append('stock', stock);
         formData.append('store', store);
+        formData.append('productCode', productCode);
+
         dispatch(asyncUploadProducts(formData));
         
     };
@@ -79,6 +84,11 @@ const AddProductForm = () => {
                 <div>
                     <label htmlFor="price" className="block text-sm font-medium text-gray-700">Price</label>
                     <input type="number" id="price" value={price} onChange={(e) => setPrice(e.target.value)} className="form-input mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md" />
+                </div>
+
+                <div>
+                    <label htmlFor="purchasePrice" className="block text-sm font-medium text-gray-700">Purchase Price</label>
+                    <input type="number" id="purchasePrice" value={purchasePrice} onChange={(e) => setPurchasePrice(e.target.value)} className="form-input mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md" />
                 </div>
                 <div>
                     <label htmlFor="category" className="block text-sm font-medium text-gray-700">Category</label>
@@ -112,16 +122,18 @@ const AddProductForm = () => {
                     <input type="number" id="cgst" value={cgst} onChange={(e) => setCgst(e.target.value)} className="form-input mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md" />
                 </div>
                 <div>
+                    <label htmlFor="productCode" className="block text-sm font-medium text-gray-700">Stock</label>
+                    <input type="text" id="productCode" value={productCode} onChange={(e) => setProductCode(e.target.value)} className="form-input mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md" />
+                </div>
+               <div>
                     <label htmlFor="stock" className="block text-sm font-medium text-gray-700">Stock</label>
                     <input type="number" id="stock" value={stock} onChange={(e) => setStock(e.target.value)} className="form-input mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md" />
                 </div>
                 <div>
                     <label htmlFor="store" className="block text-sm font-medium text-gray-700">Store</label>
                     <select id="store" value={store} onChange={(e) => setStore(e.target.value)} className="form-select mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md">
-                        <option value="">Select Store</option>
-                        {stores.map((storeName, index) => (
-                            <option key={index} value={storeName}>{storeName}</option>
-                        ))}
+                        <option value={user.store}>{user.store}</option>
+                       
                     </select>
                 </div>
                 <button type="submit" className="btn bg-blue-500 text-white py-2 px-4 rounded-lg mt-4 hover:bg-blue-600 transition-colors duration-300">Submit</button>

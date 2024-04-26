@@ -8,98 +8,99 @@ import QRCode from 'qrcode';
 import Swal from 'sweetalert2';
 import { asyncFetchCartProduct, asyncDeleteCheckoutCart } from "../store/actions/userAction";
 import rgsLogo from '/rgslogo.jpeg';
-const generatePDF = async (checkOutCart, user) => {
-    try {
-        const doc = new jsPDF();
+import { asyncCustomerOrder } from '../store/actions/userAction'
+// const generatePDF = async (checkOutCart, user) => {
+//     try {
+//         const doc = new jsPDF();
 
-        // Set font styles
-        doc.setFont('helvetica');
-        doc.setFontSize(12);
+//         // Set font styles
+//         doc.setFont('helvetica');
+//         doc.setFontSize(12);
 
-        // Add company logo
-        const logoWidth = 50;
-        const logoHeight = 20;
-        doc.addImage(rgsLogo, 'JPEG', 10, 10, logoWidth, logoHeight);
+//         // Add company logo
+//         const logoWidth = 50;
+//         const logoHeight = 20;
+//         doc.addImage(rgsLogo, 'JPEG', 10, 10, logoWidth, logoHeight);
 
-        // Add company name and address
-        const companyName = 'RGS Bindas';
-        const companyAddress = 'IT Park, Gandhinagar, Bhopal';
-        doc.setFontSize(16);
-        doc.setTextColor(0, 0, 255); // Blue color
-        doc.text(companyName, 70, 20);
-        doc.setTextColor(0, 0, 0); // Reset text color
-        doc.setFontSize(12);
-        doc.text(companyAddress, 70, 30);
+//         // Add company name and address
+//         const companyName = 'RGS Bindas';
+//         const companyAddress = 'IT Park, Gandhinagar, Bhopal';
+//         doc.setFontSize(16);
+//         doc.setTextColor(0, 0, 255); // Blue color
+//         doc.text(companyName, 70, 20);
+//         doc.setTextColor(0, 0, 0); // Reset text color
+//         doc.setFontSize(12);
+//         doc.text(companyAddress, 70, 30);
 
-        // Add customer details
-        const userDetails = [
-            `Customer: ${user?.name || ''}`,
-            `Email: ${user?.email || ''}`,
-            `Phone: ${user?.phoneNumber || ''}`,
-            `Phone: ${user?.address || ''}`,
-        ];
-        userDetails.forEach((detail, index) => {
-            doc.text(detail, 10, 50 + (index * 10));
-        });
+//         // Add customer details
+//         const userDetails = [
+//             `Customer: ${user?.name || ''}`,
+//             `Email: ${user?.email || ''}`,
+//             `Phone: ${user?.phoneNumber || ''}`,
+//             `Phone: ${user?.address || ''}`,
+//         ];
+//         userDetails.forEach((detail, index) => {
+//             doc.text(detail, 10, 50 + (index * 10));
+//         });
 
-        // Define and populate tableBody with data from checkOutCart
-        const tableBody = [];
-        for (const category in checkOutCart) {
-            if (checkOutCart.hasOwnProperty(category) && Array.isArray(checkOutCart[category])) {
-                for (const item of checkOutCart[category]) {
-                    tableBody.push([
-                        item.product.brand || '',
-                        item.quantity || '',
-                        item.product.category || '',
-                        item.product.subcategory || '',
-                        `Rs ${item.product.GST}`, // Format price
-                        item.size || '',
-                        `Rs ${item.totalPrice}` // Format total price
-                    ]);
-                }
-            }
-        }
+//         // Define and populate tableBody with data from checkOutCart
+//         const tableBody = [];
+//         for (const category in checkOutCart) {
+//             if (checkOutCart.hasOwnProperty(category) && Array.isArray(checkOutCart[category])) {
+//                 for (const item of checkOutCart[category]) {
+//                     tableBody.push([
+//                         item.product.brand || '',
+//                         item.quantity || '',
+//                         item.product.category || '',
+//                         item.product.subcategory || '',
+//                         `Rs ${item.product.GST}`, // Format price
+//                         item.size || '',
+//                         `Rs ${item.totalPrice}` // Format total price
+//                     ]);
+//                 }
+//             }
+//         }
 
-        // Add table header
-        const header = [['Brand Name', 'Color', 'Quantity', 'Category', 'Subcategory', 'Discounted Price', 'GST', 'Size', 'Total Price']];
+//         // Add table header
+//         const header = [['Brand Name', 'Color', 'Quantity', 'Category', 'Subcategory', 'Discounted Price', 'GST', 'Size', 'Total Price']];
 
-        // Add table
-        doc.autoTable({
-            startY: 100,
-            head: header,
-            body: tableBody,
-            theme: 'grid', // Apply grid theme to the table
-            styles: {
-                font: 'helvetica',
-                fontSize: 10,
-                cellPadding: 3,
-            },
-        });
+//         // Add table
+//         doc.autoTable({
+//             startY: 100,
+//             head: header,
+//             body: tableBody,
+//             theme: 'grid', // Apply grid theme to the table
+//             styles: {
+//                 font: 'helvetica',
+//                 fontSize: 10,
+//                 cellPadding: 3,
+//             },
+//         });
 
-        // Add QR code
-        const qrDataUrl = await QRCode.toDataURL(JSON.stringify(checkOutCart));
-        const qrImageHeight = 40;
-        const qrImageWidth = 40;
-        const qrX = doc.internal.pageSize.getWidth() - qrImageWidth - 10; // Right side padding
-        const qrY = 10; // Top side padding
-        doc.addImage(qrDataUrl, 'PNG', qrX, qrY, qrImageWidth, qrImageHeight);
+//         // Add QR code
+//         const qrDataUrl = await QRCode.toDataURL(JSON.stringify(checkOutCart));
+//         const qrImageHeight = 40;
+//         const qrImageWidth = 40;
+//         const qrX = doc.internal.pageSize.getWidth() - qrImageWidth - 10; // Right side padding
+//         const qrY = 10; // Top side padding
+//         doc.addImage(qrDataUrl, 'PNG', qrX, qrY, qrImageWidth, qrImageHeight);
 
-        // Add footer
-        const footerText = 'Thank you for shopping with us!';
-        doc.setTextColor(0, 0, 255); // Blue color
-        doc.text(footerText, 10, doc.internal.pageSize.getHeight() - 10);
-        doc.setTextColor(0, 0, 0); // Reset text color
+//         // Add footer
+//         const footerText = 'Thank you for shopping with us!';
+//         doc.setTextColor(0, 0, 255); // Blue color
+//         doc.text(footerText, 10, doc.internal.pageSize.getHeight() - 10);
+//         doc.setTextColor(0, 0, 0); // Reset text color
 
-        // Convert the PDF content to a Blob
-        const pdfBlob = doc.output('blob');
-        console.log(pdfBlob)
-        // Return the Blob representing the PDF content
-        return pdfBlob;
-    } catch (error) {
-        console.error("Error generating PDF:", error);
-        throw error; // Rethrow the error for handling elsewhere
-    }
-};
+//         // Convert the PDF content to a Blob
+//         const pdfBlob = doc.output('blob');
+//         console.log(pdfBlob)
+//         // Return the Blob representing the PDF content
+//         return pdfBlob;
+//     } catch (error) {
+//         console.error("Error generating PDF:", error);
+//         throw error; // Rethrow the error for handling elsewhere
+//     }
+// };
 
 
 
@@ -121,8 +122,9 @@ const Cart = () => {
     const handleCashOnDelivery = async () => {
         try {
             console.log('clicked');
-            const pdfBlob = await generatePDF(checkOutCart, user);
-            dispatch(asyncCustomerOrder({ checkOutCart, PaymentType: "Cash on delivery" }, pdfBlob));
+            // const pdfBlob = await generatePDF(checkOutCart, user)
+            console.log(checkOutCart);
+            dispatch(asyncCustomerOrder({ checkOutCart, PaymentType: "Cash on delivery" },user._id));
             setShowModal(false);
             // Show success message using SweetAlert2
             Swal.fire({
@@ -132,7 +134,6 @@ const Cart = () => {
             });
         } catch (error) {
             console.error('Error placing order:', error);
-            // Show error message using SweetAlert2
             Swal.fire({
                 icon: 'error',
                 title: 'Error',
@@ -152,90 +153,7 @@ const Cart = () => {
         dispatch(asyncDeleteCheckoutCart(user?._id, itemId));
     };
 
-    const checkoutHandler = async (amount) => {
-        // Fetch bag if not already fetched
-        if (!checkOutCart) {
-            dispatch(asyncFetchBag(user?._id));
-            return; // Wait for bag to be fetched before proceeding
-        }
-        if (user?.address && user?.name && user?.phone) {
-            try {
-                const { data: { key } } = await axios.get("/api/getkey");
 
-                // Create order on backend
-                const { data: { order } } = await axios.post("/api/checkout", {
-                    amount
-                });
-
-                // Prepare options for Razorpay payment
-                const options = {
-                    key,
-                    amount: order.amount,
-                    currency: "INR",
-                    name: "Ecommerce",
-                    description: "razorpay",
-                    image: "https://avatars.githubusercontent.com/u/25058652?v=4",
-                    order_id: order.id,
-                    prefill: {
-                        name: "Pranjal Shukla",
-                        email: "pranjalshukla245@gmail.com",
-                        contact: "9302931857"
-                    },
-                    notes: {
-                        "address": "Razorpay Corporate Office"
-                    },
-                    theme: {
-                        "color": "#121212"
-                    },
-                    handler: async function (response) {
-                        try {
-                            console.log("Payment successful:", response);
-                            const paymentVerificationData = {
-                                razorpay_order_id: response.razorpay_order_id,
-                                razorpay_payment_id: response.razorpay_payment_id,
-                                razorpay_signature: response.razorpay_signature,
-                                checkoutCart: checkOutCart
-                            };
-
-                            const verificationResponse = await axios.post("/api/paymentverification", paymentVerificationData);
-                            console.log("Payment verification response:", verificationResponse.data.reference_id);
-                            for (const category in checkOutCart) {
-                                if (checkOutCart.hasOwnProperty(category) && Array.isArray(checkOutCart[category])) {
-                                    checkOutCart[category].forEach(async (item) => {
-                                        const updatedStock = item.product.stock - item.quantity;
-                                        dispatch(asyncUpdateProductStock({
-                                            ProductModel: item?.product?.ProductModel,
-                                            productId: item.product._id,
-                                            stock: updatedStock
-                                        }));
-                                    });
-                                }
-                            }
-                            const pdfBlob = await generatePDF(checkOutCart, user);
-
-                            alert("Payment successful! Your order ID is: " + verificationResponse.data.reference_id);
-                            dispatch(asyncCustomerOrder({ checkOutCart, PaymentType: "Online" }, pdfBlob));
-
-                            // Redirect to callback URL after all operation
-                        } catch (error) {
-                            console.error("Error processing payment:", error);
-                        }
-                    }
-                };
-
-                // Initialize Razorpay payment
-                const razor = new window.Razorpay(options);
-                razor.open();
-            } catch (error) {
-                console.error("Error in checkout:", error);
-                // Handle error if any
-            }
-        }
-        else {
-            alert("Please Complete your profile first")
-        }
-
-    };
 
     return (
         <div className="container mx-auto px-4 py-8">
@@ -246,21 +164,21 @@ const Cart = () => {
                         {/* Combined Items */}
                         <div>
                             <h3 className="text-xl font-bold mb-4 text-blue-800">Items:</h3>
-                            {checkOutCart.data && checkOutCart.data.length > 0 ? (
+                            {checkOutCart?.data && checkOutCart?.data?.length > 0 ? (
                                 <ul>
-                                    {checkOutCart.data.map((item, index) => (
+                                    {checkOutCart?.data?.map((item, index) => (
                                         <li key={index} className="bg-white shadow-md rounded-lg overflow-hidden mb-4">
-                                            <img src={item.productId.image?.url} alt={item.productId.ProductName} className="h-48 w-full object-cover" />
+                                            <img src={item?.productId?.image?.url} alt={item?.productId?.ProductName} className="h-48 w-full object-cover" />
                                             <div className="p-4">
-                                                <h2 className="text-xl font-bold mb-2">{item.productId.ProductName}</h2>
-                                                <p className="text-gray-700 mb-2">{item.productId.description}</p>
+                                                <h2 className="text-xl font-bold mb-2">{item?.productId?.ProductName}</h2>
+                                                <p className="text-gray-700 mb-2">{item?.productId?.description}</p>
                                                 <div className="flex justify-between items-center">
-                                                    <p className="text-gray-800 font-bold">RS {item.productId.price}</p>
-                                                    <p className="text-gray-800 font-bold"> {item.productId.stock}</p>
+                                                    <p className="text-gray-800 font-bold">RS {item?.productId?.price}</p>
+                                                    <p className="text-gray-800 font-bold"> {item?.productId?.stock}</p>
 
-                                                    <p className="text-gray-500">{item.productId.category}</p>
+                                                    <p className="text-gray-500">{item?.productId?.category}</p>
                                                 </div>
-                                                <button onClick={() => handleDeleteItem(item._id)} className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mt-2">
+                                                <button onClick={() => handleDeleteItem(item?._id)} className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mt-2">
                                                     Delete
                                                 </button>
                                             </div>

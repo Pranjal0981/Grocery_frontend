@@ -29,6 +29,7 @@ const Routing = () => {
     const { user, isAuth } = useSelector((state) => state.user)
     const isAdmin = isAuth && user.userType === 'Admin';
     const isUser = isAuth && user.userType === 'customer';
+    const isSuperAdmin=isAuth && user.userType==='SuperAdmin'
     const { id } = useParams();
     const categories = [
         { label: "Oral Care & Wellness", link: "/oral-care-wellness" },
@@ -53,8 +54,7 @@ const Routing = () => {
             <Route path='/dashboard' element={<Dashboard />} />
             <Route path='/forget-password' element={<ForgetPassword />} />
             <Route path="/forget-link/:id" element={<ResetPassword userType="user" />} />
-            <Route path={`/admin/stores/:store`} element={<ProductStore />} />
-            <Route path='/admin/allproducts' element={isAdmin ? <AllProducts /> : <Unauthorized />} />
+            <Route path='/superadmin/allproducts' element={isSuperAdmin ? <AllProducts /> : <Unauthorized />} />
             <Route path='/admin/upload-products' element={isAdmin ? <AddProductForm /> : <Unauthorized />} />
             <Route path='/wishlist' element={isUser ? <Wishlist /> : <Unauthorized />} />
             <Route path='/products/:id' element={<ExploreProductById />} />
@@ -69,12 +69,12 @@ const Routing = () => {
             <Route path='/admin/store/:store' element={<ProductStore />} />
             <Route path='/shop' element={<Product />} />
             <Route path='/account-details' element={<AccountDetails />} />
-            <Route path='/admin/fetchallusers' element={isAdmin ? <AllUser /> : <Unauthorized />} />
+            <Route path='/super/fetchallusers' element={isSuperAdmin ? <AllUser /> : <Unauthorized />} />
             <Route path='/admin/fetchOutOfStockProducts' element={isAdmin ? <OutOfStock /> : <Unauthorized />} />
-            <Route path='/admin/activeMembers' element={isAdmin ? <ActiveUser /> : <Unauthorized />} />
-            <Route path='/admin/inactiveMembers' element={isAdmin ? <InactiveUser /> : <Unauthorized />} />
+            <Route path='/superadmin/activeMembers' element={isSuperAdmin ? <ActiveUser /> : <Unauthorized />} />
+            <Route path='/superadmin/inactiveMembers' element={isSuperAdmin ? <InactiveUser /> : <Unauthorized />} />
             <Route path='/admin/updateproduct/:id' element={isAdmin ? <UpdateProduct /> : <Unauthorized />} />
-            <Route path='/admin/dashboard' element={isAdmin ? <AdminDashboard /> : <Unauthorized />} />
+            <Route path='/superadmin/dashboard' element={isSuperAdmin ? <AdminDashboard /> : <Unauthorized />} />
             <Route path='/admin/allOrders' element={isAdmin ?<ManageOrder/>:<Unauthorized/>}/>
         </Routes>
 

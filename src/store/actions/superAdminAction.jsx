@@ -1,5 +1,5 @@
 import axios from '../../config/axios'
-import { saveStoreProducts, saveAllUsers, saveOrders, setLoading } from '../reducers/adminSlice';
+import { saveStoreProducts, saveAllUsers, saveOrders, setLoading } from '../reducers/superAdminSlice';
 import { saveProduct } from '../reducers/productSlice';
 import { saveUser, removeUser } from '../reducers/userSlice'
 export const asyncCurrentSuperAdmin = (token) => async (dispatch, getState) => {
@@ -58,20 +58,11 @@ export const asyncSignOutSuperAdmin = (navigate) => async (dispatch, getState) =
     }
 }
 
-export const asyncFetchOrders = (page = 1) => async (dispatch, getState) => {
-    try {
-        const response = await axios.get(`/admin/fetchorders?page=${page}`);
-        console.log(response);
-        dispatch(saveOrders(response.data.data));
-    } catch (error) {
-        console.log(error);
-    }
-}
 
 export const fetchProductsByStore = (store) => async (dispatch, getState) => {
     try {
         dispatch(setLoading(true));
-        const response = await axios.get(`/admin/fetchProductStore/${store}`)
+        const response = await axios.get(`/superadmin/fetchProductStore/${store}`)
         console.log(response)
         dispatch(saveStoreProducts(response.data.products))
     } catch (error) {
@@ -85,7 +76,7 @@ export const fetchProductsByStore = (store) => async (dispatch, getState) => {
 
 export const asyncfetchAllusers = (currentPage) => async (dispatch, getState) => {
     try {
-        const response = await axios.get(`/admin/fetchAllUsers?page=${currentPage}`);
+        const response = await axios.get(`/superadmin/fetchAllUsers?page=${currentPage}`);
         dispatch(saveAllUsers(response.data.users));
     } catch (error) {
         console.log(error);
@@ -93,9 +84,9 @@ export const asyncfetchAllusers = (currentPage) => async (dispatch, getState) =>
 };
 
 
-export const asyncAdminDeleteUser = (userId) => async (dispatch, getState) => {
+export const asyncSuperAdminDeleteUser = (userId) => async (dispatch, getState) => {
     try {
-        const response = await axios.delete(`/admin/deleteUser/${userId}`)
+        const response = await axios.delete(`/superadmin/deleteUser/${userId}`)
         dispatch(asyncfetchAllusers())
     } catch (error) {
         console.log(error)
@@ -104,7 +95,7 @@ export const asyncAdminDeleteUser = (userId) => async (dispatch, getState) => {
 
 export const asyncFetchActiveUser = (page = 1) => async (dispatch, getState) => {
     try {
-        const response = await axios.get(`/admin/fetchLastHourActiveUsers?page=${page}`);
+        const response = await axios.get(`/superadmin/fetchLastHourActiveUsers?page=${page}`);
         console.log(response)
         dispatch(saveAllUsers(response.data.activeUsers));
     } catch (error) {
@@ -115,7 +106,7 @@ export const asyncFetchActiveUser = (page = 1) => async (dispatch, getState) => 
 
 export const asyncFetchInactiveUsers = (page = 1) => async (dispatch, getState) => {
     try {
-        const response = await axios.get(`/admin/fetchInactiveUsers?page=${page}`);
+        const response = await axios.get(`/superadmin/fetchInactiveUsers?page=${page}`);
         console.log(response)
         dispatch(saveAllUsers(response.data.inactiveUsers));
     } catch (error) {
@@ -125,7 +116,7 @@ export const asyncFetchInactiveUsers = (page = 1) => async (dispatch, getState) 
 
 export const asyncFetchOutOfStock = (page = 1) => async (dispatch, getState) => {
     try {
-        const response = await axios.get(`/admin/fetchOutOfStock?page=${page}`)
+        const response = await axios.get(`/superadmin/fetchOutOfStock?page=${page}`)
         console.log(response)
         dispatch(saveStoreProducts(response.data.outOfStockProducts))
     } catch (error) {
@@ -133,17 +124,6 @@ export const asyncFetchOutOfStock = (page = 1) => async (dispatch, getState) => 
         console.log(error)
     }
 }
-
-export const asyncDeleteProducts = (productId, productType) => async (dispatch, getState) => {
-    try {
-        const response = await axios.delete(`/admin/deleteProducts/${productType}/${productId}`);
-        console.log(response)
-        dispatch(asyncFetchOutOfStock())
-    } catch (error) {
-        toast.error(error)
-    }
-}
-
 
 export const asyncDelProduct = (productId) => async (dispatch, getState) => {
     try {
@@ -155,36 +135,11 @@ export const asyncDelProduct = (productId) => async (dispatch, getState) => {
     }
 }
 
-export const asyncUpdateProduct = (id, updatedProduct) => async (dispatch, getState) => {
-    try {
-        const response = await axios.put(`/admin/updateProduct/${id}`, { updatedProduct });
-        console.log(response.data);
-        toast.success('Product updated successfully', {
-            position: "top-right"
-        });
-    } catch (error) {
-        console.error('Error updating product:', error);
-        toast.error('Error updating product. Please try again.', {
-            position: "top-right"
-        });
 
-        // Handle error if needed
-    }
-};
-
-export const updateOrderStatus = (orderId, newStatus) => async (dispatch, getState) => {
-    try {
-        const response = await axios.post('/admin/order/updateStatus', { orderId, newStatus });
-        dispatch(asyncFetchOrders())
-    } catch (error) {
-        console.log(error);
-
-    }
-};
 
 export const fetchDashBoardInfo = () => async (dispatch, getState) => {
     try {
-        const response = await axios.get('/admin/dashboard/fetchAllInfo')
+        const response = await axios.get('/superadmin/dashboard/fetchAllInfo')
         console.log(response.data.data)
         dispatch(saveDashBoardInfo(response.data.data))
 
@@ -193,9 +148,9 @@ export const fetchDashBoardInfo = () => async (dispatch, getState) => {
     }
 }
 
-export const asyncAdminBlockUser = (userId) => async (dispatch, getState) => {
+export const asyncSuperAdminBlockUser = (userId) => async (dispatch, getState) => {
     try {
-        const response = await axios.post(`/admin/blockUser/${userId}`)
+        const response = await axios.post(`/superadmin/blockUser/${userId}`)
         console.log(response)
         dispatch(asyncfetchAllusers())
     } catch (error) {
@@ -205,9 +160,9 @@ export const asyncAdminBlockUser = (userId) => async (dispatch, getState) => {
 
 
 
-export const asyncAdminUnblockUser = (userID) => async (dispatch, getState) => {
+export const asyncSuperAdminUnblockUser = (userID) => async (dispatch, getState) => {
     try {
-        const response = await axios.post(`/admin/unblockUser/${userID}`)
+        const response = await axios.post(`/superadmin/unblockUser/${userID}`)
         console.log(response)
         dispatch(asyncfetchAllusers())
     } catch (error) {
@@ -220,7 +175,7 @@ export const asyncFetchAllProducts = (page, searchTerm = '', searchType = '') =>
     try {
         dispatch(setLoading(true)); // Set loading state to true before fetching data
 
-        const response = await axios.get(`/admin/getallproduct?page=${page}&q=${searchTerm}&type=${searchType}`);
+        const response = await axios.get(`/superadmin/getallproduct?page=${page}&q=${searchTerm}&type=${searchType}`);
         console.log(response);
         dispatch(saveProduct(response.data.data));
         dispatch(setLoading(false)); // Set loading state to false after successfully fetching data
@@ -230,16 +185,3 @@ export const asyncFetchAllProducts = (page, searchTerm = '', searchType = '') =>
     }
 };
 
-export const asyncUploadProducts = (formData) => async (dispatch, getState) => {
-    try {
-        const response = await axios.post('/admin/upload-products', formData, {
-            headers: {
-                'Content-Type': 'multipart/form-data' // Set content type to multipart/form-data
-            }
-        });
-        console.log(response)
-    } catch (error) {
-        // Handle error
-        console.error('Error uploading products:', error);
-    }
-};

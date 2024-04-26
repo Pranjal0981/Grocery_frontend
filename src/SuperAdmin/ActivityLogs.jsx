@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { asyncFetchActiveUser, asyncFetchInactiveUsers } from '../store/actions/adminAction';
+import { asyncFetchActiveUser, asyncFetchInactiveUsers } from '../store/actions/superAdminAction';
 
 export const ActiveUser = () => {
     const [currentPage, setCurrentPage] = useState(1);
-    const { users } = useSelector((state) => state.admin); // Assuming activeUsers is stored in state.admin
+    const { users } = useSelector((state) => state.superAdmin); // Assuming activeUsers is stored in state.admin
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -82,7 +82,7 @@ export const ActiveUser = () => {
 
 export const InactiveUser = () => {
     const [currentPage, setCurrentPage] = useState(1);
-    const { users } = useSelector((state) => state.admin); // Assuming activeUsers is stored in state.admin
+    const { users } = useSelector((state) => state.superAdmin); // Assuming activeUsers is stored in state.admin
     const dispatch = useDispatch();
     console.log(users)
     useEffect(() => {
