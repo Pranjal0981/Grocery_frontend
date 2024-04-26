@@ -19,10 +19,10 @@ import Storeproduct from '../components/FetchByStore'
 import Product from '../components/Product'
 import { Address, AddressForm } from '../Profile/Address'
 import AccountDetails from '../Profile/AccountDetails'
-import AllUser from '../Admin/AllUsers'
+import AllUser from '../SuperAdmin/AllUsers'
 import OutOfStock from '../Admin/OutOfStock'
-import { ActiveUser, InactiveUser } from '../Admin/ActivityLogs'
-import AdminDashboard from '../Admin/Dashboard'
+import { ActiveUser, InactiveUser } from '../SuperAdmin/ActivityLogs'
+import AdminDashboard from '../SuperAdmin/Dashboard'
 import BrandProducts from '../components/BrandProduct'
 import ManageOrder from '../Admin/AllOrders'
 const Routing = () => {
@@ -66,7 +66,7 @@ const Routing = () => {
             <Route path='/cart' element={isUser ? <Cart /> : <Unauthorized />} />
             <Route path='/edit-address' element={<AddressForm />} />
             <Route path='/address' element={<Address />} />
-            <Route path='/store/:store' element={<Storeproduct />} />
+            <Route path='/admin/store/:store' element={<ProductStore />} />
             <Route path='/shop' element={<Product />} />
             <Route path='/account-details' element={<AccountDetails />} />
             <Route path='/admin/fetchallusers' element={isAdmin ? <AllUser /> : <Unauthorized />} />

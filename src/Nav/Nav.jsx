@@ -17,7 +17,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { asyncAdminLogin, asyncAdminRegister, asyncLogoutAdmin } from '../store/actions/adminAction';
 import { asyncSignIn, asyncSignOut, asyncSignupUser } from '../store/actions/userAction';
 import { asyncSearch } from '../store/actions/productAction';
-
+import { asyncSuperAdminSignIn, asyncSuperAdminSignUp, asyncSignOutSuperAdmin } from '../store/actions/superAdminAction';
 
 const Nav = () => {
     const navigate=useNavigate()
@@ -50,10 +50,10 @@ const Nav = () => {
         name: '',
         email: '',
         password: '',
-        userType: ''
+        userType: '',
+        store:''
     });
     const { user, isAuth } = useSelector((state) => state.user)
-    console.log(user)
     console.log(user)
 
     const toggleDrawer = (open) => (event) => {
@@ -107,35 +107,45 @@ const Nav = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault()
-        if (formData.userType === 'vendor') {
+        if (formData.userType === 'Admin') {
             dispatch(asyncAdminRegister({ formData }))
         }
-        else {
-            dispatch(asyncSignupUser({ formData }))
+        else if(formData.userType==='SuperAdmin') {
+            dispatch(asyncSuperAdminSignUp({ formData }))
+        }
+        else{
+            dispatch(asyncSignupUser({formData}))
         }
     }
     const handleLogin = (e) => {
         console.log(formData.userType)
         e.preventDefault()
-        if (formData.userType === 'vendor') {
+        if (formData.userType === 'Admin') {
             dispatch(asyncAdminLogin({ formData }))
         }
         if(formData.userType==='customer') {
             dispatch(asyncSignIn({ formData }))
+        }
+        if(formData.userType==='SuperAdmin'){
+            dispatch(asyncSuperAdminSignIn({formData}))
         }
     }
 
     const handleLogout = async (e) => {
         e.preventDefault()
         if (user?.userType === 'Admin') {
-            dispatch(asyncLogoutAdmin({ formData }))
+            await dispatch(asyncLogoutAdmin({ formData }))
         }
         if (user?.userType === 'customer') {
-            dispatch(asyncSignOut({ formData }))
+          await  dispatch(asyncSignOut({ formData }))
+        }
+        if(user?.userType=='SuperAdmin'){
+            await dispatch(asyncSignOutSuperAdmin({formData}))
         }
     }
     const isAdmin = isAuth && user.userType === 'Admin';
     const isUser = isAuth && user.userType === 'customer';
+    const isSuperAdmin=isAuth && user.userType==='SuperAdmin'
 
     const categories = [
         { label: "Oral Care & Wellness", link: "/oral-care-wellness" },
@@ -394,17 +404,7 @@ const Nav = () => {
                                         <ListItemText primary="Upload Products" />
                                     </ListItem>
                                 </Link>
-                                <Link to="/admin/dashboard" className="" style={{ textDecoration: 'none' }}>
-                                    <ListItem button>
-                                        <ListItemText primary="Admin Dashboard" />
-                                    </ListItem>
-                                </Link>
-                                <Link to="/admin/fetchAllUsers" className="" style={{ textDecoration: 'none' }}>
-                                    <ListItem button>
-                                        <ListItemText primary="All Users" />
-                                    </ListItem>
-                                </Link>
-                                
+    
                                 <Link to="/admin/allOrders" className="" style={{ textDecoration: 'none' }}>
                                     <ListItem button>
                                         <ListItemText primary="All Orders" />
@@ -416,36 +416,19 @@ const Nav = () => {
                                         <ListItemText primary="All Products" />
                                     </ListItem>
                                 </Link>
-                                <Link to="/admin/activeMembers" className="" style={{ textDecoration: 'none' }}>
-                                    <ListItem button>
-                                        <ListItemText primary="Active Users" />
-                                    </ListItem>
-                                </Link>
-                                <Link to="/admin/inactiveMembers" className="" style={{ textDecoration: 'none' }}>
-                                    <ListItem button>
-                                        <ListItemText primary="InActive Users" />
-                                    </ListItem>
-                                </Link>
 
                                 <Link to="/admin/fetchOutOfStockProducts" className="" style={{ textDecoration: 'none' }}>
                                     <ListItem button>
                                         <ListItemText primary="Out Of Stock" />
                                     </ListItem>
                                 </Link>
-                                {/* Store Section */}
-                                <ListItem button onClick={() => handleStoreClick()}>
-                                    <ListItemText primary="Stores" />
-                                    {openStore ? <ExpandLess /> : <ExpandMore />}
-                                </ListItem>
-                                <Collapse in={openStore} timeout="auto" unmountOnExit>
-                                    {stores.map((store, index) => (
-                                        <ListItemButton key={index} component={Link} to={`/admin/stores/${store}`}>
-                                            <ListItemText primary={store} />
-                                        </ListItemButton>
-                                    ))}
-                                </Collapse>
 
-                                {/* End of Store Section */}
+                                <Link to={`/admin/store/${user.store}`} className="" style={{ textDecoration: 'none' }}>
+                                    <ListItem button>
+                                        <ListItemText primary='Your Store' />
+                                    </ListItem>
+                                </Link>
+
                                 <Link to="/admin/logout" className="" style={{ textDecoration: 'none' }} onClick={handleLogout}>
                                     <ListItem button>
                                         <ListItemText primary="Logout" />
@@ -454,7 +437,71 @@ const Nav = () => {
                             </List>
                         </div>
 
-                ) : (
+                ) : user?.userType==="SuperAdmin" ?(
+                            <div className="admin-dashboard h-full w-[300px] p-[40px]">
+                                <List className='flex flex-col w-full gap-[20px]'>
+                                    <h1 className='text-center'>SUPER ADMIN ACCOUNT</h1>
+                        
+                                    <Link to="/superadmin/dashboard" className="" style={{ textDecoration: 'none' }}>
+                                        <ListItem button>
+                                            <ListItemText primary="Super Admin Dashboard" />
+                                        </ListItem>
+                                    </Link>
+                                    <Link to="/superadmin/fetchAllUsers" className="" style={{ textDecoration: 'none' }}>
+                                        <ListItem button>
+                                            <ListItemText primary="All Users" />
+                                        </ListItem>
+                                    </Link>
+
+                                    <Link to="/superadmin/allOrders" className="" style={{ textDecoration: 'none' }}>
+                                        <ListItem button>
+                                            <ListItemText primary="All Orders" />
+                                        </ListItem>
+                                    </Link>
+
+                                    <Link to="/superadmin/allproducts" className="" style={{ textDecoration: 'none' }}>
+                                        <ListItem button>
+                                            <ListItemText primary="All Products" />
+                                        </ListItem>
+                                    </Link>
+                                    <Link to="/superadmin/activeMembers" className="" style={{ textDecoration: 'none' }}>
+                                        <ListItem button>
+                                            <ListItemText primary="Active Users" />
+                                        </ListItem>
+                                    </Link>
+                                    <Link to="/superadmin/inactiveMembers" className="" style={{ textDecoration: 'none' }}>
+                                        <ListItem button>
+                                            <ListItemText primary="InActive Users" />
+                                        </ListItem>
+                                    </Link>
+
+                                    <Link to="/superadmin/fetchOutOfStockProducts" className="" style={{ textDecoration: 'none' }}>
+                                        <ListItem button>
+                                            <ListItemText primary="Out Of Stock" />
+                                        </ListItem>
+                                    </Link>
+                                    {/* Store Section */}
+                                    <ListItem button onClick={() => handleStoreClick()}>
+                                        <ListItemText primary="Stores" />
+                                        {openStore ? <ExpandLess /> : <ExpandMore />}
+                                    </ListItem>
+                                    <Collapse in={openStore} timeout="auto" unmountOnExit>
+                                        {stores.map((store, index) => (
+                                            <ListItemButton key={index} component={Link} to={`/superadmin/stores/${store}`}>
+                                                <ListItemText primary={store} />
+                                            </ListItemButton>
+                                        ))}
+                                    </Collapse>
+
+                                    {/* End of Store Section */}
+                                    <Link to="/superadmin/logout" className="" style={{ textDecoration: 'none' }} onClick={handleLogout}>
+                                        <ListItem button>
+                                            <ListItemText primary="Logout" />
+                                        </ListItem>
+                                    </Link>
+                                </List>
+                            </div>
+                ):(
                     <div className="flex justify-center items-center h-screen">
                         <div className="bg-gray-200 p-8 rounded-lg shadow-md">
                             <Tabs
@@ -468,98 +515,158 @@ const Nav = () => {
                             {selectedTab === 0 && (
                                 <div className='p-8'>
                                     {/* Sign In Form */}
-                                    <form className="flex flex-col space-y-4" onSubmit={handleLogin}>
-                                        <input
-                                            type="email"
-                                            name="email"
-                                            value={formData.email}
-                                            placeholder="Email"
-                                            className="border border-gray-300 px-4 py-2 rounded focus:outline-none"
-                                            onChange={handleInputChange}
-                                        />
-                                        <input
-                                            type="password"
-                                            name="password"
-                                            value={formData.password}
-                                            placeholder="Password"
-                                            className="border border-gray-300 px-4 py-2 rounded focus:outline-none"
-                                            onChange={handleInputChange}
-                                        />
-                                        <div className="flex items-center space-x-4">
-                                            <label>
+                                            <form className="flex flex-col space-y-4" onSubmit={handleLogin}>
                                                 <input
-                                                    type="radio"
-                                                    name="userType"
-                                                    value="customer"
-                                                    className="mr-2"
+                                                    type="email"
+                                                    name="email"
+                                                    value={formData.email}
+                                                    placeholder="Email"
+                                                    className="border border-gray-300 px-4 py-2 rounded focus:outline-none"
                                                     onChange={handleInputChange}
                                                 />
-                                                Customer
-                                            </label>
-                                            <label>
                                                 <input
-                                                    type="radio"
-                                                    name="userType"
-                                                    value="vendor"
-                                                    className="mr-2"
+                                                    type="password"
+                                                    name="password"
+                                                    value={formData.password}
+                                                    placeholder="Password"
+                                                    className="border border-gray-300 px-4 py-2 rounded focus:outline-none"
                                                     onChange={handleInputChange}
                                                 />
-                                                Vendor
-                                            </label>
-                                        </div>
-                                        <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition duration-200 focus:outline-none">
-                                            Sign In
-                                        </button>
-                                    </form>
+                                                <div className="flex items-center space-x-4">
+                                                    <label>
+                                                        <input
+                                                            type="radio"
+                                                            name="userType"
+                                                            value="customer"
+                                                            className="mr-2"
+                                                            checked={formData.userType === 'customer'}
+                                                            onChange={handleInputChange}
+                                                        />
+                                                        Customer
+                                                    </label>
+                                                    <label>
+                                                        <input
+                                                            type="radio"
+                                                            name="userType"
+                                                            value="Admin"
+                                                            className="mr-2"
+                                                            checked={formData.userType === 'Admin'}
+                                                            onChange={handleInputChange}
+                                                        />
+                                                        Vendor
+                                                    </label>
+                                                    <label>
+                                                        <input
+                                                            type="radio"
+                                                            name="userType"
+                                                            value="SuperAdmin"
+                                                            className="mr-2"
+                                                            checked={formData.userType === 'SuperAdmin'}
+                                                            onChange={handleInputChange}
+                                                        />
+                                                        SuperAdmin
+                                                    </label>
+                                                </div>
+                                                {formData.userType === 'Admin' && ( // Show store name dropdown only for Vendor
+                                                    <select
+                                                        name="storeName"
+                                                        value={formData.storeName}
+                                                        onChange={handleInputChange}
+                                                        className="border border-gray-300 px-4 py-2 rounded focus:outline-none"
+                                                    >
+                                                        <option value="">Select Store Name</option>
+                                                        <option value="Minal Residency">Minal Residency</option>
+                                                        <option value="Rohit Nagar">Rohit Nagar</option>
+                                                        <option value="Awadhpuri">Awadhpuri</option>
+                                                        <option value="Jhansi">Jhansi</option>
+                                                    </select>
+                                                )}
+                                                <button
+                                                    type="submit"
+                                                    className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition duration-200 focus:outline-none"
+                                                >
+                                                    Sign In
+                                                </button>
+                                            </form>
                                     <Link to='/forget-password'>Forget Password</Link>
                                 </div>
                             )}
                             {selectedTab === 1 && (
                                 <div className='p-8'>
                                     {/* Sign Up Form */}
-                                    <form className="flex flex-col space-y-4" onSubmit={handleSubmit}>
-                                        <input
-                                            type="email"
-                                            name="email"
-                                            value={formData.email}
-                                            placeholder="Email"
-                                            className="border border-gray-300 px-4 py-2 rounded focus:outline-none"
-                                            onChange={handleInputChange}
-                                        />
-                                        <input
-                                            type="password"
-                                            name="password"
-                                            value={formData.password}
-                                            placeholder="Password"
-                                            className="border border-gray-300 px-4 py-2 rounded focus:outline-none"
-                                            onChange={handleInputChange}
-                                        />
-                                        <div className="flex items-center space-x-4">
-                                            <label>
+                                            <form className="flex flex-col space-y-4" onSubmit={handleSubmit}>
                                                 <input
-                                                    type="radio"
-                                                    name="userType"
-                                                    value="customer"
-                                                    className="mr-2"
+                                                    type="email"
+                                                    name="email"
+                                                    value={formData.email}
+                                                    placeholder="Email"
+                                                    className="border border-gray-300 px-4 py-2 rounded focus:outline-none"
                                                     onChange={handleInputChange}
                                                 />
-                                                Customer
-                                            </label>
-                                            <label>
                                                 <input
-                                                    type="radio"
-                                                    name="userType"
-                                                    value="vendor"
-                                                    className="mr-2"
+                                                    type="password"
+                                                    name="password"
+                                                    value={formData.password}
+                                                    placeholder="Password"
+                                                    className="border border-gray-300 px-4 py-2 rounded focus:outline-none"
                                                     onChange={handleInputChange}
                                                 />
-                                                Vendor
-                                            </label>
-                                        </div>
-                                        <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition duration-200 focus:outline-none">
-                                            Sign Up
-                                        </button>
-                                    </form>
+                                                <div className="flex items-center space-x-4">
+                                                    <label>
+                                                        <input
+                                                            type="radio"
+                                                            name="userType"
+                                                            value="customer"
+                                                            className="mr-2"
+                                                            checked={formData.userType === 'customer'}
+                                                            onChange={handleInputChange}
+                                                        />
+                                                        Customer
+                                                    </label>
+                                                    <label>
+                                                        <input
+                                                            type="radio"
+                                                            name="userType"
+                                                            value="Admin"
+                                                            className="mr-2"
+                                                            checked={formData.userType === 'Admin'}
+                                                            onChange={handleInputChange}
+                                                        />
+                                                        Vendor
+                                                    </label>
+                                                    <label>
+                                                        <input
+                                                            type="radio"
+                                                            name="userType"
+                                                            value="SuperAdmin"
+                                                            className="mr-2"
+                                                            checked={formData.userType === 'SuperAdmin'}
+                                                            onChange={handleInputChange}
+                                                        />
+                                                        SuperAdmin
+                                                    </label>
+                                                </div>
+                                                {formData.userType === 'Admin' && ( // Show store name dropdown only for Vendor
+                                                    <select
+                                                        name="storeName"
+                                                        value={formData.storeName}
+                                                        onChange={handleInputChange}
+                                                        className="border border-gray-300 px-4 py-2 rounded focus:outline-none"
+                                                    >
+                                                        <option value="">Select Store Name</option>
+                                                        <option value="Minal Residency">Minal Residency</option>
+                                                        <option value="Rohit Nagar">Rohit Nagar</option>
+                                                        <option value="Awadhpuri">Awadhpuri</option>
+                                                        <option value="Jhansi">Jhansi</option>
+                                                    </select>
+                                                )}
+                                                <button
+                                                    type="submit"
+                                                    className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition duration-200 focus:outline-none"
+                                                >
+                                                    Sign Up
+                                                </button>
+                                            </form>
                                 </div>
                             )}
                         </div>
