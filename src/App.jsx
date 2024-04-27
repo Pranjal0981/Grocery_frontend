@@ -3,6 +3,7 @@ import './App.css'
 import Nav from './Nav/Nav'
 import FirstComp from './FirstComp'
 import Routing from './Routing/Routing'
+import Footer from './components/Footer'
 
 function App() {
  
@@ -11,6 +12,8 @@ function App() {
 
   <Nav/>
     <Routing />
+    <Footer className="overflow-hidden" />
+
   </>
 }
 

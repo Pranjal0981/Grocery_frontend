@@ -43,21 +43,21 @@ const Div3 = () => {
 
     return (
         <>
-            <div className="city-name h-[52vh] w-full flex flex-col items-center justify-evenly">
+            <div className="city-name w-full flex flex-col items-center justify-evenly">
                 <h1 className="text-7xl caveat">Enter Our site for Choice</h1>
-                <div className="cards w-full h-3/5 flex justify-evenly items-center">
+                <div className="cards w-full flex flex-wrap justify-evenly items-center">
                     {/* Render links dynamically */}
                     {stores.map((store, index) => (
-                        <div key={index} className={`card${index + 1} flex flex-col w-[250px] h-full`}>
+                        <div key={index} className={`card${index + 1} flex flex-col w-[250px] sm:w-[300px] lg:w-[350px] h-[300px] sm:h-[350px] lg:h-[400px] mb-8`}>
                             <div className={`card${index + 1}-img flex justify-between p-3`}>
                                 <h2 className="text-teal-50 tracking-[5px]">{store.name}</h2>
-                                <FaSearch className="w-[20px] h-[20px] rounded-full border-2 text-violet-50" />
+                                <FaSearch className="w-6 h-6 sm:w-8 sm:h-8 rounded-full border-2 text-violet-50" />
                             </div>
                             <div className="card-cont flex justify-between items-center bg-neutral-100 shadow-2xl">
                                 <div className="left-cont p-4">
                                     <Link to={store.route}>Explore</Link>
                                 </div>
-                                <div className="right-cont circle w-12 h-12 border-indigo-50 border-2 rounded-full"></div>
+                                <div className="right-cont circle w-12 h-12 sm:w-16 sm:h-16 border-indigo-50 border-2 rounded-full"></div>
                             </div>
                         </div>
                     ))}

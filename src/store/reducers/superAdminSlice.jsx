@@ -7,7 +7,7 @@ const initialState = {
     dashboardinfo: null
 }
 
-export const adminSlice = createSlice({
+export const superAdminSlice = createSlice({
     name: "superAdmin",
     initialState,
     reducers: {
@@ -35,6 +35,6 @@ export const adminSlice = createSlice({
 });
 
 
-export const { saveStoreProducts, saveAllUsers, saveOrders, saveDashBoardInfo, setLoading, saveAllProducts } = adminSlice.actions;
+export const { saveStoreProducts, saveAllUsers, saveOrders, saveDashBoardInfo, setLoading, saveAllProducts } = superAdminSlice.actions;
 
-export default adminSlice.reducer;
+export default superAdminSlice.reducer;

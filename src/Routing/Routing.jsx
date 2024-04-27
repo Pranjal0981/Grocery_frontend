@@ -25,6 +25,9 @@ import { ActiveUser, InactiveUser } from '../SuperAdmin/ActivityLogs'
 import AdminDashboard from '../SuperAdmin/Dashboard'
 import BrandProducts from '../components/BrandProduct'
 import ManageOrder from '../Admin/AllOrders'
+import Order from '../Profile/Orders'
+import SalesByStore from '../SuperAdmin/SalesByStore'
+import { ShopByCategoryProduct } from '../components/Shopbycategory'
 const Routing = () => {
     const { user, isAuth } = useSelector((state) => state.user)
     const isAdmin = isAuth && user.userType === 'Admin';
@@ -76,6 +79,9 @@ const Routing = () => {
             <Route path='/admin/updateproduct/:id' element={isAdmin ? <UpdateProduct /> : <Unauthorized />} />
             <Route path='/superadmin/dashboard' element={isSuperAdmin ? <AdminDashboard /> : <Unauthorized />} />
             <Route path='/admin/allOrders' element={isAdmin ?<ManageOrder/>:<Unauthorized/>}/>
+            <Route path='/shopbycategory/:category' element={<ShopByCategoryProduct/>}/>
+            <Route path='/superAdmin/salesByStore' element={isSuperAdmin?<SalesByStore/>:<Unauthorized/>}/>
+            <Route path='/orders' element={isUser?<Order/>:<Unauthorized/>}/>
         </Routes>
 
     </>

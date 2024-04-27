@@ -58,9 +58,9 @@ export const asyncLogoutAdmin = (navigate) => async (dispatch, getState) => {
     }
 }
 
-export const asyncFetchOrders = (page = 1) => async (dispatch, getState) => {
+export const asyncFetchOrders = (page = 1,store) => async (dispatch, getState) => {
     try {
-        const response = await axios.get(`/admin/fetchorders?page=${page}`);
+        const response = await axios.get(`/admin/fetchOrders/${store}?page=${page}`);
         console.log(response);
         dispatch(saveOrders(response.data.data));
     } catch (error) {
@@ -172,10 +172,10 @@ export const asyncUpdateProduct = (id, updatedProduct) => async (dispatch, getSt
     }
 };
 
-export const updateOrderStatus = (orderId, newStatus) => async (dispatch, getState) => {
+export const updateOrderStatus = (orderId, newStatus,store) => async (dispatch, getState) => {
     try {
-        const response = await axios.post('/admin/order/updateStatus', { orderId, newStatus });
-        dispatch(asyncFetchOrders())
+        const response = await axios.put('/admin/order/updateStatus', { orderId, newStatus });
+        dispatch(asyncFetchOrders({},store))
     } catch (error) {
         console.log(error);
 

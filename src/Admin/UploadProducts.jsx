@@ -18,6 +18,8 @@ const AddProductForm = () => {
     const [stock, setStock] = useState('');
     const [store, setStore] = useState(user.store);
     const [productCode,setProductCode]=useState('')
+    const [sellingPrice, setSellingPrice] = useState('')
+
     const categories = [
         { label: "Oral Care & Wellness", link: "/oral-care-wellness" },
         { label: "Atta, Rice & Dal", link: "/atta-rice-dal" },
@@ -51,6 +53,7 @@ const AddProductForm = () => {
         e.preventDefault();
         const formData = new FormData();
         formData.append('purchasePrice',purchasePrice)
+        formData.append('sellingPrice', sellingPrice)
         formData.append('productName', productName);
         formData.append('description', description);
         formData.append('price', price);
@@ -82,13 +85,19 @@ const AddProductForm = () => {
                     <textarea id="description" value={description} onChange={(e) => setDescription(e.target.value)} className="form-textarea mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md" />
                 </div>
                 <div>
-                    <label htmlFor="price" className="block text-sm font-medium text-gray-700">Price</label>
+                    <label htmlFor="price" className="block text-sm font-medium text-gray-700">MRP</label>
                     <input type="number" id="price" value={price} onChange={(e) => setPrice(e.target.value)} className="form-input mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md" />
                 </div>
 
                 <div>
+
                     <label htmlFor="purchasePrice" className="block text-sm font-medium text-gray-700">Purchase Price</label>
                     <input type="number" id="purchasePrice" value={purchasePrice} onChange={(e) => setPurchasePrice(e.target.value)} className="form-input mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md" />
+                </div>
+
+                <div>
+                    <label htmlFor="sellingPrice" className="block text-sm font-medium text-gray-700">Selling Price</label>
+                    <input type="number" id="sellingPrice" value={sellingPrice} onChange={(e) => setSellingPrice(e.target.value)} className="form-input mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md" />
                 </div>
                 <div>
                     <label htmlFor="category" className="block text-sm font-medium text-gray-700">Category</label>
@@ -122,7 +131,7 @@ const AddProductForm = () => {
                     <input type="number" id="cgst" value={cgst} onChange={(e) => setCgst(e.target.value)} className="form-input mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md" />
                 </div>
                 <div>
-                    <label htmlFor="productCode" className="block text-sm font-medium text-gray-700">Stock</label>
+                    <label htmlFor="productCode" className="block text-sm font-medium text-gray-700">Product Code</label>
                     <input type="text" id="productCode" value={productCode} onChange={(e) => setProductCode(e.target.value)} className="form-input mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md" />
                 </div>
                <div>

@@ -1,16 +1,19 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useRef } from 'react';
-
-const Shopbycategory = () => {
+import { useDispatch } from 'react-redux';
+import { useNavigate, useParams } from 'react-router-dom';
+import { asyncFetchCategorisedPro } from '../store/actions/productAction';
+import CategoryProduct from './CategorisedProduct';
+export const Shopbycategory = () => {
   const imageContainerRef = useRef(null); // Ref for the image container
-
+const navigate=useNavigate()
   const imageObjects = [
     {
-      title: "Salt",
+      title: "Spices, Salt & Sugar",
       imageUrl: "/categories/SALT.webp"
     },
     {
-      title: "Atta",
+      title: "Atta, Rice & Dal",
       imageUrl: "/categories/ATTA.webp"
     },
     {
@@ -18,19 +21,19 @@ const Shopbycategory = () => {
       imageUrl: "/categories/BEVERAGES.webp"
     },
     {
-      title: "Body Care",
+      title: "Body & Skin Care",
       imageUrl: "/categories/BODYCARE.webp"
     },
     {
-      title: "Chocolates",
+      title: "Chocolates & Sweets",
       imageUrl: "/categories/CHOCOLATES.webp"
     },
     {
-      title: "Cleaning Items",
+      title: "Household & Cleaning",
       imageUrl: "/categories/CLEANING-ITEM.webp"
     },
     {
-      title: "Dry Fruits",
+      title: "Dry Fruits, Nuts & Seeds",
       imageUrl: "/categories/DRY-FRUITS.webp"
     },
     {
@@ -46,27 +49,27 @@ const Shopbycategory = () => {
       imageUrl: "/categories/OIL-GHEE.webp"
     },
     {
-      title: "Oral Care",
+      title: "Oral Care & Wellness",
       imageUrl: "/categories/ORAL-CARE.webp"
     },
     {
-      title: "Pulses & Dal",
+      title: "Atta, Rice & Dal",
       imageUrl: "/categories/Pulses-Dal.webp"
     },
     {
-      title: "Rice",
+      title: "Atta, Rice & Dal",
       imageUrl: "/categories/RICE.webp"
     },
     {
-      title: "Snacks",
+      title: "Snacks & Packed Food",
       imageUrl: "/categories/SNACKS.webp"
     },
     {
-      title: "Spices",
+      title: "Spices, Salt & Sugar",
       imageUrl: "/categories/SPICES.webp"
     },
     {
-      title: "Sugar",
+      title: "Spices, Salt & Sugar",
       imageUrl: "/categories/SUGER.webp"
     }
   ];
@@ -91,6 +94,7 @@ const Shopbycategory = () => {
     }
   };
   const handleCategoryClick=async(title)=>{
+    navigate(`/shopbycategory/${title}`)
     console.log(title)
   }
   return (
@@ -101,9 +105,9 @@ const Shopbycategory = () => {
         </div>
         <div className="overflow-hidden relative">
           <div className="w-auto h-auto overflow-x-scroll" ref={imageContainerRef}>
-            <div className="imagecategory flex h-[300px] p-[30px] w-[250vw] gap-[40px]">
+            <div className="w-[700vw] imagecategory flex h-[300px] p-[30px] md:w-[250vw] gap-[40px]">
               {imageObjects.map((image, index) => (
-                <div key={index} onClick={() => handleCategoryClick(image?.title)} className="imageparent bg-center bg-cover flex flex-col items-center justify-end gap-[20px] bg-no-repeat w-[350px] h-[200px] cursor-pointer">
+                <div key={index} onClick={() => handleCategoryClick(image?.title)} className="w-[500px] imageparent bg-center bg-cover flex flex-col items-center justify-end gap-[20px] bg-no-repeat md:w-[350px] h-[200px] cursor-pointer">
                   <img src={image.imageUrl} alt={image.title} className="w-full h-full" />
                 </div>
               ))}
@@ -119,4 +123,8 @@ const Shopbycategory = () => {
   )
 }
 
-export default Shopbycategory;
+export const ShopByCategoryProduct=()=>{
+  return<>
+  <CategoryProduct/>
+  </>
+};

@@ -2,6 +2,8 @@ import axios from '../../config/axios'
 import { saveStoreProducts, saveAllUsers, saveOrders, setLoading } from '../reducers/superAdminSlice';
 import { saveProduct } from '../reducers/productSlice';
 import { saveUser, removeUser } from '../reducers/userSlice'
+import { saveDashBoardInfo } from '../reducers/superAdminSlice';
+
 export const asyncCurrentSuperAdmin = (token) => async (dispatch, getState) => {
     try {
         const response = await axios.post('/superadmin/currentsuperAdmin', null, {

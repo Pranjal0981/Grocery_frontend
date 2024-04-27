@@ -8,6 +8,7 @@ import QRCode from 'qrcode';
 import Swal from 'sweetalert2';
 import { asyncFetchCartProduct, asyncDeleteCheckoutCart } from "../store/actions/userAction";
 import rgsLogo from '/rgslogo.jpeg';
+import {asyncUpdateStock} from '../store/actions/userAction'
 import { asyncCustomerOrder } from '../store/actions/userAction'
 // const generatePDF = async (checkOutCart, user) => {
 //     try {
@@ -55,7 +56,7 @@ import { asyncCustomerOrder } from '../store/actions/userAction'
 //                         item.product.subcategory || '',
 //                         `Rs ${item.product.GST}`, // Format price
 //                         item.size || '',
-//                         `Rs ${item.totalPrice}` // Format total price
+//                         `Rs ${item?.totalPrice}` // Format total price
 //                     ]);
 //                 }
 //             }
@@ -125,13 +126,18 @@ const Cart = () => {
             // const pdfBlob = await generatePDF(checkOutCart, user)
             console.log(checkOutCart);
             dispatch(asyncCustomerOrder({ checkOutCart, PaymentType: "Cash on delivery" },user._id));
+            checkOutCart.data.forEach(async (item) => {
+                const { productId, quantity } = item;
+                const newStock=productId.stock-quantity
+                await dispatch(asyncUpdateStock(productId._id, newStock)); // Assuming productId._id contains the product ID
+            });         
             setShowModal(false);
-            // Show success message using SweetAlert2
             Swal.fire({
                 icon: 'success',
                 title: 'Order Placed!',
                 text: 'Your order has been successfully placed.',
             });
+            // await generatePDF(checkOutCart)
         } catch (error) {
             console.error('Error placing order:', error);
             Swal.fire({
@@ -158,76 +164,75 @@ const Cart = () => {
     return (
         <div className="container mx-auto px-4 py-8">
             <h2 className="text-3xl font-bold text-center mb-8 text-indigo-800">Checkout Cart</h2>
-            {checkOutCart && (
-                <div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                        {/* Combined Items */}
-                        <div>
-                            <h3 className="text-xl font-bold mb-4 text-blue-800">Items:</h3>
-                            {checkOutCart?.data && checkOutCart?.data?.length > 0 ? (
-                                <ul>
-                                    {checkOutCart?.data?.map((item, index) => (
-                                        <li key={index} className="bg-white shadow-md rounded-lg overflow-hidden mb-4">
-                                            <img src={item?.productId?.image?.url} alt={item?.productId?.ProductName} className="h-48 w-full object-cover" />
-                                            <div className="p-4">
-                                                <h2 className="text-xl font-bold mb-2">{item?.productId?.ProductName}</h2>
-                                                <p className="text-gray-700 mb-2">{item?.productId?.description}</p>
-                                                <div className="flex justify-between items-center">
-                                                    <p className="text-gray-800 font-bold">RS {item?.productId?.price}</p>
-                                                    <p className="text-gray-800 font-bold"> {item?.productId?.stock}</p>
-
-                                                    <p className="text-gray-500">{item?.productId?.category}</p>
-                                                </div>
-                                                <button onClick={() => handleDeleteItem(item?._id)} className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mt-2">
-                                                    Delete
-                                                </button>
+            <div className="container mx-auto px-4 py-8">
+                <h2 className="text-2xl font-bold mb-4">Your Order Details</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    {/* Combined Items */}
+                    <div>
+                        <h3 className="text-xl font-bold mb-4 text-blue-800">Items:</h3>
+                        {checkOutCart?.data && checkOutCart?.data?.length > 0 ? (
+                            <ul>
+                                {checkOutCart?.data?.map((item, index) => (
+                                    <li key={index} className="bg-white shadow-md rounded-lg overflow-hidden mb-4">
+                                        <img src={item?.productId?.image?.url} alt={item?.productId?.ProductName} className="h-48 w-full object-cover" />
+                                        <div className="p-4">
+                                            <h2 className="text-xl font-bold mb-2">{item?.productId?.ProductName}</h2>
+                                            <p className="text-gray-700 mb-2">{item?.productId?.description}</p>
+                                            <div className="flex justify-between items-center">
+                                                <p className="text-gray-800 font-bold"> {item?.productId?.stock}</p>
+                                                <h2 className="text-xl font-bold mb-2">{item?.quantity}</h2>
+                                                <h2 className="text-xl font-bold mb-2">{item?.totalPrice}</h2>
+                                                <p className="text-gray-500">{item?.productId?.category}</p>
                                             </div>
-                                        </li>
-                                    ))}
-                                </ul>
-                            ) : (
-                                <p className="italic text-gray-500">No items in the cart</p>
-                            )}
+                                            <button onClick={() => handleDeleteItem(item?._id)} className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mt-2">
+                                                Delete
+                                            </button>
+                                        </div>
+                                    </li>
+                                ))}
+                            </ul>
+                        ) : (
+                            <p className="italic text-gray-500">No items in the cart</p>
+                        )}
+                    </div>
+                </div>
+
+                {/* Total Grand Price */}
+                <div className="mt-8 flex justify-between items-center">
+                    <h3 className="text-xl font-bold text-indigo-800">Total Grand Price:</h3>
+                    <p className="text-2xl font-bold text-indigo-900">Rs {checkOutCart?.totalGrandPrice?.toFixed(2)}</p>
+                </div>
+
+                {/* Action Buttons */}
+                <div className="flex justify-end mt-4">
+                    <button
+                        onClick={handlePlaceOrder}
+                        // disabled={!checkOutCart || checkOutCart.data.length === 0}
+                        className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ${(!checkOutCart?._id)}`}
+                    >
+                        Place Order
+                    </button>
+                    {showModal && (
+                        <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
+                            <div className="bg-white rounded-lg p-6">
+                                <h2 className="text-xl font-bold mb-4">Select Payment Method</h2>
+                                <button onClick={handleCashOnDelivery} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-4">
+                                    Cash on Delivery
+                                </button>
+                                <button onClick={() => checkoutHandler(checkOutCart?.TotalGrandPrice?.toFixed(2))} className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                                    Pay Now
+                                </button>
+                                <button onClick={handleCloseModal} className="absolute top-0 right-0 p-2 text-gray-500 hover:text-gray-700">
+                                    <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                    </svg>
+                                </button>
+                            </div>
                         </div>
-                    </div>
-
-                    {/* Total Grand Price */}
-                    <div className="mt-8 flex justify-between items-center">
-                        <h3 className="text-xl font-bold text-indigo-800">Total Grand Price:</h3>
-                        <p className="text-2xl font-bold text-indigo-900">Rs {checkOutCart.totalGrandPrice?.toFixed(2)}</p>
-                    </div>
-
-                    {/* Action Buttons */}
-                    <div className="flex justify-end mt-4">
-                        <button
-                            onClick={handlePlaceOrder}
-                            // disabled={!checkOutCart || checkOutCart.data.length === 0}
-                            className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ${(!checkOutCart._id )}`}
-                        >
-                            Place Order
-                        </button>
-                        {showModal && (
-                            <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
-                                <div className="bg-white rounded-lg p-6">
-                                    <h2 className="text-xl font-bold mb-4">Select Payment Method</h2>
-                                    ` <button onClick={handleCashOnDelivery} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-4">
-                                        Cash on Delivery
-                                    </button>`
-                         <button onClick={() => checkoutHandler(checkOutCart?.TotalGrandPrice?.toFixed(2))} className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                             Pay Now
-                        </button>
-                        <button onClick={handleCloseModal} className="absolute top-0 right-0 p-2 text-gray-500 hover:text-gray-700">
-                            <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                            </svg>
-                        </button>
-                    </div>
+                    )}
                 </div>
-            )}
-
-                    </div>
-                </div>
-            )}
+            </div>
+            
 
         </div>
 

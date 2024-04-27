@@ -1,6 +1,7 @@
 import { saveUser, removeUser, saveWishlist, saveCheckOutCart } from "../reducers/userSlice";
 import axios from '../../config/axios'
 import { saveProduct } from "../reducers/productSlice";
+import { saveOrders } from "../reducers/adminSlice";
 
 export const asyncCurrentUser = (token) => async (dispatch, getState) => {
     try {
@@ -70,7 +71,9 @@ export const asyncAddToWishlist=(userId,data)=>async(dispatch,getState)=>{
 
 
 export const asyncAddToCart = (userId, data) => async (dispatch, getState) => {
+
     try {
+        console.log(data)
         const response = await axios.post(`/user/addToCart/${userId}`, data)
         console.log(response)
         dispatch(saveCheckOutCart(response.data))
@@ -185,9 +188,20 @@ try {
 
 export const asyncFetchCustomerOrder=(userId)=>async(dispatch,getState)=>{
     try {
-        const resposne=await axios.get(`/user/fetchOrders/${userId}`)
-        console.log(resposne)
+        const resposne = await axios.get(`/user/fetchOrders/${userId}`)
+        console.log(resposne.data)
+        dispatch(saveOrders(resposne.data))
     } catch (error) {
         console.log(error)
+    }
+}
+
+export const asyncUpdateStock = (productId, newStock)=>async(dispatch,getState)=>{
+    try {
+        console.log(productId,newStock)
+        const response = await axios.post(`/products/updateProductStock/${productId}`, { newStock })
+        console.log(response)
+    } catch (error) {
+     console.log(error)   
     }
 }

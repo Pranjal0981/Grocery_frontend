@@ -202,7 +202,7 @@ const Pagination = ({ currentPage, onPageChange }) => {
                                 <h3 className="text-lg font-semibold mb-2">{product?.ProductName}</h3>
                                 <p className="text-sm mb-2">{product?.description}</p>
                                 <p className="text-sm mb-2">{product?.brand}</p>
-                                <p className="text-sm text-gray-600">Price: Rs {product?.price}</p>
+                                <p className="text-sm text-gray-600">Price: Rs {product?.sellingPrice}</p>
                             </div>
                         </div>
                     ))}

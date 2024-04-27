@@ -167,7 +167,7 @@ const Nav = () => {
  
     return (
         <>
-            <div className="flex justify-around items-center h-[10vh] bg-[#96B415]">
+            <div className="flex gap-[20px] justify-around items-center h-[10vh] bg-[#96B415]">
                 <div className="flex items-center gap-5">
                     <h1 className="ml-5 text-xl">
                         <img src="/RGS-New-Logo.webp" className="h-12" alt="" />
@@ -177,7 +177,7 @@ const Nav = () => {
                     </button>
                 </div>
 
-                <div className="flex items-center rounded-full bg-white border border-gray-300">
+                <div className="hidden md:flex items-center rounded-full bg-white border border-gray-300">
                     <select
                         className="px-3 py-1 bg-transparent border-none focus:outline-none text-lg"
                         value={selectedCategory}
@@ -204,33 +204,33 @@ const Nav = () => {
                 <div className="flex">
                     <button className="flex gap-2 items-center text-white text-lg" onClick={toggleSecondDrawer(true)}>
                         <FaUser />
-                        My Account
+                        <p className='hidden md:block'>My Account</p>
                     </button>
                 </div>
 
                 <div className="flex">
                     <Link to='/wishlist' className="flex gap-2 items-center text-white text-lg">
                         <FaHeart />
-                        Wishlist
+                        <p className='hidden md:block'>Wishlist</p>
                     </Link>
                 </div>
 
                 <div className="flex bg-white rounded-full w-[100px] h-[35px] justify-center ">
                     <Link to='/cart' className="flex gap-2 items-center  text-lg ">
                         <FaShoppingBag />
-                        Cart
+                        <p className='hidden md:block'>Cart</p>
                     </Link>
                 </div>
             </div>
             <div className="flex justify-between p-[10px]">
-                <div className="left flex w-[50%] justify-evenly">
+                <div className="hidden md:left flex w-[50%] justify-evenly">
                     {links.map((link, index) => (
                         <Link to={link.to} key={index}>
                             {link.label}
                         </Link>
                     ))}
                 </div>
-                <div className="right w-[30%] flex items-center gap-[20px]">
+                <div className="hidden md:right w-[30%] flex items-center gap-[20px]">
                     <div>
                         <Link to="tel:+919244321195">Call +91-9244321195</Link>
                     </div>
@@ -588,7 +588,7 @@ const Nav = () => {
                                                     Sign In
                                                 </button>
                                             </form>
-                                    <Link to='/forget-password'>Forget Password</Link>
+                                                <a href="/forget-password">Forget Password</a>
                                 </div>
                             )}
                             {selectedTab === 1 && (

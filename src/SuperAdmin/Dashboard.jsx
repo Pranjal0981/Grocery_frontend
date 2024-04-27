@@ -1,17 +1,17 @@
 import React, { useEffect } from 'react';
-import { fetchDashBoardInfo } from '../store/actions/adminAction';
+import { fetchDashBoardInfo } from '../store/actions/superAdminAction';
 import { useSelector, useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 const AdminDashboard = () => {
     const navigate = useNavigate()
     const dispatch = useDispatch()
-    const { dashboardinfo } = useSelector((state) => state.admin)
-
+    const { dashboardinfo } = useSelector((state) => state.superAdmin)
+console.log(dashboardinfo)
     useEffect(() => {
         dispatch(fetchDashBoardInfo())
     }, [dispatch])
     const handleSalesClick = () => {
-        navigate('/admin/salesByStore')
+        navigate('/superAdmin/salesByStore')
     }
     return (
         <>
