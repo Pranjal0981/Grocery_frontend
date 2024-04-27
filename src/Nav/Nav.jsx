@@ -10,7 +10,7 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
-import { FaBars, FaUser, FaHeart, FaShoppingBag, FaSearchengin } from 'react-icons/fa';
+import { FaBars, FaUser, FaHeart, FaShoppingBag, FaSearchengin, FaSearch } from 'react-icons/fa';
 import { MdOutlineShoppingBag } from 'react-icons/md';
 import { FaInstagram, FaTwitter, FaFacebook, FaYoutube } from 'react-icons/fa';
 import { useSelector, useDispatch } from 'react-redux'
@@ -177,7 +177,7 @@ const Nav = () => {
                     </button>
                 </div>
 
-                <div className="hidden md:flex items-center rounded-full bg-white border border-gray-300">
+                <div className="hidden md:flex items-center rounded-full bg-white text-black-200 border border-gray-300">
                     <select
                         className="px-3 py-1 bg-transparent border-none focus:outline-none text-lg"
                         value={selectedCategory}
@@ -222,15 +222,15 @@ const Nav = () => {
                     </Link>
                 </div>
             </div>
-            <div className="flex justify-between p-[10px]">
-                <div className="hidden md:left flex w-[50%] justify-evenly">
+            <div className="hidden md:flex justify-between p-[10px]">
+                <div className=" md:left flex w-[50%] justify-evenly">
                     {links.map((link, index) => (
                         <Link to={link.to} key={index}>
                             {link.label}
                         </Link>
                     ))}
                 </div>
-                <div className="hidden md:right w-[30%] flex items-center gap-[20px]">
+                <div className="md:right w-[30%] flex items-center gap-[20px]">
                     <div>
                         <Link to="tel:+919244321195">Call +91-9244321195</Link>
                     </div>
@@ -270,8 +270,12 @@ const Nav = () => {
                                 <input
                                     type="text"
                                     className="w-[80%] px-3 py-1 bg-white border-none focus:outline-none text-lg text-black"
-                                    placeholder="Search"
+                                    placeholder="Search" value={searchTerm}
+                                    onChange={handleChangeSearchTerm}
                                 />
+                                <button className="px-3 py-1 bg-transparent border-none focus:outline-none" onClick={() => handleSearch(searchTerm, selectedCategory)}>
+                                    <FaSearchengin className="text-lg" />
+                                </button>
                             </div>
                             <Link to="/" style={{ textDecoration: 'none', color: 'inherit' }}>
                                 <ListItem button>

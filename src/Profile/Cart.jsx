@@ -113,6 +113,11 @@ const Cart = () => {
    console.log(checkOutCart)
 
     const handlePlaceOrder = () => {
+        // Check if checkout cart is empty
+        if (!checkOutCart || !checkOutCart.data || checkOutCart.data.length === 0) {
+            console.log("Cannot place order: Checkout cart is empty");
+            return;
+        }
         setShowModal(true);
     };
 

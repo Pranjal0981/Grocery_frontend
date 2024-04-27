@@ -76,7 +76,7 @@ export const asyncAddToCart = (userId, data) => async (dispatch, getState) => {
         console.log(data)
         const response = await axios.post(`/user/addToCart/${userId}`, data)
         console.log(response)
-        dispatch(saveCheckOutCart(response.data))
+       await dispatch(saveCheckOutCart(response.data))
     } catch (error) {
         console.log(error)
     }
@@ -203,5 +203,15 @@ export const asyncUpdateStock = (productId, newStock)=>async(dispatch,getState)=
         console.log(response)
     } catch (error) {
      console.log(error)   
+    }
+}
+
+export const asyncReturnRequest = (orderId,userId)=>async(dispatch,getState)=>{
+    try {
+        console.log(userId)
+        const response=await axios.post(`/user/order/returnRequest/${orderId}`)
+        await dispatch(asyncFetchCustomerOrder(userId))
+    } catch (error) {
+        console.log(error)
     }
 }
