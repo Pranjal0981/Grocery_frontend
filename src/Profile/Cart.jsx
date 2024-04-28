@@ -10,6 +10,7 @@ import { asyncFetchCartProduct, asyncDeleteCheckoutCart } from "../store/actions
 import rgsLogo from '/rgslogo.jpeg';
 import { asyncUpdateStock } from '../store/actions/userAction'
 import { asyncCustomerOrder } from '../store/actions/userAction'
+import { toast } from "react-toastify";
 const generatePDF = async (checkOutCart, user) => {
     try {
         const doc = new jsPDF();
@@ -122,7 +123,7 @@ const Cart = () => {
 
     const handlePlaceOrder = () => {
         if (!checkOutCart || !checkOutCart.data || checkOutCart.data.length === 0) {
-            console.log("Cannot place order: Checkout cart is empty");
+            toast.success("Checkout cart is empty");
             return;
         }
         setShowModal(true);
@@ -158,7 +159,6 @@ const Cart = () => {
     };
 
     const handleDeleteItem = (itemId) => {
-        console.log("Deleting item with ID:", itemId);
         dispatch(asyncDeleteCheckoutCart(user?._id, itemId));
     };
 

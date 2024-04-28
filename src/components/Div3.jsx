@@ -45,10 +45,9 @@ const Div3 = () => {
         <>
             <div className="city-name w-full flex flex-col items-center justify-evenly">
                 <h1 className="text-7xl caveat">Enter Our site for Choice</h1>
-                <div className="cards w-full flex flex-wrap justify-evenly items-center">
-                    {/* Render links dynamically */}
+                <div className="cards w-full flex flex-wrap justify-evenly items-center mt-[10%]">
                     {stores.map((store, index) => (
-                        <div key={index} className={`card${index + 1} flex flex-col w-[250px] sm:w-[300px] lg:w-[350px] h-[300px] sm:h-[350px] lg:h-[400px] mb-8`}>
+                        <div key={index} className={`card${index + 1} flex flex-col w-[250px] sm:w-[300px] lg:w-[300px] h-[300px] sm:h-[350px] lg:h-[400px] mb-8`}>
                             <div className={`card${index + 1}-img flex justify-between p-3`}>
                                 <h2 className="text-teal-50 tracking-[5px]">{store.name}</h2>
                                 <FaSearch className="w-6 h-6 sm:w-8 sm:h-8 rounded-full border-2 text-violet-50" />

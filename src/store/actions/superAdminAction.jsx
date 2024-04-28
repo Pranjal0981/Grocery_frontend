@@ -28,8 +28,6 @@ export const asyncSuperAdminSignUp = (data) => async (dispatch, getState) => {
     }
 }
 
-
-
 export const asyncSuperAdminSignIn = (data, navigate) => async (dispatch, getState) => {
     try {
         const res = await axios.post('/superadmin/login', data);
@@ -63,7 +61,6 @@ export const asyncSignOutSuperAdmin = (navigate) => async (dispatch, getState) =
     }
 }
 
-
 export const fetchProductsByStore = (store) => async (dispatch, getState) => {
     try {
         dispatch(setLoading(true));
@@ -78,7 +75,6 @@ export const fetchProductsByStore = (store) => async (dispatch, getState) => {
     }
 }
 
-
 export const asyncfetchAllusers = (currentPage) => async (dispatch, getState) => {
     try {
         const response = await axios.get(`/superadmin/fetchAllUsers?page=${currentPage}`);
@@ -87,7 +83,6 @@ export const asyncfetchAllusers = (currentPage) => async (dispatch, getState) =>
         console.log(error);
     }
 };
-
 
 export const asyncSuperAdminDeleteUser = (userId) => async (dispatch, getState) => {
     try {
@@ -112,7 +107,6 @@ export const asyncFetchActiveUser = (page = 1) => async (dispatch, getState) => 
         console.log(error);
     }
 };
-
 
 export const asyncFetchInactiveUsers = (page = 1) => async (dispatch, getState) => {
     try {
@@ -145,8 +139,6 @@ export const asyncDelProduct = (productId) => async (dispatch, getState) => {
     }
 }
 
-
-
 export const fetchDashBoardInfo = () => async (dispatch, getState) => {
     try {
         const response = await axios.get('/superadmin/dashboard/fetchAllInfo')
@@ -170,8 +162,6 @@ export const asyncSuperAdminBlockUser = (userId) => async (dispatch, getState) =
     }
 }
 
-
-
 export const asyncSuperAdminUnblockUser = (userID) => async (dispatch, getState) => {
     try {
         const response = await axios.post(`/superadmin/unblockUser/${userID}`)
@@ -185,7 +175,6 @@ export const asyncSuperAdminUnblockUser = (userID) => async (dispatch, getState)
 
     }
 }
-
 
 export const asyncFetchAllProducts = (page, searchTerm = '', searchType = '') => async (dispatch, getState) => {
     try {

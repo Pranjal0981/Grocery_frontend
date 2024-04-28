@@ -11,13 +11,18 @@ const ResetPassword = ({ userType }) => {
 
     const handleResetPassword = async (e) => {
         e.preventDefault();
-        dispatch(asyncResetPassword(id, password)); // Pass id and password separately
+        try {
+            await dispatch(asyncResetPassword(id, password)); // Pass id and password separately
+            setMessage('Password reset successfully!');
+        } catch (error) {
+            setMessage('Error resetting password. Please try again.');
+        }
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center">
-            <div className="bg-white p-8 rounded-md shadow-md max-w-md w-full">
-                <h2 className="text-2xl font-semibold mb-4">Reset Password</h2>
+        <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+            <div className="max-w-md w-full bg-white p-8 rounded-md shadow-md">
+                <h2 className="text-3xl font-semibold mb-4 text-center">Reset Password</h2>
 
                 <div className="mb-4">
                     <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
@@ -33,13 +38,13 @@ const ResetPassword = ({ userType }) => {
                 </div>
 
                 <button
-                    className="w-full bg-blue-500 text-white p-3 rounded-md hover:bg-blue-600"
+                    className="w-full bg-blue-500 text-white p-3 rounded-md hover:bg-blue-600 transition duration-200 focus:outline-none"
                     onClick={handleResetPassword}
                 >
                     Reset Password
                 </button>
 
-                <p className="mt-4 text-red-500 text-sm">{message}</p>
+                <p className="mt-4 text-center text-red-500 text-sm">{message}</p>
             </div>
         </div>
     );

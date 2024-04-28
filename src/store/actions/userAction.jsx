@@ -283,3 +283,12 @@ export const asyncReturnRequest = (orderId,userId)=>async(dispatch,getState)=>{
 
     }
 }
+
+export const asyncContactUs=(data)=>async(dispatch,getState)=>{
+    try {
+        const response=await axios.post('/user/contactus',{data})
+        toast.success("Thanks for contacting with us! We will reply shortly")
+    } catch (error) {
+        toast.error('Please try again for contacting')
+    }
+}

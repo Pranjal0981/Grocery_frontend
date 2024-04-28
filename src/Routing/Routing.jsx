@@ -28,6 +28,13 @@ import ManageOrder from '../Admin/AllOrders'
 import Order from '../Profile/Orders'
 import SalesByStore from '../SuperAdmin/SalesByStore'
 import { ShopByCategoryProduct } from '../components/Shopbycategory'
+import About from '../components/About'
+import ReturnPolicy from '../components/ReturnPolicy'
+import FAQs from '../components/FAQs'
+import CustomerCare from '../components/CustomerCare'
+import ExchangePolicy from '../components/ExchangePolicy'
+import SupportCenter from '../components/SupportCenter'
+import ContactUs from '../components/ContactUs'
 const Routing = () => {
     const { user, isAuth } = useSelector((state) => state.user)
     const isAdmin = isAuth && user.userType === 'Admin';
@@ -53,7 +60,9 @@ const Routing = () => {
     return <>
         <Routes>
             <Route path='/' element={<HomePage />} />
+            <Route path='/About Us' element={<About/>}/>
             <Route path='/brand/:title' element={<BrandProducts/>}/>
+            <Route path='/Support Center' element={<SupportCenter/>}/>
             <Route path='/dashboard' element={<Dashboard />} />
             <Route path='/store/:store' element={<Storeproduct/>}/>
             <Route path='/forget-password' element={<ForgetPassword />} />
@@ -62,6 +71,11 @@ const Routing = () => {
             <Route path='/admin/upload-products' element={isAdmin ? <AddProductForm /> : <Unauthorized />} />
             <Route path='/wishlist' element={isUser ? <Wishlist /> : <Unauthorized />} />
             <Route path='/products/:id' element={<ExploreProductById />} />
+            <Route path='/Return Policy' element={<ReturnPolicy/>}/>
+            <Route path='/FAQs' element={<FAQs/>}/>
+            <Route path='/contact' element={<ContactUs/>}/>
+            <Route path='/Customer Care' element={<CustomerCare/>}/>
+            <Route path='/Exchange Policy' element={<ExchangePolicy/>}/>
             {categories.map((category, index) => (
                 <Route key={index} path={`/category/:category`} element={<CategoryProduct />} />
             ))}

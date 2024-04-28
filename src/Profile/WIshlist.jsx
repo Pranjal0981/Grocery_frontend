@@ -7,7 +7,6 @@ import { FaTrashAlt } from 'react-icons/fa';
 const Wishlist = () => {
     const dispatch = useDispatch();
     const { user, wishlist } = useSelector((state) => state.user);
-    console.log(wishlist)
     useEffect(() => {
         if (user?._id) {
             dispatch(asyncFetchWishlist(user?._id));
@@ -17,7 +16,7 @@ const Wishlist = () => {
     const handleDeleteProduct = (productId, productType) => {
         dispatch(asyncDeleteFromWishlist(user?._id, productId));
     };
-const wishlistLength=wishlist?.length
+const wishlistLength=wishlist?.length ||0
 
     return (
         <div className="container mx-auto">

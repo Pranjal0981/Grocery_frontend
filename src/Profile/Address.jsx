@@ -24,7 +24,6 @@ export const AddressForm = () => {
     const handleSubmit = async(e) => {
         e.preventDefault();
       await dispatch(asyncAddAddress({formData}))
-        console.log(formData);
     };
 
     return (

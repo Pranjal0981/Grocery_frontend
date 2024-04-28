@@ -39,7 +39,7 @@ const Nav = () => {
     };
 
     const handleSearch = async(searchTerm, selectedCategory)=> {
-        console.log("search cliked")
+       
         await dispatch(asyncSearch(searchTerm, selectedCategory));
         navigate(`/search-results?searchTerm=${searchTerm}&category=${selectedCategory}`)
     }
@@ -54,7 +54,6 @@ const Nav = () => {
         store:''
     });
     const { user, isAuth } = useSelector((state) => state.user)
-    console.log(user)
 
     const toggleDrawer = (open) => (event) => {
         if (
@@ -86,7 +85,7 @@ const Nav = () => {
         { label: 'All Departments Menu', to: '/all-departments' },
         { label: 'Home', to: '/' },
         { label: 'Shop', to: '/shop' },
-        { label: 'About Us', to: '/about-us' },
+        { label: 'About Us', to: '/About Us' },
         { label: 'Blog', to: '/blog' },
         { label: 'Contacts', to: '/contact' }
     ];
@@ -108,7 +107,6 @@ const Nav = () => {
     const handleSubmit = async(e) => {
         
         e.preventDefault()
-        console.log(formData.userType)
         if (formData.userType === 'customer') {
             await dispatch(asyncSignupUser({ formData }))
         }
@@ -122,7 +120,6 @@ const Nav = () => {
         
     }
     const handleLogin = async(e) => {
-        console.log(formData.userType)
         e.preventDefault()
         if (formData.userType === 'Admin') {
             await dispatch(asyncAdminLogin({ formData }))

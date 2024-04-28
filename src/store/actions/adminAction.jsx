@@ -29,8 +29,6 @@ export const asyncAdminRegister=(data)=>async(dispatch,getState)=>{
     }
 }
 
-
-
 export const asyncAdminLogin = (data, navigate) => async (dispatch, getState) => {
     try {
         const res = await axios.post('/admin/login', data);
@@ -85,7 +83,6 @@ export const fetchProductsByStore = (store) => async (dispatch, getState) => {
     }
 }
 
-
 export const asyncfetchAllusers = (currentPage) => async (dispatch, getState) => {
     try {
         const response = await axios.get(`/admin/fetchAllUsers?page=${currentPage}`);
@@ -94,7 +91,6 @@ export const asyncfetchAllusers = (currentPage) => async (dispatch, getState) =>
         console.log(error);
     }
 };
-
 
 export const asyncAdminDeleteUser = (userId) => async (dispatch, getState) => {
     try {
@@ -118,7 +114,6 @@ export const asyncFetchActiveUser = (page = 1) => async (dispatch, getState) => 
     }
 };
 
-
 export const asyncFetchInactiveUsers = (page = 1) => async (dispatch, getState) => {
     try {
         const response = await axios.get(`/admin/fetchInactiveUsers?page=${page}`);
@@ -137,8 +132,6 @@ export const asyncFetchOutOfStock = (page = 1) => async (dispatch, getState) => 
         console.log(error)
     }
 }
-
-
 
 export const asyncDelProduct = (productId) => async (dispatch, getState) => {
     try {
@@ -203,8 +196,6 @@ export const asyncAdminBlockUser = (userId) => async (dispatch, getState) => {
     }
 }
 
-
-
 export const asyncAdminUnblockUser = (userID) => async (dispatch, getState) => {
     try {
         const response = await axios.post(`/admin/unblockUser/${userID}`)
@@ -217,7 +208,6 @@ export const asyncAdminUnblockUser = (userID) => async (dispatch, getState) => {
         console.log(error)
     }
 }
-
 
 export const asyncFetchAllProducts = (page, searchTerm = '', searchType = '') => async (dispatch, getState) => {
     try {

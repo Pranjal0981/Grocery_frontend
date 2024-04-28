@@ -12,10 +12,11 @@ function FooterItem({ title, items }) {
       <h1 className="font-bold text-lg m-2">{title}</h1>
       <ul>
         {items.map((item, index) => (
-          <div className="m-2">
-            <Link to="#"> {item} </Link>
+          <div className="m-2" key={index}>
+            <Link to={`/${item}`}>{item}</Link>
           </div>
         ))}
+
       </ul>
     </div>
   );
