@@ -99,7 +99,7 @@ const navigate=useNavigate()
   }
   return (
     <div>
-      <div className='w-full h-auto flex flex-col'>
+      <div className='w-full h-auto flex flex-col mt-[10%]'>
         <div className="topheading h-[8vh] flex items-center justify-center text-4xl font-regular">
           <h1>SHOP BY CATEGORIES</h1>
         </div>
