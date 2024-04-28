@@ -105,42 +105,45 @@ const Nav = () => {
     };
 
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async(e) => {
+        
         e.preventDefault()
+        console.log(formData.userType)
+        if (formData.userType === 'customer') {
+            await dispatch(asyncSignupUser({ formData }))
+        }
         if (formData.userType === 'Admin') {
-            dispatch(asyncAdminRegister({ formData }))
+           await  dispatch(asyncAdminRegister({ formData }))
         }
-        else if(formData.userType==='SuperAdmin') {
-            dispatch(asyncSuperAdminSignUp({ formData }))
+        if(formData.userType==='SuperAdmin') {
+         await   dispatch(asyncSuperAdminSignUp({ formData }))
         }
-        else{
-            dispatch(asyncSignupUser({formData}))
-        }
+
+        
     }
-    const handleLogin = (e) => {
+    const handleLogin = async(e) => {
         console.log(formData.userType)
         e.preventDefault()
         if (formData.userType === 'Admin') {
-            dispatch(asyncAdminLogin({ formData }))
+            await dispatch(asyncAdminLogin({ formData }))
         }
         if(formData.userType==='customer') {
-            dispatch(asyncSignIn({ formData }))
+            await dispatch(asyncSignIn({ formData }))
         }
         if(formData.userType==='SuperAdmin'){
-            dispatch(asyncSuperAdminSignIn({formData}))
+            await dispatch(asyncSuperAdminSignIn({formData}))
         }
     }
-
     const handleLogout = async (e) => {
         e.preventDefault()
         if (user?.userType === 'Admin') {
-            await dispatch(asyncLogoutAdmin({ formData }))
-        }
+            await dispatch(asyncLogoutAdmin());
+                }
         if (user?.userType === 'customer') {
-          await  dispatch(asyncSignOut({ formData }))
+          await  dispatch(asyncSignOut())
         }
         if(user?.userType=='SuperAdmin'){
-            await dispatch(asyncSignOutSuperAdmin({formData}))
+            await dispatch(asyncSignOutSuperAdmin())
         }
     }
     const isAdmin = isAuth && user.userType === 'Admin';
@@ -167,14 +170,18 @@ const Nav = () => {
  
     return (
         <>
-            <div className="flex gap-[20px] justify-around items-center h-[10vh] bg-[#96B415]">
+            <div className="flex gap-[20px] justify-around items-center h-[10vh] bg-[#96B415] sticky top-[0%] z-[99]">
+                <button onClick={toggleDrawer(true)} className="flex items-center justify-center w-8 h-8 text-white rounded-full border-2 border-white">
+                    <FaBars />
+                </button>
                 <div className="flex items-center gap-5">
                     <h1 className="ml-5 text-xl">
-                        <img src="/RGS-New-Logo.webp" className="h-12" alt="" />
+                        <Link to='/'>
+                            <img src="/RGS-New-Logo.webp" className="h-12" alt="" />
+
+                        </Link>
                     </h1>
-                    <button onClick={toggleDrawer(true)} className="flex items-center justify-center w-8 h-8 text-white rounded-full border-2 border-white">
-                        <FaBars />
-                    </button>
+                    
                 </div>
 
                 <div className="hidden md:flex items-center rounded-full bg-white text-black-200 border border-gray-300">
@@ -211,18 +218,18 @@ const Nav = () => {
                 <div className="flex">
                     <Link to='/wishlist' className="flex gap-2 items-center text-white text-lg">
                         <FaHeart />
-                        <p className='hidden md:block'>Wishlist</p>
+                        <p className='hidden md:block'>WISHLIST</p>
                     </Link>
                 </div>
 
                 <div className="flex bg-white rounded-full w-[100px] h-[35px] justify-center ">
                     <Link to='/cart' className="flex gap-2 items-center  text-lg ">
                         <FaShoppingBag />
-                        <p className='hidden md:block'>Cart</p>
+                        <p className='hidden md:block'>CART</p>
                     </Link>
                 </div>
             </div>
-            <div className="hidden md:flex justify-between p-[10px]">
+            <div className="hidden md:flex justify-between p-[10px] ">
                 <div className=" md:left flex w-[50%] justify-evenly">
                     {links.map((link, index) => (
                         <Link to={link.to} key={index}>
@@ -364,17 +371,17 @@ const Nav = () => {
                             <h1 className='text-center'>MY ACCOUNT</h1>
                             <Link to="/dashboard" className="" style={{ textDecoration: 'none' }}>
                                 <ListItem button>
-                                    <ListItemText primary="Dashboard" />
+                                    <ListItemText primary="DASHBOARD" />
                                 </ListItem>
                             </Link>
                             <Link to="/orders" className="" style={{ textDecoration: 'none' }}>
                                 <ListItem button>
-                                    <ListItemText primary="Orders" />
+                                    <ListItemText primary="ORDERS" />
                                 </ListItem>
                             </Link>
                             <Link to="/edit-address" className="" style={{ textDecoration: 'none' }}>
                                 <ListItem button>
-                                    <ListItemText primary="Addresses" />
+                                    <ListItemText primary="ADDRESS" />
                                 </ListItem>
                             </Link>
                             <Link to="/account-details" className="" style={{ textDecoration: 'none' }}>
@@ -511,14 +518,13 @@ const Nav = () => {
                             <Tabs
                                 value={selectedTab}
                                 onChange={handleTabChange}
-                                sx={{ backgroundColor: '#dadada', color: 'black', width: '300px' }}
+                                sx={{ backgroundColor: '#dadada', color: 'black', width: '350px' }}
                             >
                                 <Tab label="Sign In" sx={{ color: 'black', width: '50%' }} />
                                 <Tab label="Sign Up" sx={{ color: 'black', width: '50%' }} />
                             </Tabs>
                             {selectedTab === 0 && (
                                 <div className='p-8'>
-                                    {/* Sign In Form */}
                                             <form className="flex flex-col space-y-4" onSubmit={handleLogin}>
                                                 <input
                                                     type="email"

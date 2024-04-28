@@ -116,6 +116,7 @@ export const AddressForm = () => {
 
 export const Address = () => {
     const { user, isAuth } = useSelector((state) => state.user);
+    console.log(user)
 const dispatch = useDispatch()
     // Function to handle delete address
     const handleDeleteAddress = (addressIndex) => {

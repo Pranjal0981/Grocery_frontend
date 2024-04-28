@@ -135,7 +135,7 @@ const Pagination = ({ currentPage, onPageChange }) => {
                 )}
                 {!isMobile && (
 
-                    <div className="bg-white rounded-lg shadow-md p-6 mb-6 sticky top-[10%]">
+                    <div className="bg-white w-[20vw] rounded-lg shadow-md p-6 mb-6 sticky top-[10%]">
                         <h2 className="text-xl font-semibold mb-4 ">Filters</h2>
                         <div className="space-y-4">
                             <div className="flex flex-col">

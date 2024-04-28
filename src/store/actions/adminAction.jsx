@@ -2,6 +2,7 @@ import axios from '../../config/axios'
 import { saveStoreProducts, saveAllUsers, saveOrders, saveDashBoardInfo, setLoading } from '../reducers/adminSlice';
 import { saveProduct } from '../reducers/productSlice';
 import { saveUser, removeUser } from '../reducers/userSlice'
+import { toast } from 'react-toastify';
 export const asyncCurrentAdmin = (token) => async (dispatch, getState) => {
     try {
         const response = await axios.post('/admin/currentAdmin', null, {
@@ -18,10 +19,13 @@ export const asyncAdminRegister=(data)=>async(dispatch,getState)=>{
     try {
         console.log(data)
         const response=await axios.post('/admin/signup',data)
-        console.log(response)
+        toast.success("Admin Signup Successfully")
+
         dispatch(saveUser(response.data))
     } catch (error) {
-        console.log(error)        
+        toast.error("Error in admin signup")
+
+
     }
 }
 
@@ -31,6 +35,8 @@ export const asyncAdminLogin = (data, navigate) => async (dispatch, getState) =>
     try {
         const res = await axios.post('/admin/login', data);
         await dispatch(asyncCurrentAdmin(res.data.token));
+        toast.success("Admin Signin Successfully")
+
     } catch (error) {
         if (error.response && error.response.status === 401) {
             toast.error('Invalid email or password. Please try again.');
@@ -42,12 +48,11 @@ export const asyncAdminLogin = (data, navigate) => async (dispatch, getState) =>
 
 };
 
-export const asyncLogoutAdmin = (navigate) => async (dispatch, getState) => {
+export const asyncLogoutAdmin = () => async (dispatch, getState) => {
     try {
         const res = await axios.get('/admin/logout');
         await dispatch(removeUser());
         toast.success('Logged out.');
-        navigate('/')
     } catch (error) {
         if (error.response && error.response.status === 401) {
             toast.error('Logout Error.');
@@ -61,7 +66,6 @@ export const asyncLogoutAdmin = (navigate) => async (dispatch, getState) => {
 export const asyncFetchOrders = (page = 1,store) => async (dispatch, getState) => {
     try {
         const response = await axios.get(`/admin/fetchOrders/${store}?page=${page}`);
-        console.log(response);
         dispatch(saveOrders(response.data.data));
     } catch (error) {
         console.log(error);
@@ -72,7 +76,6 @@ export const fetchProductsByStore = (store) => async (dispatch, getState) => {
     try {
         dispatch(setLoading(true));
         const response = await axios.get(`/admin/fetchProductStore/${store}`)
-        console.log(response)
         dispatch(saveStoreProducts(response.data.products))
     } catch (error) {
         console.log(error)
@@ -96,16 +99,19 @@ export const asyncfetchAllusers = (currentPage) => async (dispatch, getState) =>
 export const asyncAdminDeleteUser = (userId) => async (dispatch, getState) => {
     try {
         const response = await axios.delete(`/admin/deleteUser/${userId}`)
+        toast.success("User deleted")
+
         dispatch(asyncfetchAllusers())
     } catch (error) {
         console.log(error)
+        toast.error("Error deleting user")
+
     }
 }
 
 export const asyncFetchActiveUser = (page = 1) => async (dispatch, getState) => {
     try {
         const response = await axios.get(`/admin/fetchLastHourActiveUsers?page=${page}`);
-        console.log(response)
         dispatch(saveAllUsers(response.data.activeUsers));
     } catch (error) {
         console.log(error);
@@ -116,7 +122,6 @@ export const asyncFetchActiveUser = (page = 1) => async (dispatch, getState) => 
 export const asyncFetchInactiveUsers = (page = 1) => async (dispatch, getState) => {
     try {
         const response = await axios.get(`/admin/fetchInactiveUsers?page=${page}`);
-        console.log(response)
         dispatch(saveAllUsers(response.data.inactiveUsers));
     } catch (error) {
         console.log(error);
@@ -126,7 +131,6 @@ export const asyncFetchInactiveUsers = (page = 1) => async (dispatch, getState) 
 export const asyncFetchOutOfStock = (page = 1) => async (dispatch, getState) => {
     try {
         const response = await axios.get(`/admin/fetchOutOfStock?page=${page}`)
-        console.log(response)
         dispatch(saveStoreProducts(response.data.outOfStockProducts))
     } catch (error) {
         toast.error(error)
@@ -134,22 +138,14 @@ export const asyncFetchOutOfStock = (page = 1) => async (dispatch, getState) => 
     }
 }
 
-export const asyncDeleteProducts = (productId, productType) => async (dispatch, getState) => {
-    try {
-        const response = await axios.delete(`/admin/deleteProducts/${productType}/${productId}`);
-        console.log(response)
-        dispatch(asyncFetchOutOfStock())
-    } catch (error) {
-        toast.error(error)
-    }
-}
 
 
 export const asyncDelProduct = (productId) => async (dispatch, getState) => {
     try {
         const response = await axios.delete(`/admin/deleteProducts/${productId}`);
         console.log(response)
-        dispatch(asyncFetchAllProducts())
+        toast.warn('Product Deleted')
+        dispatch(asyncFetchOutOfStock())
     } catch (error) {
         toast.error(error)
     }
@@ -197,9 +193,13 @@ export const asyncAdminBlockUser = (userId) => async (dispatch, getState) => {
     try {
         const response = await axios.post(`/admin/blockUser/${userId}`)
         console.log(response)
+        toast.warn("User blocked")
+
         dispatch(asyncfetchAllusers())
     } catch (error) {
         console.log(error)
+        toast.error("User blocked")
+
     }
 }
 
@@ -209,7 +209,10 @@ export const asyncAdminUnblockUser = (userID) => async (dispatch, getState) => {
     try {
         const response = await axios.post(`/admin/unblockUser/${userID}`)
         console.log(response)
+        toast.success("User Unblocked")
+
         dispatch(asyncfetchAllusers())
+
     } catch (error) {
         console.log(error)
     }
@@ -237,6 +240,8 @@ export const asyncUploadProducts = (formData) => async (dispatch, getState) => {
                 'Content-Type': 'multipart/form-data' // Set content type to multipart/form-data
             }
         });
+        toast.success("Product Uploaded ")
+
         console.log(response)
     } catch (error) {
         // Handle error

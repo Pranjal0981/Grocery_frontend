@@ -49,8 +49,8 @@ const ExploreProductById = () => {
                     <div className="md:border-l-2 md:border-red-200 md:pl-8">
                         <h1 className="text-3xl font-semibold text-gray-900 mb-4">{product?.ProductName}</h1>
                         <p className="mb-4 text-gray-700">{product.description}</p>
-                        <p className="mb-4 text-lg font-medium text-gray-900">Main Price: <s>Rs{product?.MRP}</s></p>
-                        <p className="mb-4 text-lg font-medium text-gray-900">Discounted Price: Rs {product?.sellingPrice}</p>
+                        <p className="mb-4 text-lg font-medium text-gray-900">MRP: <s>Rs{product?.MRP}</s></p>
+                        <p className="mb-4 text-lg font-medium text-gray-900"> Rs {product?.sellingPrice}</p>
                         <p className="mb-4 text-lg font-medium text-gray-900">Product Code: {product?.ProductCode}</p>
                         <p className="mb-4 text-lg font-medium text-gray-900">{product?.category}</p>
                         <p className="mb-4 text-lg font-medium text-gray-900">Stock: {product?.stock}</p>

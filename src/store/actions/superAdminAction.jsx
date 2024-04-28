@@ -3,7 +3,7 @@ import { saveStoreProducts, saveAllUsers, saveOrders, setLoading } from '../redu
 import { saveProduct } from '../reducers/productSlice';
 import { saveUser, removeUser } from '../reducers/userSlice'
 import { saveDashBoardInfo } from '../reducers/superAdminSlice';
-
+import { toast } from 'react-toastify';
 export const asyncCurrentSuperAdmin = (token) => async (dispatch, getState) => {
     try {
         const response = await axios.post('/superadmin/currentsuperAdmin', null, {
@@ -20,8 +20,9 @@ export const asyncSuperAdminSignUp = (data) => async (dispatch, getState) => {
     try {
         console.log(data)
         const response = await axios.post('/superadmin/signup', data)
-        console.log(response)
         dispatch(saveUser(response.data))
+        toast.success("Signup sucessfully")
+
     } catch (error) {
         console.log(error)
     }
@@ -33,6 +34,8 @@ export const asyncSuperAdminSignIn = (data, navigate) => async (dispatch, getSta
     try {
         const res = await axios.post('/superadmin/login', data);
         await dispatch(asyncCurrentSuperAdmin(res.data.token));
+        toast.success("LoggedIn sucessfully")
+
     } catch (error) {
         if (error.response && error.response.status === 401) {
             toast.error('Invalid email or password. Please try again.');
@@ -89,9 +92,13 @@ export const asyncfetchAllusers = (currentPage) => async (dispatch, getState) =>
 export const asyncSuperAdminDeleteUser = (userId) => async (dispatch, getState) => {
     try {
         const response = await axios.delete(`/superadmin/deleteUser/${userId}`)
+        toast.success("User Deleted")
+
         dispatch(asyncfetchAllusers())
     } catch (error) {
         console.log(error)
+        toast.success("Error deleting user")
+
     }
 }
 
@@ -99,6 +106,7 @@ export const asyncFetchActiveUser = (page = 1) => async (dispatch, getState) => 
     try {
         const response = await axios.get(`/superadmin/fetchLastHourActiveUsers?page=${page}`);
         console.log(response)
+
         dispatch(saveAllUsers(response.data.activeUsers));
     } catch (error) {
         console.log(error);
@@ -154,6 +162,8 @@ export const asyncSuperAdminBlockUser = (userId) => async (dispatch, getState) =
     try {
         const response = await axios.post(`/superadmin/blockUser/${userId}`)
         console.log(response)
+        toast.warn("User Blocked")
+
         dispatch(asyncfetchAllusers())
     } catch (error) {
         console.log(error)
@@ -166,9 +176,13 @@ export const asyncSuperAdminUnblockUser = (userID) => async (dispatch, getState)
     try {
         const response = await axios.post(`/superadmin/unblockUser/${userID}`)
         console.log(response)
+        toast.warn("User Unblocked")
+
         dispatch(asyncfetchAllusers())
     } catch (error) {
         console.log(error)
+        toast.error("Error in unblocking user")
+
     }
 }
 

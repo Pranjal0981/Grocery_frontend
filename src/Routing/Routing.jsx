@@ -55,6 +55,7 @@ const Routing = () => {
             <Route path='/' element={<HomePage />} />
             <Route path='/brand/:title' element={<BrandProducts/>}/>
             <Route path='/dashboard' element={<Dashboard />} />
+            <Route path='/store/:store' element={<Storeproduct/>}/>
             <Route path='/forget-password' element={<ForgetPassword />} />
             <Route path="/forget-link/:id" element={<ResetPassword userType="user" />} />
             <Route path='/superadmin/allproducts' element={isSuperAdmin ? <AllProducts /> : <Unauthorized />} />

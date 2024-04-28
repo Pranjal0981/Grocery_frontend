@@ -54,3 +54,23 @@ html,body{
 ::-webkit-scrollbar {
   display: none;
 }
+
+
+/* toastify-custom.css */
+
+/* Success notification */
+.Toastify__toast--success {
+  background-color: #4caf50;
+  color: #fff;
+}
+
+/* Error notification */
+.Toastify__toast--error {
+  background-color: #f44336;
+  color: #fff;
+}
+
+/* Notification text */
+.Toastify__toast-body {
+  font-family: Arial, sans-serif;
+}

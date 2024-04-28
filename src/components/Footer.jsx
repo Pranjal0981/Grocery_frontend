@@ -23,7 +23,7 @@ function FooterItem({ title, items }) {
 
 function Footer() {
   return (
-    <footer>
+    <footer className="mt-[20vh]">
       {/* top part */}
       <div className="border grid gap-4 grid-cols-1 sm:grid-cols-3 md:grid-cols-4 ">
         <FooterItem

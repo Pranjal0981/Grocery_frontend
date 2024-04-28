@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { asyncFetchOutOfStock, asyncDeleteProducts } from '../store/actions/adminAction';
+import { asyncFetchOutOfStock, asyncDelProduct } from '../store/actions/adminAction';
 
 import CustomSpinner from '../Spinner';
 
@@ -30,9 +30,9 @@ const OutOfStock = () => {
         }
     };
 
-    const handleDeleteProduct = (productId, productType) => {
+    const handleDeleteProduct = (productId) => {
         if (window.confirm('Are you sure you want to delete this product?')) {
-            dispatch(asyncDeleteProducts(productId, productType));
+            dispatch(asyncDelProduct(productId));
         }
     };
 
@@ -56,7 +56,7 @@ const OutOfStock = () => {
                                             <p className="text-gray-700 mb-4">{product.description}</p>
                                             <p className="text-gray-700 mb-4">Price: {product.price}</p>
                                             <p className="text-gray-700 mb-4">Product ID: {product._id}</p>
-                                            <button onClick={() => handleDeleteProduct(product?._id, product?.ProductModel)} className="bg-red-500 text-white px-4 py-2 rounded">Delete</button>
+                                            <button onClick={() => handleDeleteProduct(product?._id)} className="bg-red-500 text-white px-4 py-2 rounded">Delete</button>
                                         </div>
                                     </div>
                                 ))}
