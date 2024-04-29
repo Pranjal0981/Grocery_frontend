@@ -64,6 +64,7 @@ export const asyncLogoutAdmin = () => async (dispatch, getState) => {
 export const asyncFetchOrders = (page = 1,store) => async (dispatch, getState) => {
     try {
         const response = await axios.get(`/admin/fetchOrders/${store}?page=${page}`);
+        console.log(response)
         dispatch(saveOrders(response.data.data));
     } catch (error) {
         console.log(error);

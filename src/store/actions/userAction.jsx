@@ -72,7 +72,7 @@ export const asyncFetchWishlist=(id)=>async(dispatch,getState)=>{
         console.log(response)
         dispatch(saveWishlist(response.data.data.products))
     } catch (error) {
-        console.log(error)
+        toast.error(error.response.data.message)
     }
 }
 
@@ -81,7 +81,7 @@ export const asyncAddToWishlist=(userId,data)=>async(dispatch,getState)=>{
         const resposne = await axios.post(`/user/addToWishlist/${userId}`,data)
         console.log(resposne)
     } catch (error) {
-        console.log(error)
+        toast.error(error.response.data.message)
     }
 }
 
@@ -98,7 +98,7 @@ export const asyncAddToCart = (userId, data) => async (dispatch, getState) => {
        await dispatch(saveCheckOutCart(response.data))
     } catch (error) {
         console.log(error)
-        toast.error(error)
+        toast.error(error.response.data.message)
 
     }
 }
@@ -112,7 +112,7 @@ export const asyncDeleteFromWishlist = (userId, productId) => async (dispatch, g
         dispatch(asyncFetchWishlist(userId))
     } catch (error) {
         console.log(error)
-        toast.error("Error deleting product")
+        toast.error(error.response.data.message)
 
     }
 }
@@ -124,7 +124,7 @@ export const asyncFetchCartProduct=(userId)=>async(dispatch,getState)=>{
         console.log(response)
         dispatch(saveCheckOutCart(response.data))
     } catch (error) {
-        console.log(error)
+        toast.error(error.response.data.message)
     }
 }
 
@@ -133,8 +133,6 @@ export const asyncSendForgetLink=(email)=>async(dispatch,getState)=>{
     try {
         const response = await axios.post('/user/send-mail',email)
         toast.success("Reset mail sent")
-
-        console.log(response)
     } catch (error) {
         console.log(error)
         toast.error("Error sending mail")
@@ -146,11 +144,8 @@ export const asyncSendForgetLink=(email)=>async(dispatch,getState)=>{
 export const asyncResetPassword = (id, password) => async (dispatch, getState) => {
     try {
         const response = await axios.post(`/user/forget-link/${id}`, { password }); // Pass password as an object
-        console.log(response);
         toast.success("Password Reset Successfully")
-
     } catch (error) {
-        console.log(error);
         toast.error("Error reseting password")
 
     }
@@ -159,23 +154,18 @@ export const asyncResetPassword = (id, password) => async (dispatch, getState) =
 export const asyncDeleteCheckoutCart=(userId,productId)=>async(dispatch,getState)=>{
     try {
         const response = await axios.delete(`/user/deleteFromCart/${userId}/${productId}`)
-        
-        console.log(response)
         toast.success("Product Deleted")
 
         dispatch(asyncFetchCartProduct(userId))
     } catch (error) {
-        console.log(error)
-        toast.error(error)
+        toast.error(error.response.data.message)
 
     }
 }
 
 export const asyncAddAddress=(data)=>async(dispatch,getState)=>{
     try {
-        console.log(data)
         const response=await axios.post(`/user/addAddress`,data)
-        console.log(response)
         toast.success("Address Added")
 
         dispatch(saveUser(response.data.user))
@@ -263,7 +253,6 @@ export const asyncUpdateStock = (productId, newStock)=>async(dispatch,getState)=
     try {
         console.log(productId,newStock)
         const response = await axios.post(`/products/updateProductStock/${productId}`, { newStock })
-        console.log(response)
     } catch (error) {
      console.log(error)   
     }
@@ -289,6 +278,6 @@ export const asyncContactUs=(data)=>async(dispatch,getState)=>{
         const response=await axios.post('/user/contactus',data)
         toast.success("Thanks for contacting with us! We will reply shortly")
     } catch (error) {
-        toast.error('Please try again for contacting')
+        toast.error('Please try again')
     }
 }

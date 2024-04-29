@@ -9,10 +9,9 @@ export const asyncCurrentSuperAdmin = (token) => async (dispatch, getState) => {
         const response = await axios.post('/superadmin/currentsuperAdmin', null, {
             headers: { Authorization: `Bearer ${token}` }
         });
-        console.log(response);
         await dispatch(saveUser(response.data.superAdmin));
     } catch (error) {
-        console.error(error);
+        toast.error(error.response.data.message)
     }
 };
 
@@ -24,7 +23,7 @@ export const asyncSuperAdminSignUp = (data) => async (dispatch, getState) => {
         toast.success("Signup sucessfully")
 
     } catch (error) {
-        console.log(error)
+       toast.error(error.response.data.message)
     }
 }
 
@@ -65,10 +64,9 @@ export const fetchProductsByStore = (store) => async (dispatch, getState) => {
     try {
         dispatch(setLoading(true));
         const response = await axios.get(`/superadmin/fetchProductStore/${store}`)
-        console.log(response)
         dispatch(saveStoreProducts(response.data.products))
     } catch (error) {
-        console.log(error)
+        toast.error(error.response.data.message)
     }
     finally {
         dispatch(setLoading(false));
@@ -80,7 +78,7 @@ export const asyncfetchAllusers = (currentPage) => async (dispatch, getState) =>
         const response = await axios.get(`/superadmin/fetchAllUsers?page=${currentPage}`);
         dispatch(saveAllUsers(response.data.users));
     } catch (error) {
-        console.log(error);
+        toast.error(error.response.data.message)
     }
 };
 
@@ -91,7 +89,6 @@ export const asyncSuperAdminDeleteUser = (userId) => async (dispatch, getState) 
 
         dispatch(asyncfetchAllusers())
     } catch (error) {
-        console.log(error)
         toast.success("Error deleting user")
 
     }
@@ -100,65 +97,59 @@ export const asyncSuperAdminDeleteUser = (userId) => async (dispatch, getState) 
 export const asyncFetchActiveUser = (page = 1) => async (dispatch, getState) => {
     try {
         const response = await axios.get(`/superadmin/fetchLastHourActiveUsers?page=${page}`);
-        console.log(response)
-
         dispatch(saveAllUsers(response.data.activeUsers));
     } catch (error) {
-        console.log(error);
+        toast.error(error.response.data.message)
     }
 };
 
 export const asyncFetchInactiveUsers = (page = 1) => async (dispatch, getState) => {
     try {
         const response = await axios.get(`/superadmin/fetchInactiveUsers?page=${page}`);
-        console.log(response)
         dispatch(saveAllUsers(response.data.inactiveUsers));
     } catch (error) {
-        console.log(error);
+        toast.error(error.response.data.message)
     }
 }
 
 export const asyncFetchOutOfStock = (page = 1) => async (dispatch, getState) => {
     try {
         const response = await axios.get(`/superadmin/fetchOutOfStock?page=${page}`)
-        console.log(response)
         dispatch(saveStoreProducts(response.data.outOfStockProducts))
     } catch (error) {
         toast.error(error)
-        console.log(error)
+        toast.error(error.response.data.message)
     }
 }
 
 export const asyncDelProduct = (productId) => async (dispatch, getState) => {
     try {
         const response = await axios.delete(`/admin/deleteProducts/${productId}`);
-        console.log(response)
+        toast.success(error.response.data.message)
         dispatch(asyncFetchAllProducts())
     } catch (error) {
-        toast.error(error)
+        toast.error(error.response.data.message)
     }
 }
 
 export const fetchDashBoardInfo = () => async (dispatch, getState) => {
     try {
         const response = await axios.get('/superadmin/dashboard/fetchAllInfo')
-        console.log(response.data.data)
         dispatch(saveDashBoardInfo(response.data.data))
 
     } catch (error) {
-        console.log(error)
+        toast.error(error.response.data.message)
     }
 }
 
 export const asyncSuperAdminBlockUser = (userId) => async (dispatch, getState) => {
     try {
         const response = await axios.post(`/superadmin/blockUser/${userId}`)
-        console.log(response)
         toast.warn("User Blocked")
 
         dispatch(asyncfetchAllusers())
     } catch (error) {
-        console.log(error)
+        toast.error(error.response.data.message)
     }
 }
 
@@ -181,7 +172,6 @@ export const asyncFetchAllProducts = (page, searchTerm = '', searchType = '') =>
         dispatch(setLoading(true)); // Set loading state to true before fetching data
 
         const response = await axios.get(`/superadmin/getallproduct?page=${page}&q=${searchTerm}&type=${searchType}`);
-        console.log(response);
         dispatch(saveProduct(response.data.data));
         dispatch(setLoading(false)); // Set loading state to false after successfully fetching data
     } catch (error) {

@@ -576,7 +576,7 @@ const Nav = () => {
                                                 </div>
                                                 {formData.userType === 'Admin' && ( // Show store name dropdown only for Vendor
                                                     <select
-                                                        name="storeName"
+                                                        name="store"
                                                         value={formData.storeName}
                                                         onChange={handleInputChange}
                                                         className="border border-gray-300 px-4 py-2 rounded focus:outline-none"
@@ -655,7 +655,7 @@ const Nav = () => {
                                                 </div>
                                                 {formData.userType === 'Admin' && ( // Show store name dropdown only for Vendor
                                                     <select
-                                                        name="storeName"
+                                                        name="store"
                                                         value={formData.storeName}
                                                         onChange={handleInputChange}
                                                         className="border border-gray-300 px-4 py-2 rounded focus:outline-none"

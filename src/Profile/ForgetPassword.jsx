@@ -14,9 +14,7 @@ const ForgetPassword = () => {
         setLoading(true);
 
         try {
-            console.log('Form submitted with email:', email);
             await dispatch(asyncSendForgetLink({ email }));
-            // Optionally, handle success message or redirect
         } catch (err) {
             setError('Error sending reset link. Please try again.');
         } finally {

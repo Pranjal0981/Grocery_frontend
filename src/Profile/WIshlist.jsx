@@ -2,7 +2,6 @@ import React, { useEffect } from "react";
 import { asyncFetchWishlist, asyncDeleteFromWishlist } from "../store/actions/userAction";
 import { useSelector, useDispatch } from 'react-redux';
 import { IoIosClose } from "react-icons/io";
-import { FaTrashAlt } from 'react-icons/fa';
 
 const Wishlist = () => {
     const dispatch = useDispatch();
@@ -25,7 +24,6 @@ const wishlistLength=wishlist?.length ||0
                 <div className="text-center text-lg text-gray-500">No items in the wishlist</div>
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {/* Render cart items for Men */}
                     {wishlist?.map(product => (
                         <div key={product?._id} className="bg-white p-4 rounded-lg shadow-md relative">
                             <img src={product?.image?.url} alt={product?.brand} className="w-full h-48 object-cover mb-4" />
