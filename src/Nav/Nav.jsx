@@ -167,7 +167,7 @@ const Nav = () => {
  
     return (
         <>
-            <div className="flex gap-[20px] justify-around items-center h-[10vh] bg-[#96B415] sticky top-[0%] z-[99]">
+            <div className="flex gap-[20px] justify-around items-center h-[10vh] w-auto bg-[#96B415] sticky top-[0%] z-[99]">
                 <button onClick={toggleDrawer(true)} className="flex items-center justify-center w-8 h-8 text-white rounded-full border-2 border-white">
                     <FaBars />
                 </button>
