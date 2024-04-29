@@ -72,6 +72,7 @@ export const asyncFetchWishlist=(id)=>async(dispatch,getState)=>{
         console.log(response)
         dispatch(saveWishlist(response.data.data.products))
     } catch (error) {
+        console.log(error)
         toast.error(error.response.data.message)
     }
 }
@@ -79,7 +80,7 @@ export const asyncFetchWishlist=(id)=>async(dispatch,getState)=>{
 export const asyncAddToWishlist=(userId,data)=>async(dispatch,getState)=>{
     try {
         const resposne = await axios.post(`/user/addToWishlist/${userId}`,data)
-        console.log(resposne)
+        toast.success("Product Added to wishlist")
     } catch (error) {
         toast.error(error.response.data.message)
     }
@@ -90,14 +91,11 @@ export const asyncAddToWishlist=(userId,data)=>async(dispatch,getState)=>{
 export const asyncAddToCart = (userId, data) => async (dispatch, getState) => {
 
     try {
-        console.log(data)
         const response = await axios.post(`/user/addToCart/${userId}`, data)
-        console.log(response)
         toast.success("Added to cart")
 
        await dispatch(saveCheckOutCart(response.data))
     } catch (error) {
-        console.log(error)
         toast.error(error.response.data.message)
 
     }

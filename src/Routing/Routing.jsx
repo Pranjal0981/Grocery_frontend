@@ -87,7 +87,7 @@ const Routing = () => {
             <Route path='/admin/store/:store' element={<ProductStore />} />
             <Route path='/shop' element={<Product />} />
             <Route path='/account-details' element={<AccountDetails />} />
-            <Route path='/super/fetchallusers' element={isSuperAdmin ? <AllUser /> : <Unauthorized />} />
+            <Route path='/superadmin/fetchallusers' element={isSuperAdmin ? <AllUser /> : <Unauthorized />} />
             <Route path='/admin/fetchOutOfStockProducts' element={isAdmin ? <OutOfStock /> : <Unauthorized />} />
             <Route path='/superadmin/activeMembers' element={isSuperAdmin ? <ActiveUser /> : <Unauthorized />} />
             <Route path='/superadmin/inactiveMembers' element={isSuperAdmin ? <InactiveUser /> : <Unauthorized />} />

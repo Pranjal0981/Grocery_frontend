@@ -391,11 +391,7 @@ const Nav = () => {
                                     <ListItemText primary="WISHLIST" />
                                 </ListItem>
                             </Link>
-                            <Link to="/compare" className="" style={{ textDecoration: 'none' }}>
-                                <ListItem button>
-                                    <ListItemText primary="COMPARE" />
-                                </ListItem>
-                            </Link>
+                           
                             <Link to="/logout" className="" style={{ textDecoration: 'none' }} onClick={handleLogout}>
                                 <ListItem button>
                                     <ListItemText primary="LOGOUT" />
@@ -461,11 +457,7 @@ const Nav = () => {
                                         </ListItem>
                                     </Link>
 
-                                    <Link to="/superadmin/allOrders" className="" style={{ textDecoration: 'none' }}>
-                                        <ListItem button>
-                                            <ListItemText primary="All Orders" />
-                                        </ListItem>
-                                    </Link>
+                                    
 
                                     <Link to="/superadmin/allproducts" className="" style={{ textDecoration: 'none' }}>
                                         <ListItem button>
@@ -480,12 +472,6 @@ const Nav = () => {
                                     <Link to="/superadmin/inactiveMembers" className="" style={{ textDecoration: 'none' }}>
                                         <ListItem button>
                                             <ListItemText primary="InActive Users" />
-                                        </ListItem>
-                                    </Link>
-
-                                    <Link to="/superadmin/fetchOutOfStockProducts" className="" style={{ textDecoration: 'none' }}>
-                                        <ListItem button>
-                                            <ListItemText primary="Out Of Stock" />
                                         </ListItem>
                                     </Link>
                                     {/* Store Section */}
@@ -511,7 +497,7 @@ const Nav = () => {
                             </div>
                 ):(
                     <div className="flex justify-center items-center h-screen">
-                        <div className="bg-gray-200 p-8 rounded-lg shadow-md">
+                        <div className="bg-gray-200  rounded-lg shadow-md">
                             <Tabs
                                 value={selectedTab}
                                 onChange={handleTabChange}
@@ -521,7 +507,7 @@ const Nav = () => {
                                 <Tab label="Sign Up" sx={{ color: 'black', width: '50%' }} />
                             </Tabs>
                             {selectedTab === 0 && (
-                                <div className='p-8'>
+                                <div className='p-5'>
                                             <form className="flex flex-col space-y-4" onSubmit={handleLogin}>
                                                 <input
                                                     type="email"
@@ -599,7 +585,7 @@ const Nav = () => {
                                 </div>
                             )}
                             {selectedTab === 1 && (
-                                <div className='p-8'>
+                                <div className='p-5'>
                                     {/* Sign Up Form */}
                                             <form className="flex flex-col space-y-4" onSubmit={handleSubmit}>
                                                 <input

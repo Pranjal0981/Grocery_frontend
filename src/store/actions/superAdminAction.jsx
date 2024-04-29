@@ -49,7 +49,7 @@ export const asyncSignOutSuperAdmin = (navigate) => async (dispatch, getState) =
         const res = await axios.get('/superadmin/logout');
         await dispatch(removeUser());
         toast.success('Logged out.');
-        navigate('/')
+       
     } catch (error) {
         if (error.response && error.response.status === 401) {
             toast.error('Logout Error.');
@@ -76,19 +76,21 @@ export const fetchProductsByStore = (store) => async (dispatch, getState) => {
 export const asyncfetchAllusers = (currentPage) => async (dispatch, getState) => {
     try {
         const response = await axios.get(`/superadmin/fetchAllUsers?page=${currentPage}`);
+        console.log(response)
         dispatch(saveAllUsers(response.data.users));
     } catch (error) {
         toast.error(error.response.data.message)
     }
 };
 
-export const asyncSuperAdminDeleteUser = (userId) => async (dispatch, getState) => {
+export const asyncSuperAdminDeleteUser = (userId,page=1) => async (dispatch, getState) => {
     try {
         const response = await axios.delete(`/superadmin/deleteUser/${userId}`)
         toast.success("User Deleted")
-
-        dispatch(asyncfetchAllusers())
+        console.log(response)
+        dispatch(saveAllUsers(response.data.users))
     } catch (error) {
+        console.log(error)
         toast.success("Error deleting user")
 
     }

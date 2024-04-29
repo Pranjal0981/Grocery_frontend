@@ -108,12 +108,12 @@ const Pagination = ({ currentPage, onPageChange }) => {
 
     return (
         <div className=" container mx-auto mt-10 grid gap-6 grid-cols-1 lg:grid-cols-3">
-            <div className="lg:col-span-1">
+            <div className="lg:col-span-1 relative">
                 {/* Sidebar for Filters */}
                 {isMobile && (
                     <>
                         <button
-                            className="block absolute left-[45%] top-[13%] z-[11] md:hidden text-blue-500  font-bold py-2 px-4 rounded "
+                            className="block relative translate-x-[40vw] z-[11] md:hidden text-blue-500  font-bold py-2 px-4 rounded "
                             onClick={toggleMobileFilter}
                         >
                             {isMobileFilterOpen ? (
@@ -193,7 +193,7 @@ const Pagination = ({ currentPage, onPageChange }) => {
                 )}
             </div>
             <div className="lg:col-span-2">
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4">
                     {Array.isArray(product) && product.map((product) => (
                         <div key={product?._id} className="bg-white rounded-lg shadow-md cursor-pointer transition duration-300 ease-in-out transform hover:scale-105" onClick={() => handleExploreProduct(product?._id)}>
                             <img src={product.image.url} alt={product?.ProductName} className="w-full h-40 object-cover mb-4 rounded-t-md" />
@@ -222,6 +222,8 @@ const Pagination = ({ currentPage, onPageChange }) => {
                     </button>
                 </div>
             </div>
+
+
         </div>
     );
 };
@@ -237,8 +239,8 @@ const MobileFilter = ({ filters, handleFilterChange, handleFilterSubmit }) => {
                         <input
                             type="text"
                             id="brandName"
-                            name="brandName"
-                            value={filters.brandName}
+                            name="brand"
+                            value={filters.brand}
                             onChange={handleFilterChange}
                             className="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:border-blue-400"
                         />
@@ -265,28 +267,7 @@ const MobileFilter = ({ filters, handleFilterChange, handleFilterSubmit }) => {
                             className="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:border-blue-400"
                         />
                     </div>
-                    <div className="flex flex-col">
-                        <label htmlFor="color" className="text-sm font-medium mb-1">Colors</label>
-                        <input
-                            type="text"
-                            id="color"
-                            name="color"
-                            value={filters.color}
-                            onChange={handleFilterChange}
-                            className="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:border-blue-400"
-                        />
-                    </div>
-                    <div className="flex flex-col">
-                        <label htmlFor="size" className="text-sm font-medium mb-1">Size</label>
-                        <input
-                            type="number"
-                            id="size"
-                            name="size"
-                            value={filters.size}
-                            onChange={handleFilterChange}
-                            className="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:border-blue-400"
-                        />
-                    </div>
+                  
                     <div className="flex flex-col">
                         <label htmlFor="store" className="text-sm font-medium mb-1">Store</label>
                         <input
