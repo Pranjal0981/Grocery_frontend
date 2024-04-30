@@ -76,7 +76,6 @@ export const fetchProductsByStore = (store) => async (dispatch, getState) => {
 export const asyncfetchAllusers = (currentPage) => async (dispatch, getState) => {
     try {
         const response = await axios.get(`/superadmin/fetchAllUsers?page=${currentPage}`);
-        console.log(response)
         dispatch(saveAllUsers(response.data.users));
     } catch (error) {
         toast.error(error.response.data.message)

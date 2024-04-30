@@ -39,7 +39,6 @@ export const asyncSignIn=(data)=>async(dispatch,getState)=>{
     try {
         console.log(data)
         const response=await axios.post('/user/login',data)
-        console.log(response)
         await dispatch(asyncCurrentUser(response.data.token));
         toast.success("LoggedIn Successfully !")
 
@@ -60,7 +59,6 @@ export const asyncSignOut=(data)=>async(dispacth,getState)=>{
         toast.success("Logout Successfully !")
 
     } catch (error) {
-        console.log(error)
         toast.error("Logout Error !")
 
     }
@@ -69,10 +67,8 @@ export const asyncSignOut=(data)=>async(dispacth,getState)=>{
 export const asyncFetchWishlist=(id)=>async(dispatch,getState)=>{
     try {
         const response=await axios.get(`/user/fetchWishlist/${id}`)
-        console.log(response)
         dispatch(saveWishlist(response.data.data.products))
     } catch (error) {
-        console.log(error)
         toast.error(error.response.data.message)
     }
 }
@@ -93,7 +89,6 @@ export const asyncAddToCart = (userId, data) => async (dispatch, getState) => {
     try {
         const response = await axios.post(`/user/addToCart/${userId}`, data)
         toast.success("Added to cart")
-
        await dispatch(saveCheckOutCart(response.data))
     } catch (error) {
         toast.error(error.response.data.message)
@@ -105,11 +100,9 @@ export const asyncAddToCart = (userId, data) => async (dispatch, getState) => {
 export const asyncDeleteFromWishlist = (userId, productId) => async (dispatch, getState) => {
     try {
         const response = await axios.delete(`/user/deleteFromWishlist/${userId}/${productId}`)
-        console.log(response)
         toast.success("Product Deleted")
         dispatch(asyncFetchWishlist(userId))
     } catch (error) {
-        console.log(error)
         toast.error(error.response.data.message)
 
     }
@@ -119,7 +112,6 @@ export const asyncDeleteFromWishlist = (userId, productId) => async (dispatch, g
 export const asyncFetchCartProduct=(userId)=>async(dispatch,getState)=>{
     try {
         const response=await axios.get(`/user/fetchCart/${userId}`)
-        console.log(response)
         dispatch(saveCheckOutCart(response.data))
     } catch (error) {
         toast.error(error.response.data.message)
@@ -132,7 +124,6 @@ export const asyncSendForgetLink=(email)=>async(dispatch,getState)=>{
         const response = await axios.post('/user/send-mail',email)
         toast.success("Reset mail sent")
     } catch (error) {
-        console.log(error)
         toast.error("Error sending mail")
 
         
@@ -153,7 +144,6 @@ export const asyncDeleteCheckoutCart=(userId,productId)=>async(dispatch,getState
     try {
         const response = await axios.delete(`/user/deleteFromCart/${userId}/${productId}`)
         toast.success("Product Deleted")
-
         dispatch(asyncFetchCartProduct(userId))
     } catch (error) {
         toast.error(error.response.data.message)
@@ -168,7 +158,6 @@ export const asyncAddAddress=(data)=>async(dispatch,getState)=>{
 
         dispatch(saveUser(response.data.user))
     } catch (error) {
-        console.log(error)
         toast.error("Address Error")
 
     }
@@ -177,11 +166,9 @@ export const asyncAddAddress=(data)=>async(dispatch,getState)=>{
 export const asyncDeleteAddress =(index,userId)=>async(dispatch,getState)=>{
     try {
         const response=await axios.delete(`/user/deleteAddress/${userId}/${index}`)
-        console.log(response)
         toast.warn("Address Deleted")
         dispatch(asyncCurrentUser(userId))
     } catch (error) {
-        console.log(error)     
         toast.error("Error deleting address")
 
     }
@@ -191,12 +178,10 @@ export const asyncUpdateUser=(data,userId)=>async(dispatch,getState)=>{
     try {
         console.log(data)
         const response = await axios.post(`/user/update/${userId}`,data)
-        console.log(response)
         toast.success("Updated successfully")
 
         await dispatch(asyncCurrentUser(userId))
     } catch (error) {
-        console.log(error)
         toast.error("Error updating information")
 
     }
@@ -206,12 +191,10 @@ export const asyncUpdateUser=(data,userId)=>async(dispatch,getState)=>{
 export const asyncDeleteAccount = (userId) => async (dispatch, getState) => {
     try {
             const response = await axios.delete(`/user/deleteAccount/${userId}`)
-        console.log(response)
         toast.warn("Account deleted successfully")
 
         await dispatch(removeUser())
     } catch (error) {
-        console.log(error)
         toast.error("Error deleting account")
 
     }
@@ -230,20 +213,17 @@ export const asyncCustomerOrder = (data, userId,userEmail, pdfBlob) => async (di
                 'Content-Type': 'multipart/form-data',
             },
         });
-
-        console.log(response);
     } catch (error) {
-        console.log(error);
+        toast.error('Error!')
     }
 };
 
 export const asyncFetchCustomerOrder=(userId)=>async(dispatch,getState)=>{
     try {
         const resposne = await axios.get(`/user/fetchOrders/${userId}`)
-        console.log(resposne.data)
         dispatch(saveOrders(resposne.data))
     } catch (error) {
-        console.log(error)
+        toast.error("Error fetching order")
     }
 }
 
@@ -258,14 +238,11 @@ export const asyncUpdateStock = (productId, newStock)=>async(dispatch,getState)=
 
 export const asyncReturnRequest = (orderId,userId)=>async(dispatch,getState)=>{
     try {
-        console.log(userId)
         const response=await axios.post(`/user/order/returnRequest/${orderId}`)
         await dispatch(asyncFetchCustomerOrder(userId))
-
         toast.success("Return Requested")
 
     } catch (error) {
-        console.log(error)
         toast.error("Error ")
 
     }

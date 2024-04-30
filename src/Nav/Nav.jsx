@@ -546,7 +546,7 @@ const Nav = () => {
                                                             checked={formData.userType === 'Admin'}
                                                             onChange={handleInputChange}
                                                         />
-                                                        Vendor
+                                                        Admin
                                                     </label>
                                                     <label>
                                                         <input

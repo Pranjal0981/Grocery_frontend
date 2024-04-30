@@ -14,7 +14,6 @@ export const userSlice = createSlice({
     initialState,
     reducers: {
         saveUser: (state, action) => {
-            console.log(action.payload)
             localStorage.setItem("user", JSON.stringify(action.payload));
             state.user = action.payload;
             state.isAuth = true;
@@ -29,7 +28,6 @@ export const userSlice = createSlice({
             state.wishlist = action.payload
         },
         saveCheckOutCart:(state,action)=>{
-            console.log(action.payload)
             state.checkOutCart=action.payload
         }
     },
