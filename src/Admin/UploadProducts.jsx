@@ -19,7 +19,7 @@ const AddProductForm = () => {
     const [store, setStore] = useState(user.store);
     const [productCode,setProductCode]=useState('')
     const [sellingPrice, setSellingPrice] = useState('')
-
+    const [mrp,setMrp]=useState('')
     const categories = [
         { label: "Oral Care & Wellness", link: "/oral-care-wellness" },
         { label: "Atta, Rice & Dal", link: "/atta-rice-dal" },
@@ -56,7 +56,7 @@ const AddProductForm = () => {
         formData.append('sellingPrice', sellingPrice)
         formData.append('productName', productName);
         formData.append('description', description);
-        formData.append('price', price);
+        formData.append('MRP', mrp);
         formData.append('category', category);
         formData.append('brand', brand);
         formData.append('image', image);
@@ -86,7 +86,7 @@ const AddProductForm = () => {
                 </div>
                 <div>
                     <label htmlFor="price" className="block text-sm font-medium text-gray-700">MRP</label>
-                    <input type="number" id="price" value={price} onChange={(e) => setPrice(e.target.value)} className="form-input mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md" />
+                    <input type="number" id="MRP" value={mrp} onChange={(e) => setMrp(e.target.value)} className="form-input mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md" />
                 </div>
 
                 <div>

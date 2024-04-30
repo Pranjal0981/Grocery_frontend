@@ -12,6 +12,7 @@ const ExploreProductById = () => {
     const { id } = useParams();
     const dispatch = useDispatch();
     const { product, loading } = useSelector((state) => state.product);
+    console.log(product)
     const { user } = useSelector((state) => state.user);
     const userId = user?._id;
     console.log(product)
@@ -53,7 +54,6 @@ const ExploreProductById = () => {
                         <p className="mb-4 text-lg font-medium text-gray-900"> Rs {product?.sellingPrice}</p>
                         <p className="mb-4 text-lg font-medium text-gray-900">Product Code: {product?.ProductCode}</p>
                         <p className="mb-4 text-lg font-medium text-gray-900">{product?.category}</p>
-                        <p className="mb-4 text-lg font-medium text-gray-900">Stock: {product?.stock}</p>
                         <div className="mb-4 flex items-center">
                         </div>
                         <div className="mb-4">
