@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { asyncSuperAdminLogin } from '../store/actions/superAdminAction';
-
+import { asyncSuperAdminSignUp,asyncSuperAdminSignIn } from '../store/actions/superAdminAction';
+import { Link } from 'react-router-dom';
 export const SuperAdminLogin = () => {
     const dispatch = useDispatch();
     const [formData, setFormData] = useState({
@@ -16,7 +16,7 @@ export const SuperAdminLogin = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        dispatch(asyncAdminLogin(formData)); // Assuming asyncAdminLogin handles the login logic
+        dispatch(asyncSuperAdminSignIn(formData)); // Assuming asyncAdminLogin handles the login logic
     };
 
     return (
@@ -79,7 +79,7 @@ export const SuperAdminRegistrationForm = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        dispatch(asyncSuperAdminRegister(formData)); // Assuming asyncSuperAdminRegister handles the registration logic
+        dispatch(asyncSuperAdminSignUp(formData)); // Assuming asyncSuperAdminRegister handles the registration logic
     };
 
     return (

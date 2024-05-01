@@ -34,6 +34,7 @@ export const asyncAdminLogin = (data, navigate) => async (dispatch, getState) =>
         const res = await axios.post('/admin/login', data);
         await dispatch(asyncCurrentAdmin(res.data.token));
         toast.success("Admin Signin Successfully")
+        navigate()
 
     } catch (error) {
         if (error.response && error.response.status === 401) {

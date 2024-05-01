@@ -1,10 +1,12 @@
 // AdminLoginForm.jsx
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { asyncAdminRegister } from '../store/actions/adminAction';
+import { asyncAdminLogin, asyncAdminRegister } from '../store/actions/adminAction';
+import { useNavigate } from 'react-router-dom';
 
 export const AdminLoginForm = () => {
     const dispatch = useDispatch();
+    const navigate=useNavigate()
     const [formData, setFormData] = useState({
         email: '',
         password: '',
@@ -18,7 +20,8 @@ export const AdminLoginForm = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        dispatch(asyncAdminLogin(formData)); // Assuming asyncAdminLogin handles the login logic
+        dispatch(asyncAdminLogin(formData, navigate));
+       
     };
 
     return (

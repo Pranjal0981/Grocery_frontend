@@ -36,6 +36,7 @@ import ExchangePolicy from '../components/ExchangePolicy'
 import SupportCenter from '../components/SupportCenter'
 import ContactUs from '../components/ContactUs'
 import { AdminLoginForm, AdminRegistrationForm } from '../Admin/Auth'
+import { SuperAdminLogin, SuperAdminRegistrationForm } from '../SuperAdmin/Auth'
 const Routing = () => {
     const { user, isAuth } = useSelector((state) => state.user)
     const isAdmin = isAuth && user.userType === 'Admin';
@@ -69,6 +70,8 @@ const Routing = () => {
             <Route path='/forget-password' element={<ForgetPassword />} />
             <Route path='/admin/forget-password' element={<ForgetAdminPassword />} />
             <Route path='/superadmin/forget-password' element={<ForgetSuperAdminPassword/>} />
+            <Route path='/superadmin/login' element={<SuperAdminLogin/>}/>
+            <Route path='/superadmin/register' element={<SuperAdminRegistrationForm/>}/>
             <Route path="/forget-link/:id" element={<ResetPassword/>} />
             <Route path="/admin/forget-link/:id" element={<ResetAdminPassword />} />
             <Route path="/superadmin/forget-link/:id" element={<ResetSuperAdminPassword />} />
