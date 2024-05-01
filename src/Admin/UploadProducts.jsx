@@ -9,7 +9,7 @@ const AddProductForm = () => {
     const [purchasePrice, setPurchasePrice] = useState('');
     const [productName, setProductName] = useState('');
     const [description, setDescription] = useState('');
-    const [price, setPrice] = useState('');
+    const [size,setSize]=useState('')
     const [category, setCategory] = useState('');
     const [brand, setBrand] = useState('');
     const [image, setImage] = useState('');
@@ -63,6 +63,7 @@ const AddProductForm = () => {
         formData.append('gst', gst);
         formData.append('cgst', cgst);
         formData.append('stock', stock);
+        formData.append('size', size)
         formData.append('store', store);
         formData.append('productCode', productCode);
 
@@ -93,6 +94,12 @@ const AddProductForm = () => {
 
                     <label htmlFor="purchasePrice" className="block text-sm font-medium text-gray-700">Purchase Price</label>
                     <input type="number" id="purchasePrice" value={purchasePrice} onChange={(e) => setPurchasePrice(e.target.value)} className="form-input mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md" />
+                </div>
+
+                <div>
+
+                    <label htmlFor="size" className="block text-sm font-medium text-gray-700">Size:</label>
+                    <input type="text" id="size" value={size} onChange={(e) => setSize(e.target.value)} className="form-input mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md" />
                 </div>
 
                 <div>
