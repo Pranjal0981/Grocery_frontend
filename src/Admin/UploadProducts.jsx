@@ -34,6 +34,8 @@ const AddProductForm = () => {
         { label: "Laundry & Dishwash", link: "/laundry-dishwash" },
         { label: "Body & Skin Care", link: "/body-skin-care" },
         { label: "Hair Care", link: "/hair-care" },
+        { label: "Uncategorized", link: "/uncategorized" },
+
     ];
     const brands = [
         "Hindustan Unilever",
