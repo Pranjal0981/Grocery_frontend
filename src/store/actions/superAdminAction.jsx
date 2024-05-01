@@ -181,3 +181,24 @@ export const asyncFetchAllProducts = (page, searchTerm = '', searchType = '') =>
     }
 };
 
+
+export const asyncSuperAdminSendForgetLink = (email) => async (dispatch, getState) => {
+    try {
+        const response = await axios.post('/superadmin/send-mail', email)
+        toast.success("Reset mail sent")
+    } catch (error) {
+        toast.error("Error sending mail")
+
+
+    }
+}
+
+export const asyncSuperAdminResetPassword = (id, password) => async (dispatch, getState) => {
+    try {
+        const response = await axios.post(`/superadmin/forget-link/${id}`, { password }); // Pass password as an object
+        toast.success("Password Reset Successfully")
+    } catch (error) {
+        toast.error("Error reseting password")
+
+    }
+};

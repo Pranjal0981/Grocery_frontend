@@ -104,32 +104,18 @@ const Nav = () => {
     };
 
 
-    const handleSubmit = async(e) => {
+    const handleCustomerSubmit = async(e) => {
         
         e.preventDefault()
-        if (formData.userType === 'customer') {
-            await dispatch(asyncSignupUser({ formData }))
-        }
-        if (formData.userType === 'Admin') {
-           await  dispatch(asyncAdminRegister({ formData }))
-        }
-        if(formData.userType==='SuperAdmin') {
-         await   dispatch(asyncSuperAdminSignUp({ formData }))
-        }
+        await dispatch(asyncSignupUser({ formData }))
 
-        
     }
     const handleLogin = async(e) => {
         e.preventDefault()
-        if (formData.userType === 'Admin') {
-            await dispatch(asyncAdminLogin({ formData }))
-        }
-        if(formData.userType==='customer') {
+   
             await dispatch(asyncSignIn({ formData }))
-        }
-        if(formData.userType==='SuperAdmin'){
-            await dispatch(asyncSuperAdminSignIn({formData}))
-        }
+
+
     }
     const handleLogout = async (e) => {
         e.preventDefault()
@@ -250,8 +236,6 @@ const Nav = () => {
             </div>
             <hr />
 
-
-
             <Drawer
                 anchor="left"
                 open={drawerOpen}
@@ -354,8 +338,6 @@ const Nav = () => {
                     </div>
                 )}
             </Drawer>
-
-
 
             <Drawer
                 anchor="right"
@@ -525,55 +507,7 @@ const Nav = () => {
                                                     className="border border-gray-300 px-4 py-2 rounded focus:outline-none"
                                                     onChange={handleInputChange}
                                                 />
-                                                <div className="flex items-center space-x-4">
-                                                    <label>
-                                                        <input
-                                                            type="radio"
-                                                            name="userType"
-                                                            value="customer"
-                                                            className="mr-2"
-                                                            checked={formData.userType === 'customer'}
-                                                            onChange={handleInputChange}
-                                                        />
-                                                        Customer
-                                                    </label>
-                                                    <label>
-                                                        <input
-                                                            type="radio"
-                                                            name="userType"
-                                                            value="Admin"
-                                                            className="mr-2"
-                                                            checked={formData.userType === 'Admin'}
-                                                            onChange={handleInputChange}
-                                                        />
-                                                        Admin
-                                                    </label>
-                                                    <label>
-                                                        <input
-                                                            type="radio"
-                                                            name="userType"
-                                                            value="SuperAdmin"
-                                                            className="mr-2"
-                                                            checked={formData.userType === 'SuperAdmin'}
-                                                            onChange={handleInputChange}
-                                                        />
-                                                        SuperAdmin
-                                                    </label>
-                                                </div>
-                                                {formData.userType === 'Admin' && ( // Show store name dropdown only for Vendor
-                                                    <select
-                                                        name="store"
-                                                        value={formData.storeName}
-                                                        onChange={handleInputChange}
-                                                        className="border border-gray-300 px-4 py-2 rounded focus:outline-none"
-                                                    >
-                                                        <option value="">Select Store Name</option>
-                                                        <option value="Minal Residency">Minal Residency</option>
-                                                        <option value="Rohit Nagar">Rohit Nagar</option>
-                                                        <option value="Awadhpuri">Awadhpuri</option>
-                                                        <option value="Jhansi">Jhansi</option>
-                                                    </select>
-                                                )}
+                                               
                                                 <button
                                                     type="submit"
                                                     className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition duration-200 focus:outline-none"
@@ -586,8 +520,7 @@ const Nav = () => {
                             )}
                             {selectedTab === 1 && (
                                 <div className='p-5'>
-                                    {/* Sign Up Form */}
-                                            <form className="flex flex-col space-y-4" onSubmit={handleSubmit}>
+                                            <form className="flex flex-col space-y-4" onSubmit={handleCustomerSubmit}>
                                                 <input
                                                     type="email"
                                                     name="email"
@@ -604,55 +537,7 @@ const Nav = () => {
                                                     className="border border-gray-300 px-4 py-2 rounded focus:outline-none"
                                                     onChange={handleInputChange}
                                                 />
-                                                <div className="flex items-center space-x-4">
-                                                    <label>
-                                                        <input
-                                                            type="radio"
-                                                            name="userType"
-                                                            value="customer"
-                                                            className="mr-2"
-                                                            checked={formData.userType === 'customer'}
-                                                            onChange={handleInputChange}
-                                                        />
-                                                        Customer
-                                                    </label>
-                                                    <label>
-                                                        <input
-                                                            type="radio"
-                                                            name="userType"
-                                                            value="Admin"
-                                                            className="mr-2"
-                                                            checked={formData.userType === 'Admin'}
-                                                            onChange={handleInputChange}
-                                                        />
-                                                        Vendor
-                                                    </label>
-                                                    <label>
-                                                        <input
-                                                            type="radio"
-                                                            name="userType"
-                                                            value="SuperAdmin"
-                                                            className="mr-2"
-                                                            checked={formData.userType === 'SuperAdmin'}
-                                                            onChange={handleInputChange}
-                                                        />
-                                                        SuperAdmin
-                                                    </label>
-                                                </div>
-                                                {formData.userType === 'Admin' && ( // Show store name dropdown only for Vendor
-                                                    <select
-                                                        name="store"
-                                                        value={formData.storeName}
-                                                        onChange={handleInputChange}
-                                                        className="border border-gray-300 px-4 py-2 rounded focus:outline-none"
-                                                    >
-                                                        <option value="">Select Store Name</option>
-                                                        <option value="Minal Residency">Minal Residency</option>
-                                                        <option value="Rohit Nagar">Rohit Nagar</option>
-                                                        <option value="Awadhpuri">Awadhpuri</option>
-                                                        <option value="Jhansi">Jhansi</option>
-                                                    </select>
-                                                )}
+                                                
                                                 <button
                                                     type="submit"
                                                     className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition duration-200 focus:outline-none"

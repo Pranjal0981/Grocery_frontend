@@ -239,3 +239,24 @@ export const asyncUploadProducts = (formData) => async (dispatch, getState) => {
         console.error('Error uploading products:', error);
     }
 };
+
+export const asyncAdminSendForgetLink = (email) => async (dispatch, getState) => {
+    try {
+        const response = await axios.post('/admin/send-mail', email)
+        toast.success("Reset mail sent")
+    } catch (error) {
+        toast.error("Error sending mail")
+
+
+    }
+}
+
+export const asyncAdminResetPassword = (id, password) => async (dispatch, getState) => {
+    try {
+        const response = await axios.post(`/admin/forget-link/${id}`, { password }); // Pass password as an object
+        toast.success("Password Reset Successfully")
+    } catch (error) {
+        toast.error("Error reseting password")
+
+    }
+};

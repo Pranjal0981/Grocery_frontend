@@ -1,8 +1,8 @@
 import { Routes, Route, useParams } from 'react-router-dom'
 import Dashboard from '../Profile/Dashboard'
 import HomePage from '../components/HomePage'
-import ForgetPassword from '../Profile/ForgetPassword'
-import ResetPassword from '../Profile/ResetPassword'
+import {ForgetPassword,ForgetAdminPassword,ForgetSuperAdminPassword} from '../Profile/ForgetPassword'
+import ResetPassword, { ResetAdminPassword, ResetSuperAdminPassword } from '../Profile/ResetPassword'
 import { useSelector } from 'react-redux'
 import NotFound from '../components/NotFound'
 import ProductStore from '../Admin/ProductStore'
@@ -35,6 +35,7 @@ import CustomerCare from '../components/CustomerCare'
 import ExchangePolicy from '../components/ExchangePolicy'
 import SupportCenter from '../components/SupportCenter'
 import ContactUs from '../components/ContactUs'
+import { AdminLoginForm, AdminRegistrationForm } from '../Admin/Auth'
 const Routing = () => {
     const { user, isAuth } = useSelector((state) => state.user)
     const isAdmin = isAuth && user.userType === 'Admin';
@@ -66,13 +67,19 @@ const Routing = () => {
             <Route path='/dashboard' element={<Dashboard />} />
             <Route path='/store/:store' element={<Storeproduct/>}/>
             <Route path='/forget-password' element={<ForgetPassword />} />
-            <Route path="/forget-link/:id" element={<ResetPassword userType="user" />} />
+            <Route path='/admin/forget-password' element={<ForgetAdminPassword />} />
+            <Route path='/superadmin/forget-password' element={<ForgetSuperAdminPassword/>} />
+            <Route path="/forget-link/:id" element={<ResetPassword/>} />
+            <Route path="/admin/forget-link/:id" element={<ResetAdminPassword />} />
+            <Route path="/superadmin/forget-link/:id" element={<ResetSuperAdminPassword />} />
             <Route path='/superadmin/allproducts' element={isSuperAdmin ? <AllProducts /> : <Unauthorized />} />
             <Route path='/admin/upload-products' element={isAdmin ? <AddProductForm /> : <Unauthorized />} />
             <Route path='/wishlist' element={isUser ? <Wishlist /> : <Unauthorized />} />
             <Route path='/products/:id' element={<ExploreProductById />} />
             <Route path='/Return Policy' element={<ReturnPolicy/>}/>
             <Route path='/FAQs' element={<FAQs/>}/>
+            <Route path='/admin/register' element={<AdminRegistrationForm/>}/>
+            <Route path='/admin/login' element={<AdminLoginForm/>}/>
             <Route path='/contact' element={<ContactUs/>}/>
             <Route path='/Customer Care' element={<CustomerCare/>}/>
             <Route path='/Exchange Policy' element={<ExchangePolicy/>}/>
