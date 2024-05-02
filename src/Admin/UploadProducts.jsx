@@ -22,7 +22,6 @@ const AddProductForm = () => {
     const [newBrand, setNewBrand] = useState(''); // State to hold the value of new brand
     const [newCategory, setNewCategory] = useState(''); // Track newly entered category
     const [isCategorySelected, setIsCategorySelected] = useState(false); // Track if category is selected from dropdown
-
     const [isBrandSelected, setIsBrandSelected] = useState(false); // Track if brand is selected from dropdown
 
     const [mrp,setMrp]=useState('')
@@ -145,7 +144,16 @@ const AddProductForm = () => {
                 </div>
                 <div>
                          <label htmlFor="category" className="block text-sm font-medium text-gray-700">Category</label>
-                    <select id="category" value={category} onChange={(e) => setCategory(e.target.value)} className="form-select mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md">
+                    <select
+                        id="brand"
+                        value={brand}
+                        onChange={(e) => {
+                            setCategory(e.target.value);
+                            setIsCategorySelected(true); // Brand selected from dropdown
+                            setCategory(''); // Reset newBrand input
+                        }}
+                        className="form-select mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                    >
                         <option value="">Select Category</option>
                         {categories.map((cat, index) => (
                             <option key={index} value={cat.link}>{cat.label}</option>
@@ -153,7 +161,7 @@ const AddProductForm = () => {
                     </select>
 
                 </div>
-                {/* Allow entering new category only if category is not selected from dropdown */}
+                
                 {!isCategorySelected && (
                     <div>
                         <label htmlFor="newCategory" className="block text-sm font-medium text-gray-700">New Category</label>
