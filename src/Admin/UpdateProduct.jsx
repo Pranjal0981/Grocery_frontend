@@ -37,7 +37,7 @@ const UpdateProduct = () => {
                             Product Name:
                         </label>
                         <input
-                            type="text" disabled
+                            type="text" 
                             id="ProductName"
                             name="ProductName"
                             value={product?.ProductName}
@@ -50,7 +50,7 @@ const UpdateProduct = () => {
                             Description:
                         </label>
                         <textarea
-                            id="description" disabled
+                            id="description" 
                             name="description"
                             value={product?.description}
                             onChange={handleChange}
@@ -62,7 +62,7 @@ const UpdateProduct = () => {
                             Price:
                         </label>
                         <input
-                            type="number" disabled
+                            type="number" 
                             id="price"
                             name="price"
                             value={product?.price}
@@ -75,7 +75,7 @@ const UpdateProduct = () => {
                             Category:
                         </label>
                         <input
-                            type="text" disabled
+                            type="text" 
                             id="category"
                             name="category"
                             value={product?.category}
@@ -88,7 +88,7 @@ const UpdateProduct = () => {
                             Brand:
                         </label>
                         <input
-                            type="text" disabled
+                            type="text" 
                             id="brand"
                             name="brand"
                             value={product?.brand}
@@ -101,7 +101,7 @@ const UpdateProduct = () => {
                             Image URL:
                         </label>
                         <input
-                            type="text" disabled
+                            type="text" 
                             id="image"
                             name="image"
                             value={product?.image?.url}
@@ -114,7 +114,7 @@ const UpdateProduct = () => {
                             GST:
                         </label>
                         <input
-                            type="number" disabled
+                            type="number" 
                             id="gst"
                             name="gst"
                             value={product?.gst}
@@ -127,7 +127,7 @@ const UpdateProduct = () => {
                             CGST:
                         </label>
                         <input
-                            type="number" disabled
+                            type="number" 
                             id="cgst"
                             name="cgst"
                             value={product?.cgst}
@@ -152,7 +152,7 @@ const UpdateProduct = () => {
                             Store:
                         </label>
                         <input
-                            type="text" disabled
+                            type="text" 
                             id="store"
                             name="store"
                             value={product?.store}
@@ -165,7 +165,7 @@ const UpdateProduct = () => {
                             Product Code:
                         </label>
                         <input
-                            type="text" disabled
+                            type="text" 
                             id="ProductCode"
                             name="ProductCode"
                             value={product?.ProductCode}

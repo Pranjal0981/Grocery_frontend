@@ -149,14 +149,14 @@ const AddProductForm = () => {
                         value={category}
                         onChange={(e) => {
                             setCategory(e.target.value);
-                            setIsCategorySelected(true); // Brand selected from dropdown
-                            setNewCategory(''); // Reset newBrand input
+                            setIsCategorySelected(true); // Category selected from dropdown
+                            setNewCategory(''); // Reset newCategory input
                         }}
                         className="form-select mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md"
                     >
                         <option value="">Select Category</option>
                         {categories.map((cat, index) => (
-                            <option key={index} value={cat.link}>{cat.label}</option>
+                            <option key={index} value={cat.label}>{cat.label}</option>
                         ))}
                     </select>
 
