@@ -31,10 +31,27 @@ const UpdateProduct = () => {
             [name]: value,
         }));
     };
-
-    const handleSubmit = (e) => {
+    const handleImageChange = (e) => {
+        setImageFile(e.target.files[0]);
+    };
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        dispatch(asyncUpdateProduct(id, updatedProduct));
+        const formData = new FormData();
+        formData.append("ProductName", updatedProduct.ProductName);
+        formData.append("description", updatedProduct.description);
+        formData.append("sellingPrice", updatedProduct.sellingPrice);
+        formData.append("MRP", updatedProduct.MRP);
+        formData.append("category", updatedProduct.category);
+        formData.append("brand", updatedProduct.brand);
+        formData.append("gst", updatedProduct.gst);
+        formData.append("cgst", updatedProduct.cgst);
+        formData.append("stock", updatedProduct.stock);
+        formData.append("store", product.store);
+        formData.append("ProductCode", updatedProduct.ProductCode);
+        formData.append("image", imageFile);
+
+        // Dispatch action to update product
+        dispatch(asyncUpdateProduct(id, formData));
     };
 
     // Show loading or empty state while product data is being fetched
@@ -132,14 +149,14 @@ const UpdateProduct = () => {
                     </div>
                     <div className="mb-4">
                         <label htmlFor="image" className="block text-gray-700">
-                            Image URL:
+                            Image Upload:
                         </label>
                         <input
-                            type="text"
+                            type="file"
                             id="image"
                             name="image"
-                            value={updatedProduct.image?.url || ""}
-                            onChange={handleChange} disabled
+                            accept="image/*"
+                            onChange={handleImageChange}
                             className="form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
                         />
                     </div>
