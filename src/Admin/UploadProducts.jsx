@@ -79,9 +79,9 @@ const AddProductForm = () => {
         formData.append('productName', productName);
         formData.append('description', description);
         formData.append('MRP', mrp);
-        const selectedCategory = isCategorySelected ? category : newCategory;
+        const selectedCategory = category!=='' ? category : newCategory;
         formData.append('category', selectedCategory);
-            const selectedBrand = brand !== '' ? brand : newBrand;
+        const selectedBrand = brand !== '' ? brand : newBrand;
         formData.append('brand', selectedBrand);    
             formData.append('image', image);
         formData.append('gst', gst);
@@ -145,12 +145,12 @@ const AddProductForm = () => {
                 <div>
                          <label htmlFor="category" className="block text-sm font-medium text-gray-700">Category</label>
                     <select
-                        id="brand"
-                        value={brand}
+                        id="category"
+                        value={category}
                         onChange={(e) => {
                             setCategory(e.target.value);
                             setIsCategorySelected(true); // Brand selected from dropdown
-                            setCategory(''); // Reset newBrand input
+                            setNewCategory(''); // Reset newBrand input
                         }}
                         className="form-select mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md"
                     >
@@ -172,7 +172,7 @@ const AddProductForm = () => {
                             onChange={(e) => {
                                 setNewCategory(e.target.value);
                                 setIsCategorySelected(false); // Category entered manually
-                                setCategory(''); // Reset category dropdown
+                                setCategory(''); 
                             }}
                             className="form-input mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md"
                         />
