@@ -4,7 +4,9 @@ const initialState = {
     products: [],
     loading: false,
     users: null,
-    dashboardinfo: null
+    dashboardinfo: null,
+    totalPages: 0 // Initialize totalPages in the initial state
+
 }
 
 export const adminSlice = createSlice({
@@ -12,7 +14,9 @@ export const adminSlice = createSlice({
     initialState,
     reducers: {
         saveStoreProducts: (state, action) => {
-            state.products = action.payload
+            console.log(action.payload)
+            state.products = action.payload.products;
+            state.totalPages = action.payload.totalPages; // Save tota
             state.loading = false
         },
         saveAllUsers: (state, action) => {

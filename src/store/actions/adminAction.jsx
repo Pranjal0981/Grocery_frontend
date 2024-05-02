@@ -72,18 +72,20 @@ export const asyncFetchOrders = (page = 1,store) => async (dispatch, getState) =
     }
 }
 
-export const fetchProductsByStore = (store) => async (dispatch, getState) => {
+export const fetchProductsByStore = (store, page, searchQuery = '') => async (dispatch, getState) => {
     try {
         dispatch(setLoading(true));
-        const response = await axios.get(`/admin/fetchProductStore/${store}`)
-        dispatch(saveStoreProducts(response.data.products))
+        const response = await axios.get(`/admin/fetchProductStore/${store}?page=${page}&search=${searchQuery}`);
+        const { products, totalPages } = response.data; // Destructure products and totalPages from response.data
+        dispatch(saveStoreProducts({ products, totalPages })); // Save both products and totalPages in the Redux state
     } catch (error) {
-        console.log(error)
+        console.log(error);
     }
     finally {
         dispatch(setLoading(false));
     }
-}
+};
+
 
 export const asyncfetchAllusers = (currentPage) => async (dispatch, getState) => {
     try {
@@ -135,12 +137,12 @@ export const asyncFetchOutOfStock = (page = 1) => async (dispatch, getState) => 
     }
 }
 
-export const asyncDelProduct = (productId) => async (dispatch, getState) => {
+export const asyncDelProduct = (productId,store) => async (dispatch, getState) => {
     try {
-        const response = await axios.delete(`/admin/deleteProducts/${productId}`);
+        const response = await axios.delete(`/admin/deleteProducts/${store}/${productId}`);
         console.log(response)
         toast.warn('Product Deleted')
-        dispatch()
+        dispatch(fetchProductsByStore(store))
     } catch (error) {
         toast.error(error)
     }

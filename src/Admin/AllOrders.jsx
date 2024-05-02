@@ -15,7 +15,7 @@ const ManageOrder = () => {
     }, [dispatch, currentPage, user?.store]);
 
     useEffect(() => {
-        setTotalOrders(products.length);
+        setTotalOrders(products?.length);
     }, [products]);
 
     const handleStatusChange = (orderId, newStatus) => {

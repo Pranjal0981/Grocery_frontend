@@ -44,7 +44,7 @@ const OutOfStock = () => {
             ) : (
                 <div className="container mx-auto px-4 py-8">
                     <h1 className="text-3xl font-semibold mb-4 text-center">Out of Stock Products</h1>
-                    {products.length > 0 ? ( // Check if products are available
+                    {products?.length > 0 ? ( // Check if products are available
                         <>
                             <p className="text-lg font-semibold mb-4 text-center">Total out-of-stock products: {products.length}</p>
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
