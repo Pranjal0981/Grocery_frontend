@@ -48,7 +48,7 @@ const UpdateProduct = () => {
                             type="text"
                             id="ProductName"
                             name="ProductName"
-                            value={updatedProduct.ProductName || product.ProductName}
+                            value={updatedProduct.ProductName }
                             onChange={handleChange}
                             className="form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
                         />
@@ -60,7 +60,7 @@ const UpdateProduct = () => {
                         <textarea
                             id="description"
                             name="description"
-                            value={updatedProduct.description || product.description}
+                            value={updatedProduct.description }
                             onChange={handleChange}
                             className="form-textarea mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
                         />
@@ -73,7 +73,7 @@ const UpdateProduct = () => {
                             type="number"
                             id="price"
                             name="sellingPrice"
-                            value={updatedProduct.sellingPrice || product.sellingPrice}
+                            value={updatedProduct.sellingPrice }
                             onChange={handleChange}
                             className="form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
                         />
@@ -87,7 +87,7 @@ const UpdateProduct = () => {
                             type="number"
                             id="price"
                             name="MRP"
-                            value={updatedProduct.MRP || product.MRP}
+                            value={updatedProduct.MRP }
                             onChange={handleChange}
                             className="form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
                         />
@@ -100,7 +100,7 @@ const UpdateProduct = () => {
                             type="text"
                             id="category"
                             name="category"
-                            value={updatedProduct.category || product.category}
+                            value={updatedProduct.category }
                             onChange={handleChange}
                             className="form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
                         />
@@ -113,7 +113,7 @@ const UpdateProduct = () => {
                             type="text"
                             id="brand"
                             name="brand"
-                            value={updatedProduct.brand || product.brand}
+                            value={updatedProduct.brand }
                             onChange={handleChange}
                             className="form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
                         />
@@ -127,7 +127,7 @@ const UpdateProduct = () => {
                             id="image"
                             name="image"
                             value={updatedProduct.image?.url || product.image?.url}
-                            onChange={handleChange}
+                            onChange={handleChange} disabled
                             className="form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
                         />
                     </div>
@@ -139,7 +139,7 @@ const UpdateProduct = () => {
                             type="number"
                             id="gst"
                             name="gst"
-                            value={updatedProduct.gst || product.gst}
+                            value={updatedProduct.gst }
                             onChange={handleChange}
                             className="form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
                         />
@@ -152,7 +152,7 @@ const UpdateProduct = () => {
                             type="number"
                             id="cgst"
                             name="cgst"
-                            value={updatedProduct.cgst || product.cgst}
+                            value={updatedProduct.cgst }
                             onChange={handleChange}
                             className="form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
                         />
@@ -165,7 +165,7 @@ const UpdateProduct = () => {
                             type="number"
                             id="stock"
                             name="stock"
-                            value={updatedProduct.stock || product.stock}
+                            value={updatedProduct.stock}
                             onChange={handleChange}
                             className="form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
                         />
@@ -178,8 +178,8 @@ const UpdateProduct = () => {
                             type="text"
                             id="store"
                             name="store"
-                            value={updatedProduct.store || product.store}
-                            onChange={handleChange}
+                            value={product.store}
+                            onChange={handleChange} disabled
                             className="form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
                         />
                     </div>
@@ -191,7 +191,7 @@ const UpdateProduct = () => {
                             type="text"
                             id="ProductCode"
                             name="ProductCode"
-                            value={updatedProduct.ProductCode || product.ProductCode}
+                            value={updatedProduct.ProductCode }
                             onChange={handleChange}
                             className="form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
                         />
