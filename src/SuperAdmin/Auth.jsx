@@ -91,20 +91,7 @@ export const SuperAdminRegistrationForm = () => {
         <div className="max-w-md mx-auto">
             <form onSubmit={handleSubmit} className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
                 <h2 className="text-2xl font-bold mb-4">Super Admin Registration</h2>
-                <div className="mb-4">
-                    <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="fullName">
-                        Full Name
-                    </label>
-                    <input
-                        id="fullName"
-                        type="text"
-                        name="fullName"
-                        value={formData.fullName}
-                        placeholder="Full Name"
-                        className="border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        onChange={handleInputChange}
-                    />
-                </div>
+               
                 <div className="mb-4">
                     <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">
                         Email
