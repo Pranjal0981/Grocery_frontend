@@ -145,21 +145,13 @@ const AddProductForm = () => {
                 </div>
                 <div>
                          <label htmlFor="category" className="block text-sm font-medium text-gray-700">Category</label>
-                    <select
-                        id="category"
-                        value={category}
-                        onChange={(e) => {
-                            setCategory(e.target.value);
-                            setIsCategorySelected(true); // Category selected from dropdown
-                            setNewCategory(''); // Reset newCategory input
-                        }}
-                        className="form-select mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md"
-                    >
+                    <select id="category" value={category} onChange={(e) => setCategory(e.target.value)} className="form-select mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md">
                         <option value="">Select Category</option>
                         {categories.map((cat, index) => (
-                            <option key={index} value={cat}>{cat}</option>
+                            <option key={index} value={cat.link}>{cat.label}</option>
                         ))}
                     </select>
+
                 </div>
                 {/* Allow entering new category only if category is not selected from dropdown */}
                 {!isCategorySelected && (
