@@ -119,6 +119,19 @@ const UpdateProduct = () => {
                         />
                     </div>
                     <div className="mb-4">
+                        <label htmlFor="brand" className="block text-gray-700">
+                            Brand:
+                        </label>
+                        <input
+                            type="text"
+                            id="brand"
+                            name="brand"
+                            value={updatedProduct.brand}
+                            onChange={handleChange}
+                            className="form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
+                        />
+                    </div>
+                    <div className="mb-4">
                         <label htmlFor="image" className="block text-gray-700">
                             Image URL:
                         </label>
