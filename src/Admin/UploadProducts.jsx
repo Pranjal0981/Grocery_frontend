@@ -134,7 +134,7 @@ const AddProductForm = () => {
 
                 <div>
 
-                    <label htmlFor="tag" className="block text-sm font-medium text-gray-700">Tag:</label>
+                    <label htmlFor="tag" className="block text-sm font-medium text-gray-700">Weight:</label>
                     <input type="text" id="tag" value={size} onChange={(e) => setSize(e.target.value)} className="form-input mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md" />
                 </div>
 

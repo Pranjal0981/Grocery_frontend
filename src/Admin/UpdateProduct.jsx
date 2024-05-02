@@ -12,6 +12,13 @@ const UpdateProduct = () => {
     const { product } = useSelector((state) => state.product);
     const [updatedProduct, setUpdatedProduct] = useState({});
 
+    // Set initial values of updatedProduct when product data is available
+    useEffect(() => {
+        if (product) {
+            setUpdatedProduct(product);
+        }
+    }, [product]);
+
     useEffect(() => {
         // Fetch product data when component mounts
         dispatch(asyncExploreById(id));
@@ -40,6 +47,9 @@ const UpdateProduct = () => {
             <h2 className="text-2xl font-semibold mb-4">Update Product</h2>
             <form onSubmit={handleSubmit}>
                 <div className="grid grid-cols-2 gap-4">
+                    {/* Render input fields with updatedProduct values */}
+                    {/* Update the value prop of each input field */}
+                    {/* Make sure the name attribute matches the key of updatedProduct */}
                     <div className="mb-4">
                         <label htmlFor="ProductName" className="block text-gray-700">
                             Product Name:
@@ -48,11 +58,13 @@ const UpdateProduct = () => {
                             type="text"
                             id="ProductName"
                             name="ProductName"
-                            value={updatedProduct.ProductName }
+                            value={updatedProduct.ProductName || ""}
                             onChange={handleChange}
                             className="form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
                         />
                     </div>
+                    {/* Render other input fields with their corresponding values */}
+                    {/* Update the value prop of each input field */}
                     <div className="mb-4">
                         <label htmlFor="description" className="block text-gray-700">
                             Description:
@@ -60,7 +72,7 @@ const UpdateProduct = () => {
                         <textarea
                             id="description"
                             name="description"
-                            value={updatedProduct.description }
+                            value={updatedProduct.description || ""}
                             onChange={handleChange}
                             className="form-textarea mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
                         />
@@ -73,7 +85,7 @@ const UpdateProduct = () => {
                             type="number"
                             id="price"
                             name="sellingPrice"
-                            value={updatedProduct.sellingPrice }
+                            value={updatedProduct.sellingPrice || ""}
                             onChange={handleChange}
                             className="form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
                         />
@@ -81,13 +93,13 @@ const UpdateProduct = () => {
 
                     <div className="mb-4">
                         <label htmlFor="price" className="block text-gray-700">
-                           MRP
+                            MRP
                         </label>
                         <input
                             type="number"
                             id="price"
                             name="MRP"
-                            value={updatedProduct.MRP }
+                            value={updatedProduct.MRP || ""}
                             onChange={handleChange}
                             className="form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
                         />
@@ -100,7 +112,7 @@ const UpdateProduct = () => {
                             type="text"
                             id="category"
                             name="category"
-                            value={updatedProduct.category }
+                            value={updatedProduct.category || ""}
                             onChange={handleChange}
                             className="form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
                         />
@@ -113,20 +125,7 @@ const UpdateProduct = () => {
                             type="text"
                             id="brand"
                             name="brand"
-                            value={updatedProduct.brand }
-                            onChange={handleChange}
-                            className="form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
-                        />
-                    </div>
-                    <div className="mb-4">
-                        <label htmlFor="brand" className="block text-gray-700">
-                            Brand:
-                        </label>
-                        <input
-                            type="text"
-                            id="brand"
-                            name="brand"
-                            value={updatedProduct.brand}
+                            value={updatedProduct.brand || ""}
                             onChange={handleChange}
                             className="form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
                         />
@@ -139,7 +138,7 @@ const UpdateProduct = () => {
                             type="text"
                             id="image"
                             name="image"
-                            value={updatedProduct.image?.url || product.image?.url}
+                            value={updatedProduct.image?.url || ""}
                             onChange={handleChange} disabled
                             className="form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
                         />
@@ -152,7 +151,7 @@ const UpdateProduct = () => {
                             type="number"
                             id="gst"
                             name="gst"
-                            value={updatedProduct.gst }
+                            value={updatedProduct.gst || ""}
                             onChange={handleChange}
                             className="form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
                         />
@@ -165,7 +164,7 @@ const UpdateProduct = () => {
                             type="number"
                             id="cgst"
                             name="cgst"
-                            value={updatedProduct.cgst }
+                            value={updatedProduct.cgst || ""}
                             onChange={handleChange}
                             className="form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
                         />
@@ -178,7 +177,7 @@ const UpdateProduct = () => {
                             type="number"
                             id="stock"
                             name="stock"
-                            value={updatedProduct.stock}
+                            value={updatedProduct.stock || ""}
                             onChange={handleChange}
                             className="form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
                         />
@@ -191,7 +190,7 @@ const UpdateProduct = () => {
                             type="text"
                             id="store"
                             name="store"
-                            value={product.store}
+                            value={product.store || ""}
                             onChange={handleChange} disabled
                             className="form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
                         />
@@ -204,7 +203,7 @@ const UpdateProduct = () => {
                             type="text"
                             id="ProductCode"
                             name="ProductCode"
-                            value={updatedProduct.ProductCode }
+                            value={updatedProduct.ProductCode || ""}
                             onChange={handleChange}
                             className="form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
                         />
