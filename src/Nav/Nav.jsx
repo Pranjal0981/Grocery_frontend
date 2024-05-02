@@ -397,11 +397,7 @@ const Nav = () => {
                                     </ListItem>
                                 </Link>
 
-                                <Link to="/admin/allproducts" className="" style={{ textDecoration: 'none' }}>
-                                    <ListItem button>
-                                        <ListItemText primary="All Products" />
-                                    </ListItem>
-                                </Link>
+                             
 
                                 <Link to="/admin/fetchOutOfStockProducts" className="" style={{ textDecoration: 'none' }}>
                                     <ListItem button>
