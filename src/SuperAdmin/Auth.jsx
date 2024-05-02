@@ -16,7 +16,7 @@ export const SuperAdminLogin = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        dispatch(asyncSuperAdminSignIn(formData)); // Assuming asyncAdminLogin handles the login logic
+        dispatch(asyncSuperAdminSignIn(formData)); 
     };
 
     return (
@@ -61,6 +61,11 @@ export const SuperAdminLogin = () => {
                     Login
                 </button>
             </form>
+            <div className="text-center">
+                <p className="text-gray-700">Don't have an account?</p>
+                <Link to="/superadmin/register" className="text-blue-500 hover:underline">Register here</Link>
+            </div>
+        
         </div>
     );
 }

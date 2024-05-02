@@ -87,6 +87,12 @@ export const AdminLoginForm = () => {
                 >
                     Don't have an account? Register here
                 </Link>
+                <Link
+                    to="/admin/forget-password"
+                    className="block text-center text-gray-700 text-sm mt-2 hover:underline"
+                >
+                    Forgot Password?
+                </Link>
             </form>
         </div>
     );
