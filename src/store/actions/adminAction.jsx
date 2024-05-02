@@ -146,9 +146,9 @@ export const asyncDelProduct = (productId) => async (dispatch, getState) => {
     }
 }
 
-export const asyncUpdateProduct = (id, updatedProduct) => async (dispatch, getState) => {
+export const asyncUpdateProduct = (id, formData) => async (dispatch, getState) => {
     try {
-        const response = await axios.put(`/admin/updateProduct/${id}`, {updatedProduct});
+        const response = await axios.put(`/admin/updateProduct/${id}`, formData);
         console.log(response.data);
         toast.success('Product updated successfully', {
             position: "top-right"
@@ -162,6 +162,7 @@ export const asyncUpdateProduct = (id, updatedProduct) => async (dispatch, getSt
         // Handle error if needed
     }
 };
+
 
 export const updateOrderStatus = (orderId, newStatus,store) => async (dispatch, getState) => {
     try {

@@ -34,9 +34,12 @@ const ProductStore = () => {
                                     <p className="text-gray-800 font-bold mt-2">Price: Rs {product?.sellingPrice}</p>
                                     <p className="text-gray-800 font-bold mt-2">Stock: {product?.stock}</p>
                                     <p className="text-gray-800 font-bold mt-2">Product Code: {product?.ProductCode}</p>
-                                    <button onClick={() => handleDelete(product?._id)} className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded mt-2">Delete</button>
-                                    <button onClick={() => handleUpdateProduct(product?._id)} className="bg-sky-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded mt-2">Update</button>
+                                    <div className="flex gap-[30px]">
+                                        <button onClick={() => handleDelete(product?._id)} className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded mt-2">Delete</button>
+                                        <button onClick={() => handleUpdateProduct(product?._id)} className="bg-sky-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded mt-2">Update</button>
 
+                                    </div>
+       
                                 </div>
                             </div>
                         ))}
