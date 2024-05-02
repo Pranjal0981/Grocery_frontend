@@ -7,7 +7,7 @@ import { asyncUpdateProduct } from "../store/actions/adminAction";
 const UpdateProduct = () => {
     const { id } = useParams();
     const dispatch = useDispatch();
-
+const [imageFile,setImageFile]=useState(null)
     // Accessing product from Redux state
     const { product } = useSelector((state) => state.product);
     const [updatedProduct, setUpdatedProduct] = useState({});
