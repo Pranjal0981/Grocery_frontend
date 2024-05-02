@@ -94,7 +94,7 @@ const Routing = () => {
             <Route path='/cart' element={isUser ? <Cart /> : <Unauthorized />} />
             <Route path='/edit-address' element={<AddressForm />} />
             <Route path='/address' element={<Address />} />
-            <Route path='/admin/store/:store' element={<ProductStore />} />
+            <Route path='/admin/store/:store' element={isAdmin? <ProductStore />:<Unauthorized/>} />
             <Route path='/shop' element={<Product />} />
             <Route path='/account-details' element={<AccountDetails />} />
             <Route path='/superadmin/fetchallusers' element={isSuperAdmin ? <AllUser /> : <Unauthorized />} />
