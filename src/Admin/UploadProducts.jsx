@@ -19,6 +19,9 @@ const AddProductForm = () => {
     const [store, setStore] = useState(user.store);
     const [productCode,setProductCode]=useState('')
     const [sellingPrice, setSellingPrice] = useState('')
+    const [newBrand, setNewBrand] = useState(''); // State to hold the value of new brand
+    const [isBrandSelected, setIsBrandSelected] = useState(false); // Track if brand is selected from dropdown
+
     const [mrp,setMrp]=useState('')
     const categories = [
         { label: "Oral Care & Wellness", link: "/oral-care-wellness" },
@@ -34,6 +37,19 @@ const AddProductForm = () => {
         { label: "Laundry & Dishwash", link: "/laundry-dishwash" },
         { label: "Body & Skin Care", link: "/body-skin-care" },
         { label: "Hair Care", link: "/hair-care" },
+        { label: "Hair Oil", link: "/hair-oil" },
+        { label: "Hair Colour", link: "/hair-colour" },
+        { label: "ToothPaste", link: "/toothpaste" },
+        { label: "Nutrition", link: "/nutrition" },
+        { label: "Dish Wash", link: "/dish-wash" },
+        { label: "Coffee & Tea", link: "/coffee&tea" },
+        { label: "Body Soap", link: "/bodysoap" },
+        { label: "Bathing Soap", link: "/bathingsoap" },
+
+
+
+
+
         { label: "Uncategorized", link: "/uncategorized" },
 
     ];
@@ -49,7 +65,14 @@ const AddProductForm = () => {
         "Denver",
         "Beiersdorf",
         "Belvita",
-        "Dettol"
+        "Dettol",
+        "Haldiram",
+        "Parle",
+        "Fogg",
+        "Nestle",
+        "Nescafe",
+        "Eclairs",
+    
     ];
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -60,8 +83,8 @@ const AddProductForm = () => {
         formData.append('description', description);
         formData.append('MRP', mrp);
         formData.append('category', category);
-        formData.append('brand', brand);
-        formData.append('image', image);
+        const selectedBrand = brand !== '' ? brand : newBrand;
+        formData.append('brand', selectedBrand);        formData.append('image', image);
         formData.append('gst', gst);
         formData.append('cgst', cgst);
         formData.append('stock', stock);
@@ -71,6 +94,18 @@ const AddProductForm = () => {
 
         dispatch(asyncUploadProducts(formData));
         
+    };
+
+    const handleBrandInputChange = (e) => {
+        setNewBrand(e.target.value);
+    };
+
+    const handleAddBrand = () => {
+        // Check if the brand is already in the list
+        if (!brands.includes(newBrand) && newBrand.trim() !== '') {
+            setBrand(newBrand);
+            setNewBrand('');
+        }
     };
 
 
@@ -100,8 +135,8 @@ const AddProductForm = () => {
 
                 <div>
 
-                    <label htmlFor="size" className="block text-sm font-medium text-gray-700">Size:</label>
-                    <input type="text" id="size" value={size} onChange={(e) => setSize(e.target.value)} className="form-input mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md" />
+                    <label htmlFor="tag" className="block text-sm font-medium text-gray-700">Tag:</label>
+                    <input type="text" id="tag" value={size} onChange={(e) => setSize(e.target.value)} className="form-input mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md" />
                 </div>
 
                 <div>
@@ -118,14 +153,41 @@ const AddProductForm = () => {
                     </select>
                 </div>
                 <div>
-                    <label htmlFor="brand" className="block text-sm font-medium text-gray-700">Brand</label>
-                    <select id="brand" value={brand} onChange={(e) => setBrand(e.target.value)} className="form-select mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md">
+                 <label htmlFor="brand" className="block text-sm font-medium text-gray-700">Brand</label>
+                    <select
+                        id="brand"
+                        value={brand}
+                        onChange={(e) => {
+                            setBrand(e.target.value);
+                            setIsBrandSelected(true); // Brand selected from dropdown
+                            setNewBrand(''); // Reset newBrand input
+                        }}
+                        className="form-select mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                    >
                         <option value="">Select Brand</option>
                         {brands.map((brandName, index) => (
                             <option key={index} value={brandName}>{brandName}</option>
                         ))}
                     </select>
                 </div>
+                {/* Allow entering new brand only if brand is not selected from dropdown */}
+                {!isBrandSelected && (
+                    <div>
+                        <label htmlFor="newBrand" className="block text-sm font-medium text-gray-700">New Brand</label>
+                        <input
+                            type="text"
+                            id="newBrand"
+                            value={newBrand}
+                            onChange={(e) => {
+                                setNewBrand(e.target.value);
+                                setIsBrandSelected(false); // Brand entered manually
+                                setBrand(''); // Reset brand dropdown
+                            }}
+                            className="form-input mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                        />
+                    </div>
+                )}
+                
                
                 <div>
                     <label htmlFor="image" className="block text-sm font-medium text-gray-700">Image </label>
