@@ -37,7 +37,6 @@ export const asyncSignupUser = (data) => async (dispatch) => {
 
 export const asyncSignIn=(data)=>async(dispatch,getState)=>{
     try {
-        console.log(data)
         const response=await axios.post('/user/login',data)
         await dispatch(asyncCurrentUser(response.data.token));
         toast.success("LoggedIn Successfully !")
@@ -176,7 +175,6 @@ export const asyncDeleteAddress =(index,userId)=>async(dispatch,getState)=>{
 
 export const asyncUpdateUser=(data,userId)=>async(dispatch,getState)=>{
     try {
-        console.log(data)
         const response = await axios.post(`/user/update/${userId}`,data)
         toast.success("Updated successfully")
 

@@ -41,6 +41,7 @@ const [imageFile,setImageFile]=useState(null)
         formData.append("description", updatedProduct.description);
         formData.append("sellingPrice", updatedProduct.sellingPrice);
         formData.append("MRP", updatedProduct.MRP);
+        formData.append("Size", updatedProduct.Size);
         formData.append("category", updatedProduct.category);
         formData.append("brand", updatedProduct.brand);
         formData.append("gst", updatedProduct.gst);
@@ -80,8 +81,7 @@ const [imageFile,setImageFile]=useState(null)
                             className="form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
                         />
                     </div>
-                    {/* Render other input fields with their corresponding values */}
-                    {/* Update the value prop of each input field */}
+                   
                     <div className="mb-4">
                         <label htmlFor="description" className="block text-gray-700">
                             Description:
@@ -195,6 +195,20 @@ const [imageFile,setImageFile]=useState(null)
                             id="stock"
                             name="stock"
                             value={updatedProduct.stock || ""}
+                            onChange={handleChange}
+                            className="form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
+                        />
+                    </div>
+
+                    <div className="mb-4">
+                        <label htmlFor="Size" className="block text-gray-700">
+                            Quantity:
+                        </label>
+                        <input
+                            type="text"
+                            id="size"
+                            name="Size"
+                            value={updatedProduct.Size || ""}
                             onChange={handleChange}
                             className="form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
                         />

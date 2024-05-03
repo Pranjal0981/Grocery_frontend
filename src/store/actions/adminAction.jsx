@@ -8,7 +8,6 @@ export const asyncCurrentAdmin = (token) => async (dispatch, getState) => {
         const response = await axios.post('/admin/currentAdmin', null, {
             headers: { Authorization: `Bearer ${token}` }
         });
-        console.log(response);
         await dispatch(saveUser(response.data.admin));
     } catch (error) {
         console.error(error);
@@ -65,7 +64,6 @@ export const asyncLogoutAdmin = () => async (dispatch, getState) => {
 export const asyncFetchOrders = (page = 1,store) => async (dispatch, getState) => {
     try {
         const response = await axios.get(`/admin/fetchOrders/${store}?page=${page}`);
-        console.log(response)
         dispatch(saveOrders(response.data.data));
     } catch (error) {
         console.log(error);
@@ -140,7 +138,6 @@ export const asyncFetchOutOfStock = (page = 1) => async (dispatch, getState) => 
 export const asyncDelProduct = (productId,store) => async (dispatch, getState) => {
     try {
         const response = await axios.delete(`/admin/deleteProducts/${store}/${productId}`);
-        console.log(response)
         toast.warn('Product Deleted')
         dispatch(fetchProductsByStore(store))
     } catch (error) {
@@ -190,7 +187,6 @@ export const fetchDashBoardInfo = () => async (dispatch, getState) => {
 export const asyncAdminBlockUser = (userId) => async (dispatch, getState) => {
     try {
         const response = await axios.post(`/admin/blockUser/${userId}`)
-        console.log(response)
         toast.warn("User blocked")
 
         dispatch(asyncfetchAllusers())
@@ -204,7 +200,6 @@ export const asyncAdminBlockUser = (userId) => async (dispatch, getState) => {
 export const asyncAdminUnblockUser = (userID) => async (dispatch, getState) => {
     try {
         const response = await axios.post(`/admin/unblockUser/${userID}`)
-        console.log(response)
         toast.success("User Unblocked")
 
         dispatch(asyncfetchAllusers())
@@ -219,7 +214,6 @@ export const asyncFetchAllProducts = (page, searchTerm = '', searchType = '') =>
         dispatch(setLoading(true)); // Set loading state to true before fetching data
 
         const response = await axios.get(`/admin/getallproduct?page=${page}&q=${searchTerm}&type=${searchType}`);
-        console.log(response);
         dispatch(saveProduct(response.data.data));
         dispatch(setLoading(false)); // Set loading state to false after successfully fetching data
     } catch (error) {
@@ -237,7 +231,6 @@ export const asyncUploadProducts = (formData) => async (dispatch, getState) => {
         });
         toast.success("Product Uploaded ")
 
-        console.log(response)
     } catch (error) {
         // Handle error
         console.error('Error uploading products:', error);
