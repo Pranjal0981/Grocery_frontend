@@ -37,6 +37,7 @@ import SupportCenter from '../components/SupportCenter'
 import ContactUs from '../components/ContactUs'
 import { AdminLoginForm, AdminRegistrationForm } from '../Admin/Auth'
 import { SuperAdminLogin, SuperAdminRegistrationForm } from '../SuperAdmin/Auth'
+import { StoreManagerLogin, StoreManagerRegister } from '../StoreManager/Auth'
 const Routing = () => {
     const { user, isAuth } = useSelector((state) => state.user)
     const isAdmin = isAuth && user.userType === 'Admin';
@@ -68,6 +69,8 @@ const Routing = () => {
             <Route path='/dashboard' element={<Dashboard />} />
             <Route path='/store/:store' element={<Storeproduct/>}/>
             <Route path='/forget-password' element={<ForgetPassword />} />
+            <Route path='/storemanager/login' element={<StoreManagerLogin/>}/>
+            <Route path='/storemanager/register' element={<StoreManagerRegister/>}/>
             <Route path='/admin/forget-password' element={<ForgetAdminPassword />} />
             <Route path='/superadmin/forget-password' element={<ForgetSuperAdminPassword/>} />
             <Route path='/superadmin/login' element={<SuperAdminLogin/>}/>

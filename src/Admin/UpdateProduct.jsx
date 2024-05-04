@@ -40,6 +40,8 @@ const [imageFile,setImageFile]=useState(null)
         formData.append("ProductName", updatedProduct.ProductName);
         formData.append("description", updatedProduct.description);
         formData.append("sellingPrice", updatedProduct.sellingPrice);
+        formData.append("PurchasePrice", updatedProduct.purchasePrice);
+
         formData.append("MRP", updatedProduct.MRP);
         formData.append("Size", updatedProduct.Size);
         formData.append("category", updatedProduct.category);
@@ -103,6 +105,20 @@ const [imageFile,setImageFile]=useState(null)
                             id="price"
                             name="sellingPrice"
                             value={updatedProduct.sellingPrice || ""}
+                            onChange={handleChange}
+                            className="form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
+                        />
+                    </div>
+
+                    <div className="mb-4">
+                        <label htmlFor="price" className="block text-gray-700">
+                            Purchase Price:
+                        </label>
+                        <input
+                            type="number"
+                            id="price"
+                            name="purchasePrice"
+                            value={updatedProduct.purchasePrice || ""}
                             onChange={handleChange}
                             className="form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
                         />
