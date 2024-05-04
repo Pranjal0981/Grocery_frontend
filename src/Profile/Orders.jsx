@@ -44,7 +44,7 @@ const Order = () => {
                     try {
                         // Update the stock for the product
                         const newStock = product.productId.stock + product.quantity; // Add returned quantity back to the stock
-                        await dispatch(asyncUpdateStock(product.productId._id, newStock));
+                         dispatch(asyncUpdateStock(product.productId._id, newStock));
                         console.log(`Stock updated for product ${product.productId._id}`);
                     } catch (error) {
                         console.error(`Error updating stock for product ${product.productId._id}:`, error);

@@ -2,12 +2,12 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const savedUser = localStorage.getItem("user");
 const initialState = {
-    user: savedUser ? JSON.parse(savedUser) : null,
+    user: savedUser ? JSON.parse(savedUser) : {}, // Provide an empty object as default
     isAuth: savedUser ? true : false,
     wishlist: null,
-    checkOutCart:null
-
+    checkOutCart: null
 }
+
 
 export const userSlice = createSlice({
     name: "user",
@@ -28,6 +28,7 @@ export const userSlice = createSlice({
             state.wishlist = action.payload
         },
         saveCheckOutCart:(state,action)=>{
+            console.log(action.payload)
             state.checkOutCart=action.payload
         }
     },

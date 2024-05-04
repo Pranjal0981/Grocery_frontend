@@ -41,6 +41,7 @@ import { StoreManagerLogin, StoreManagerRegister } from '../StoreManager/Auth'
 const Routing = () => {
     const { user, isAuth } = useSelector((state) => state.user)
     const isAdmin = isAuth && user.userType === 'Admin';
+    const isStoreManager=isAuth && user.userType==='Storemanager'
     const isUser = isAuth && user.userType === 'customer';
     const isSuperAdmin=isAuth && user.userType==='SuperAdmin'
     const { id } = useParams();
@@ -107,6 +108,8 @@ const Routing = () => {
             <Route path='/admin/update-product/:id' element={isAdmin ? <UpdateProduct /> : <Unauthorized />} />
             <Route path='/superadmin/dashboard' element={isSuperAdmin ? <AdminDashboard /> : <Unauthorized />} />
             <Route path='/admin/allOrders' element={isAdmin ?<ManageOrder/>:<Unauthorized/>}/>
+            <Route path='/store/allOrders/:store' element={isStoreManager ? <ManageOrder /> : <Unauthorized />} />
+
             <Route path='/shopbycategory/:category' element={<ShopByCategoryProduct/>}/>
             <Route path='/superAdmin/salesByStore' element={isSuperAdmin?<SalesByStore/>:<Unauthorized/>}/>
             <Route path='/orders' element={isUser?<Order/>:<Unauthorized/>}/>

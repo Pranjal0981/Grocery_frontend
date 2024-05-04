@@ -229,6 +229,7 @@ export const asyncUpdateStock = (productId, newStock)=>async(dispatch,getState)=
     try {
         console.log(productId,newStock)
         const response = await axios.post(`/products/updateProductStock/${productId}`, { newStock })
+        console.log(response)
     } catch (error) {
      console.log(error)   
     }

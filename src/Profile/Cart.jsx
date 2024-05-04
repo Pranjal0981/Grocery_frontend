@@ -13,6 +13,7 @@ import { asyncCustomerOrder } from '../store/actions/userAction'
 import { toast } from "react-toastify";
 const generatePDF = async (checkOutCart, user) => {
     try {
+        
         const doc = new jsPDF();
         doc.setFont('helvetica');
         doc.setFontSize(12);
@@ -51,7 +52,7 @@ const generatePDF = async (checkOutCart, user) => {
 
         // Add customer details
         let userDetails = [
-            `Customer: ${user?.fullName || ''}`,
+            `Customer: ${user?.firstname || ''}`,
             `Email: ${user?.email || ''}`,
             `Phone: ${user?.phone || ''}`,
         ];

@@ -9,7 +9,7 @@ const ManageOrder = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [totalOrders, setTotalOrders] = useState(0);
     const ordersPerPage = 2; // Number of orders per page
-
+console.log(products)
     useEffect(() => {
         dispatch(asyncFetchOrders(currentPage, user?.store));
     }, [dispatch, currentPage, user?.store]);
@@ -45,17 +45,17 @@ const ManageOrder = () => {
                     <tbody className="bg-white divide-y divide-gray-200">
                         {products?.map((product, index) => (
                             <tr key={index}>
-                                <td className="px-6 py-4 whitespace-nowrap">{product.totalGrandPrice}</td>
+                                <td className="px-6 py-4 whitespace-nowrap">{product?.totalGrandPrice}</td>
                                 <td className="px-6 py-4 whitespace-nowrap">
                                     <ul>
                                         {product.products.map((item, idx) => (
                                             <li key={idx}>
-                                                <strong>Product Name:</strong> {item.productId.ProductName}<br />
-                                                <strong>Description:</strong> {item.productId.description}<br />
-                                                <img src={item.productId.image.url} alt="" className="w-16 h-16 object-cover rounded-lg" />
-                                                <strong>Price:</strong> {item.productId.price}<br />
-                                                <strong>Category:</strong> {item.productId.category}<br />
-                                                <strong>Brand:</strong> {item.productId.brand}<br />
+                                                <strong>Product Name:</strong> {item?.productId?.ProductName}<br />
+                                                <strong>Description:</strong> {item?.productId?.description}<br />
+                                                <img src={item?.productId?.image.url} alt="" className="w-16 h-16 object-cover rounded-lg" />
+                                                <strong>Selling Price:</strong> {item?.productId?.sellingPrice}<br />
+                                                <strong>Category:</strong> {item?.productId?.category}<br />
+                                                <strong>Brand:</strong> {item?.productId?.brand}<br />
                                             </li>
                                         ))}
                                     </ul>
@@ -81,13 +81,13 @@ const ManageOrder = () => {
                                     <td className="px-6 py-4 whitespace-nowrap">
                                         {product.userId.address.map((address, index) => (
                                             <div key={index}>
-                                                <div>Name: {address.name}</div>
-                                                <div>Address Line 1: {address.addressLine1}</div>
-                                                <div>Address Line 2: {address.addressLine2}</div>
-                                                <div>City: {address.city}</div>
-                                                <div>State: {address.state}</div>
-                                                <div>Postal Code: {address.postalCode}</div>
-                                                <div>Country: {address.country}</div>
+                                                <div>Name: {address?.fullName}</div>
+                                                <div>Address Line 1: {address?.addressLine1}</div>
+                                                <div>Address Line 2: {address?.addressLine2}</div>
+                                                <div>City: {address?.city}</div>
+                                                <div>State: {address?.state}</div>
+                                                <div>Postal Code: {address?.postalCode}</div>
+                                                <div>Country: {address?.country}</div>
                                             </div>
                                         ))}
                                     </td>

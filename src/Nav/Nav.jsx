@@ -373,7 +373,7 @@ const Nav = () => {
                                     <ListItemText primary="WISHLIST" />
                                 </ListItem>
                             </Link>
-                           
+
                             <Link to="/logout" className="" style={{ textDecoration: 'none' }} onClick={handleLogout}>
                                 <ListItem button>
                                     <ListItemText primary="LOGOUT" />
@@ -382,110 +382,113 @@ const Nav = () => {
                         </List>
                     </div>
                 ) : user?.userType === "Admin" ? (
-                        <div className="admin-dashboard h-full w-[300px] p-[40px]">
-                            <List className='flex flex-col w-full gap-[20px]'>
-                                <h1 className='text-center'>ADMIN ACCOUNT</h1>
-                                <Link to="/admin/upload-products" className="" style={{ textDecoration: 'none' }}>
-                                    <ListItem button>
-                                        <ListItemText primary="Upload Products" />
-                                    </ListItem>
-                                </Link>
-    
-                                <Link to="/admin/allOrders" className="" style={{ textDecoration: 'none' }}>
-                                    <ListItem button>
-                                        <ListItemText primary="All Orders" />
-                                    </ListItem>
-                                </Link>
+                    <div className="admin-dashboard h-full w-[300px] p-[40px]">
+                        <List className='flex flex-col w-full gap-[20px]'>
+                            <h1 className='text-center'>ADMIN ACCOUNT</h1>
+                            <Link to="/admin/upload-products" className="" style={{ textDecoration: 'none' }}>
+                                <ListItem button>
+                                    <ListItemText primary="Upload Products" />
+                                </ListItem>
+                            </Link>
 
-                             
+                            <Link to="/admin/allOrders" className="" style={{ textDecoration: 'none' }}>
+                                <ListItem button>
+                                    <ListItemText primary="All Orders" />
+                                </ListItem>
+                            </Link>
 
-                                <Link to="/admin/fetchOutOfStockProducts" className="" style={{ textDecoration: 'none' }}>
-                                    <ListItem button>
-                                        <ListItemText primary="Out Of Stock" />
-                                    </ListItem>
-                                </Link>
+                            <Link to="/admin/fetchOutOfStockProducts" className="" style={{ textDecoration: 'none' }}>
+                                <ListItem button>
+                                    <ListItemText primary="Out Of Stock" />
+                                </ListItem>
+                            </Link>
 
-                                <Link to={`/admin/store/${user.store}`} className="" style={{ textDecoration: 'none' }}>
-                                    <ListItem button>
-                                        <ListItemText primary='Your Store' />
-                                    </ListItem>
-                                </Link>
+                            <Link to={`/admin/store/${user.store}`} className="" style={{ textDecoration: 'none' }}>
+                                <ListItem button>
+                                    <ListItemText primary='Your Store' />
+                                </ListItem>
+                            </Link>
 
-                                <Link to="/admin/logout" className="" style={{ textDecoration: 'none' }} onClick={handleLogout}>
-                                    <ListItem button>
-                                        <ListItemText primary="Logout" />
-                                    </ListItem>
-                                </Link>
-                            </List>
-                        </div>
+                            <Link to="/admin/logout" className="" style={{ textDecoration: 'none' }} onClick={handleLogout}>
+                                <ListItem button>
+                                    <ListItemText primary="Logout" />
+                                </ListItem>
+                            </Link>
+                        </List>
+                    </div>
+                ) : user?.userType === "SuperAdmin" ? (
+                    <div className="admin-dashboard h-full w-[300px] p-[40px]">
+                        <List className='flex flex-col w-full gap-[20px]'>
+                            <h1 className='text-center'>SUPER ADMIN ACCOUNT</h1>
 
-                ) : user?.userType==="SuperAdmin" ?(
-                            <div className="admin-dashboard h-full w-[300px] p-[40px]">
-                                <List className='flex flex-col w-full gap-[20px]'>
-                                    <h1 className='text-center'>SUPER ADMIN ACCOUNT</h1>
-                        
-                                    <Link to="/superadmin/dashboard" className="" style={{ textDecoration: 'none' }}>
+                            <Link to="/superadmin/dashboard" className="" style={{ textDecoration: 'none' }}>
+                                <ListItem button>
+                                    <ListItemText primary="Super Admin Dashboard" />
+                                </ListItem>
+                            </Link>
+                            <Link to="/superadmin/fetchAllUsers" className="" style={{ textDecoration: 'none' }}>
+                                <ListItem button>
+                                    <ListItemText primary="All Users" />
+                                </ListItem>
+                            </Link>
+
+                            <Link to="/superadmin/allproducts" className="" style={{ textDecoration: 'none' }}>
+                                <ListItem button>
+                                    <ListItemText primary="All Products" />
+                                </ListItem>
+                            </Link>
+                            <Link to="/superadmin/activeMembers" className="" style={{ textDecoration: 'none' }}>
+                                <ListItem button>
+                                    <ListItemText primary="Active Users" />
+                                </ListItem>
+                            </Link>
+                            <Link to="/superadmin/inactiveMembers" className="" style={{ textDecoration: 'none' }}>
+                                <ListItem button>
+                                    <ListItemText primary="InActive Users" />
+                                </ListItem>
+                            </Link>
+                            {/* Store Section */}
+                            <ListItem button onClick={() => handleStoreClick()}>
+                                <ListItemText primary="Stores" />
+                                {openStore ? <ExpandLess /> : <ExpandMore />}
+                            </ListItem>
+                            <Collapse in={openStore} timeout="auto" unmountOnExit>
+                                {stores.map((store, index) => (
+                                    <ListItemButton key={index} component={Link} to={`/superadmin/stores/${store}`}>
+                                        <ListItemText primary={store} />
+                                    </ListItemButton>
+                                ))}
+                            </Collapse>
+
+                            {/* End of Store Section */}
+                            <Link to="/superadmin/logout" className="" style={{ textDecoration: 'none' }} onClick={handleLogout}>
+                                <ListItem button>
+                                    <ListItemText primary="Logout" />
+                                </ListItem>
+                            </Link>
+                        </List>
+                    </div>
+                ) : user?.userType === "Storemanager" ? (
+                    <div className="store-manager-dashboard h-full w-[300px] p-[40px]">
+
+                                    <Link to={`/store/allOrders/${user?.store}`} className="" style={{ textDecoration: 'none' }}>
                                         <ListItem button>
-                                            <ListItemText primary="Super Admin Dashboard" />
+                                            <ListItemText primary="All Orders" />
                                         </ListItem>
                                     </Link>
-                                    <Link to="/superadmin/fetchAllUsers" className="" style={{ textDecoration: 'none' }}>
-                                        <ListItem button>
-                                            <ListItemText primary="All Users" />
-                                        </ListItem>
-                                    </Link>
-
-                                    
-
-                                    <Link to="/superadmin/allproducts" className="" style={{ textDecoration: 'none' }}>
-                                        <ListItem button>
-                                            <ListItemText primary="All Products" />
-                                        </ListItem>
-                                    </Link>
-                                    <Link to="/superadmin/activeMembers" className="" style={{ textDecoration: 'none' }}>
-                                        <ListItem button>
-                                            <ListItemText primary="Active Users" />
-                                        </ListItem>
-                                    </Link>
-                                    <Link to="/superadmin/inactiveMembers" className="" style={{ textDecoration: 'none' }}>
-                                        <ListItem button>
-                                            <ListItemText primary="InActive Users" />
-                                        </ListItem>
-                                    </Link>
-                                    {/* Store Section */}
-                                    <ListItem button onClick={() => handleStoreClick()}>
-                                        <ListItemText primary="Stores" />
-                                        {openStore ? <ExpandLess /> : <ExpandMore />}
-                                    </ListItem>
-                                    <Collapse in={openStore} timeout="auto" unmountOnExit>
-                                        {stores.map((store, index) => (
-                                            <ListItemButton key={index} component={Link} to={`/superadmin/stores/${store}`}>
-                                                <ListItemText primary={store} />
-                                            </ListItemButton>
-                                        ))}
-                                    </Collapse>
-
-                                    {/* End of Store Section */}
-                                    <Link to="/superadmin/logout" className="" style={{ textDecoration: 'none' }} onClick={handleLogout}>
-                                        <ListItem button>
-                                            <ListItemText primary="Logout" />
-                                        </ListItem>
-                                    </Link>
-                                </List>
-                            </div>
-                ):(
-                    <div className="flex justify-center items-center h-screen">
-                        <div className="bg-gray-200  rounded-lg shadow-md">
-                            <Tabs
-                                value={selectedTab}
-                                onChange={handleTabChange}
-                                sx={{ backgroundColor: '#dadada', color: 'black', width: '350px' }}
-                            >
-                                <Tab label="Sign In" sx={{ color: 'black', width: '50%' }} />
-                                <Tab label="Sign Up" sx={{ color: 'black', width: '50%' }} />
-                            </Tabs>
-                            {selectedTab === 0 && (
-                                <div className='p-5'>
+                    </div>
+                            ) : (<div className="flex justify-center items-center h-screen">
+                                <div className="bg-gray-200  rounded-lg shadow-md">
+                                    <Tabs
+                                        value={selectedTab}
+                                        onChange={handleTabChange}
+                                        sx={{ backgroundColor: '#dadada', color: 'black', width: '350px' }}
+                                    >
+                                        <Tab label="Sign In" sx={{ color: 'black', width: '50%' }} />
+                                        <Tab label="Sign Up" sx={{ color: 'black', width: '50%' }} />
+                                    </Tabs>
+                                    {selectedTab === 0 && (
+                                        <div className='p-5'>
                                             <form className="flex flex-col space-y-4" onSubmit={handleLogin}>
                                                 <input
                                                     type="email"
@@ -503,7 +506,7 @@ const Nav = () => {
                                                     className="border border-gray-300 px-4 py-2 rounded focus:outline-none"
                                                     onChange={handleInputChange}
                                                 />
-                                               
+
                                                 <button
                                                     type="submit"
                                                     className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition duration-200 focus:outline-none"
@@ -511,11 +514,11 @@ const Nav = () => {
                                                     Sign In
                                                 </button>
                                             </form>
-                                                <a href="/forget-password">Forget Password</a>
-                                </div>
-                            )}
-                            {selectedTab === 1 && (
-                                <div className='p-5'>
+                                            <a href="/forget-password">Forget Password</a>
+                                        </div>
+                                    )}
+                                    {selectedTab === 1 && (
+                                        <div className='p-5'>
                                             <form className="flex flex-col space-y-4" onSubmit={handleCustomerSubmit}>
                                                 <input
                                                     type="email"
@@ -533,7 +536,7 @@ const Nav = () => {
                                                     className="border border-gray-300 px-4 py-2 rounded focus:outline-none"
                                                     onChange={handleInputChange}
                                                 />
-                                                
+
                                                 <button
                                                     type="submit"
                                                     className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition duration-200 focus:outline-none"
@@ -541,14 +544,12 @@ const Nav = () => {
                                                     Sign Up
                                                 </button>
                                             </form>
-                                </div>
-                            )}
-                        </div>
+                            </div>)}
                     </div>
-
-
-
+                </div>
                 )}
+
+
             </Drawer>
 
         </>
