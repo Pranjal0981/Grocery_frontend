@@ -51,7 +51,9 @@ const [imageFile,setImageFile]=useState(null)
         formData.append("stock", updatedProduct.stock);
         formData.append("store", product.store);
         formData.append("ProductCode", updatedProduct.ProductCode);
-        formData.append("image", imageFile);
+        if (imageFile) {
+            formData.append("image", imageFile);
+        }
 
         // Dispatch action to update product
         dispatch(asyncUpdateProduct(id, formData));

@@ -7,7 +7,7 @@ import { useSelector } from 'react-redux';
 
 function App() {
   const {user}=useSelector((state)=>state.user)
-  console.log(user.userType)
+  console.log(user?.userType)
   return (
     <>
       <Nav />
