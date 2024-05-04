@@ -52,7 +52,7 @@ export const SuperAdminLogin = () => {
                     />
                 </div>
                 <div className="mb-4 text-right">
-                    <Link to="/superadmin/forgot-password" className="text-blue-500 hover:underline">Forgot Password?</Link>
+                    <Link to="/superadmin/forget-password" className="text-blue-500 hover:underline">Forgot Password?</Link>
                 </div>
                 <button
                     type="submit"

@@ -136,6 +136,7 @@ export const asyncDelProduct = (productId) => async (dispatch, getState) => {
 export const fetchDashBoardInfo = () => async (dispatch, getState) => {
     try {
         const response = await axios.get('/superadmin/dashboard/fetchAllInfo')
+        console.log(response)
         dispatch(saveDashBoardInfo(response.data.data))
 
     } catch (error) {

@@ -7,7 +7,7 @@ import {asyncFilterAll} from '../store/actions/productAction'
 const Pagination = ({ currentPage, onPageChange }) => {
     const { product, loading } = useSelector(state => state.product);
     const [totalPages, setTotalPages] = useState(1); // Total
-    const productsPerPage = 7; // Number of products per page
+    const productsPerPage = 8; // Number of products per page
     const [showSpinner, setShowSpinner] = useState(true);
     const navigate = useNavigate();
     const dispatch = useDispatch();
@@ -193,10 +193,10 @@ const Pagination = ({ currentPage, onPageChange }) => {
                 )}
             </div>
             <div className="lg:col-span-2">
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4">
                     {Array.isArray(product) && product.map((product) => (
                         <div key={product?._id} className="bg-white rounded-lg shadow-md cursor-pointer transition duration-300 ease-in-out transform hover:scale-105" onClick={() => handleExploreProduct(product?._id)}>
-                            <img src={product.image.url} alt={product?.ProductName} className="w-full h-40 object-cover mb-4 rounded-t-md" />
+                            <img src={product.image.url} alt={product?.ProductName} className="w-full h-40 object-cover mb-4 rounded-t-md object-center	" />
                             <div className="p-4">
                                 <h3 className="text-lg font-semibold mb-2">{product?.ProductName}</h3>
                                 <p className="text-sm mb-2">{product?.description}</p>

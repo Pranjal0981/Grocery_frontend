@@ -46,14 +46,14 @@ const ProductStore = () => {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {products?.map((product) => (
-                    <div key={product?._id} className="bg-white shadow-lg rounded-lg overflow-hidden">
+                    <div key={product?._id} className="bg-white shadow-lg rounded-lg overflow-hidden" onClick={()=>handleClick}>
                         <img src={product?.image?.url} alt={product?.ProductName} className="w-full h-64 object-cover object-center" />
                         <div className="p-4">
                             <h2 className="text-xl font-semibold">{product?.ProductName}</h2>
                             <p className="text-gray-600">{product?.category}</p>
                             <p className="text-gray-700">{product?.description}</p>
+                            <p className="text-gray-800 font-bold mt-2">MRP: Rs <s>{product?.MRP}</s></p>
                             <p className="text-gray-800 font-bold mt-2">Selling Price: Rs {product?.sellingPrice}</p>
-                            <p className="text-gray-800 font-bold mt-2">MRP: Rs {product?.MRP}</p>
                             <p className="text-gray-800 font-bold mt-2">Stock: {product?.stock}</p>
                             <p className="text-gray-800 font-bold mt-2">Product Code: {product?.ProductCode}</p>
                             <div className="flex gap-[30px]">
