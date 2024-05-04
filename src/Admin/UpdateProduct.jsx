@@ -11,7 +11,7 @@ const [imageFile,setImageFile]=useState(null)
     // Accessing product from Redux state
     const { product } = useSelector((state) => state.product);
     const [updatedProduct, setUpdatedProduct] = useState({});
-
+console.log(product)
     // Set initial values of updatedProduct when product data is available
     useEffect(() => {
         if (product) {
@@ -40,7 +40,7 @@ const [imageFile,setImageFile]=useState(null)
         formData.append("ProductName", updatedProduct.ProductName);
         formData.append("description", updatedProduct.description);
         formData.append("sellingPrice", updatedProduct.sellingPrice);
-        formData.append("PurchasePrice", updatedProduct.purchasePrice);
+        formData.append("PurchasePrice", updatedProduct.PurchasePrice);
 
         formData.append("MRP", updatedProduct.MRP);
         formData.append("Size", updatedProduct.Size);
@@ -119,8 +119,8 @@ const [imageFile,setImageFile]=useState(null)
                         <input
                             type="number"
                             id="price"
-                            name="purchasePrice"
-                            value={updatedProduct.purchasePrice || ""}
+                            name="PurchasePrice"
+                            value={updatedProduct.PurchasePrice || ""}
                             onChange={handleChange}
                             className="form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
                         />
@@ -169,6 +169,9 @@ const [imageFile,setImageFile]=useState(null)
                         <label htmlFor="image" className="block text-gray-700">
                             Image Upload:
                         </label>
+                        {product.image.url && (
+                            <img src={product.image.url} alt="Product" className="mb-2" style={{ maxWidth: '200px' }} />
+                        )}
                         <input
                             type="file"
                             id="image"
