@@ -1,13 +1,15 @@
 import axios from '../../config/axios'
 import { saveStoreProducts, saveAllUsers, saveOrders, saveDashBoardInfo, setLoading } from '../reducers/adminSlice';
 import { saveProduct } from '../reducers/productSlice';
-import { saveUser, removeUser } from '../reducers/userSlice'
+import { saveUser, removeUser, saveTokenExpiration } from '../reducers/userSlice'
 import { toast } from 'react-toastify';
+
 export const asyncCurrentAdmin = (token) => async (dispatch, getState) => {
     try {
         const response = await axios.post('/admin/currentAdmin', null, {
             headers: { Authorization: `Bearer ${token}` }
         });
+        console.log(response)
         await dispatch(saveUser(response.data.admin));
     } catch (error) {
         console.error(error);
@@ -31,10 +33,27 @@ export const asyncAdminRegister=(data)=>async(dispatch,getState)=>{
 export const asyncAdminLogin = (data, navigate) => async (dispatch, getState) => {
     try {
         const res = await axios.post('/admin/login', data);
-        await dispatch(asyncCurrentAdmin(res.data.token));
-        toast.success("Admin Signin Successfully")
-        navigate()
+        console.log(res.data);
 
+        // Dispatch action to handle current admin login
+        await dispatch(asyncCurrentAdmin(res.data.token));
+
+        // Access the expiresIn value from the response
+        const expiresInMilliseconds = res.data.expiresIn;
+
+        // Calculate the token expiration time in milliseconds from the current time
+        const expirationTime = Date.now() + expiresInMilliseconds;
+
+        localStorage.setItem('token', res.data.token);
+        localStorage.setItem('tokenExpiration', expirationTime);
+
+        // Dispatch action to save token expiration in Redux store
+        dispatch(saveTokenExpiration(expirationTime));
+        // Show success toast
+        toast.success("Admin Signin Successfully");
+
+        // Navigate to the desired page
+        navigate('/admin/upload-products');
     } catch (error) {
         if (error.response && error.response.status === 401) {
             toast.error('Invalid email or password. Please try again.');
@@ -43,8 +62,8 @@ export const asyncAdminLogin = (data, navigate) => async (dispatch, getState) =>
             toast.error('An error occurred. Please try again later.');
         }
     }
-
 };
+
 
 export const asyncLogoutAdmin = () => async (dispatch, getState) => {
     try {

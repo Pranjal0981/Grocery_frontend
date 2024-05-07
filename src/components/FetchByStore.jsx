@@ -15,7 +15,7 @@ const Storeproduct = () => {
     const handlePageChange = (page) => {
         setCurrentPage(page);
         console.log(page)
-        dispatch(asyncFetchStorePro(page));
+        dispatch(asyncFetchStorePro(store,page));
     };
     return <>
         <Pagination currentPage={currentPage} onPageChange={handlePageChange} />

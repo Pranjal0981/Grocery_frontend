@@ -18,9 +18,23 @@ import { asyncAdminLogin, asyncAdminRegister, asyncLogoutAdmin } from '../store/
 import { asyncSignIn, asyncSignOut, asyncSignupUser } from '../store/actions/userAction';
 import { asyncSearch } from '../store/actions/productAction';
 import { asyncSuperAdminSignIn, asyncSuperAdminSignUp, asyncSignOutSuperAdmin } from '../store/actions/superAdminAction';
+import { asyncStoreLogout } from '../store/actions/storeManagerAction';
+import { useEffect } from 'react';
+import CountdownTimer from './Coundown';
 
 const Nav = () => {
+    
     const navigate=useNavigate()
+    const [expirationTime, setExpirationTime] = useState();
+
+    useEffect(() => {
+        const timer = setInterval(() => {
+            // Update expiration time every second
+            setExpirationTime(localStorage.getItem('tokenExpiration'));
+        }, 1000);
+
+        return () => clearInterval(timer);
+    }, []);  
     const [drawerOpen, setDrawerOpen] = React.useState(false);
     const [selectedTab, setSelectedTab] = React.useState(0);
     const [secondOpen, setSecondOpen] = React.useState(false)
@@ -128,6 +142,9 @@ const Nav = () => {
         if(user?.userType=='SuperAdmin'){
             await dispatch(asyncSignOutSuperAdmin())
         }
+        if(user?.userType==='Storemanager'){
+           await dispatch(asyncStoreLogout())
+        }
     }
     const isAdmin = isAuth && user.userType === 'Admin';
     const isUser = isAuth && user.userType === 'customer';
@@ -152,10 +169,13 @@ const Nav = () => {
 
  
     return (
+
         <>
+
             <div className="flex gap-[20px] justify-around items-center h-[10vh] w-auto bg-[#96B415] sticky top-[0%] z-[99]">
                 <button onClick={toggleDrawer(true)} className="flex items-center justify-center w-8 h-8 text-white rounded-full border-2 border-white">
                     <FaBars />
+
                 </button>
                 <div className="flex items-center gap-5">
                     <h1 className="ml-5 text-xl">
@@ -190,6 +210,7 @@ const Nav = () => {
                         <FaSearchengin className="text-lg" />
                     </button>
                 </div>
+              <p>Logged Out </p><CountdownTimer />
 
                 <div className="flex">
                     <button className="flex gap-2 items-center text-white text-lg" onClick={toggleSecondDrawer(true)}>
@@ -474,6 +495,11 @@ const Nav = () => {
                                     <Link to={`/store/allOrders/${user?.store}`} className="" style={{ textDecoration: 'none' }}>
                                         <ListItem button>
                                             <ListItemText primary="All Orders" />
+                                        </ListItem>
+                                    </Link>
+                                    <Link to="" className="" style={{ textDecoration: 'none' }} onClick={handleLogout}>
+                                        <ListItem button>
+                                            <ListItemText primary="Logout" />
                                         </ListItem>
                                     </Link>
                     </div>

@@ -22,7 +22,8 @@ export const StoreManagerLogin = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        dispatch(asyncStoreLogin(formData, navigate));
+        dispatch(asyncStoreLogin(formData, navigate,store));
+
     };
 
     return (

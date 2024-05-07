@@ -30,9 +30,9 @@ export const asyncExploreById = (id) => async (dispatch, getState) => {
     }
 }
 
-export const asyncFetchCategorisedPro = (category) => async (dispatch, getState) => {
+export const asyncFetchCategorisedPro = (category,page) => async (dispatch, getState) => {
     try {
-        const response = await axios.get(`/products/category/${category}`)
+        const response = await axios.get(`/products/category/${category}?page=${page}`)
         dispatch(saveProduct(response?.data?.data))
     } catch (error) {
 toast.error(error.response.data.message)
@@ -49,9 +49,9 @@ export const asyncSearch = (searchTerm, selectedCategory) => async (dispatch, ge
     }
 };
 
-export const asyncFetchStorePro = (store) => async (dispatch, getState) => {
+export const asyncFetchStorePro = (store,page) => async (dispatch, getState) => {
     try {
-        const response =await axios.get(`/products/store/${store}`)
+        const response =await axios.get(`/products/store/${store}?page=${page}`)
         dispatch(saveProduct(response?.data?.data))
 
     } catch (error) {

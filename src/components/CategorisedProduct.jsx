@@ -14,7 +14,7 @@ const CategoryProduct=()=>{
     const handlePageChange = (page) => {
         setCurrentPage(page);
         console.log(page)
-        dispatch(asyncFetchCategorisedPro(page));
+        dispatch(asyncFetchCategorisedPro(category,page));
     };
     return<>
         <Pagination currentPage={currentPage} onPageChange={handlePageChange} />

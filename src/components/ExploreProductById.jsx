@@ -7,6 +7,7 @@ import { motion } from 'framer-motion';
 import { FaRegHeart } from "react-icons/fa";
 import { asyncAddToWishlist, asyncAddToCart } from '../store/actions/userAction';
 import { asyncExploreById } from '../store/actions/productAction';
+import { toast } from 'react-toastify';
 
 const ExploreProductById = () => {
     const { id } = useParams();
@@ -24,6 +25,9 @@ const ExploreProductById = () => {
     }, [dispatch, id]);
 
     const handleWishlist = async () => {
+        if(!userId){
+            toast.warn("You are not an authorized customer")
+        }
         if (product) {
             console.log('Product added to wishlist with ID:', product._id, 'by user with ID:', userId);
             await dispatch(asyncAddToWishlist(userId, { productId: product._id }));
@@ -32,6 +36,9 @@ const ExploreProductById = () => {
 
     const handleAddToBag = async () => {
         // Calculate the total price
+        if (!userId) {
+            toast.warn("You are not an authorized customer")
+        }
         const totalPrice = product.DiscountedPrice * quantity;
         await dispatch(asyncAddToCart(userId, { productId: product._id,quantity }));
     };

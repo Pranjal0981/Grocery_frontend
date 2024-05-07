@@ -2,12 +2,13 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const savedUser = localStorage.getItem("user");
 const initialState = {
-    user: savedUser ? JSON.parse(savedUser) : {}, // Provide an empty object as default
+    user: savedUser ? JSON.parse(savedUser) : null,
     isAuth: savedUser ? true : false,
     wishlist: null,
-    checkOutCart: null
-}
+    checkOutCart:null,
+    tokenExpiration:null
 
+}
 
 export const userSlice = createSlice({
     name: "user",
@@ -18,7 +19,10 @@ export const userSlice = createSlice({
             state.user = action.payload;
             state.isAuth = true;
         },
-
+        saveTokenExpiration: (state, action) => {
+            localStorage.setItem("tokenExpiration", action.payload);
+            state.tokenExpiration = action.payload;
+        },
         removeUser: (state) => {
             localStorage.removeItem("user");
             state.user = null;
@@ -35,6 +39,7 @@ export const userSlice = createSlice({
 });
 
 
-export const { saveUser, removeUser, saveWishlist, saveCheckOutCart } = userSlice.actions;
+export const { saveUser, removeUser, saveWishlist, saveCheckOutCart, saveTokenExpiration
+ } = userSlice.actions;
 
 export default userSlice.reducer;
