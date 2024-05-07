@@ -210,7 +210,7 @@ const Nav = () => {
                         <FaSearchengin className="text-lg" />
                     </button>
                 </div>
-              <p>Logged Out </p><CountdownTimer />
+              <CountdownTimer />
 
                 <div className="flex">
                     <button className="flex gap-2 items-center text-white text-lg" onClick={toggleSecondDrawer(true)}>

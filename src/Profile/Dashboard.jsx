@@ -1,7 +1,7 @@
 import React from 'react';
 import { FaUser } from "react-icons/fa";
 import { FaCircleUser } from "react-icons/fa6";
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { MdDashboard } from "react-icons/md";
 import { BsBagCheck } from "react-icons/bs";
 import { IoIosGlobe } from "react-icons/io";
@@ -10,11 +10,15 @@ import { CiLogout } from "react-icons/ci";
 import { CiHeart } from "react-icons/ci";
 import { MdAccountCircle } from "react-icons/md";
 import { useSelector, useDispatch } from 'react-redux';
-
+import { asyncSignOut } from '../store/actions/userAction';
 const Dashboard = () => {
+    const navigate=useNavigate()
     const dispatch = useDispatch();
     const { user, isAuth } = useSelector((state) => state.user);
-
+    const handleLogout=()=>{
+        dispatch(asyncSignOut(navigate))
+       
+    }
     return (
         <div className="h-full w-full">
             <h1 className='flex gap-[20px] w-full items-center justify-center text-4xl p-[30px] bg-gray-100'><FaUser /> MY ACCOUNT</h1>
@@ -47,7 +51,7 @@ const Dashboard = () => {
                             <CiHeart />
                             Compare
                         </Link>
-                        <Link to='/logout' className='flex items-center gap-[10px]'>
+                        <Link  className='flex items-center gap-[10px]' onClick={handleLogout}>
                             <CiLogout />
                             Logout
                         </Link>

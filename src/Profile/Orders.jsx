@@ -17,17 +17,17 @@ const Order = () => {
 
     const productIdsToUpdateStock = products?.data?.reduce((acc, order) => {
         order.products.forEach((product) => {
-            acc.push(product.productId._id);
+            acc.push(product.productId?._id);
         });
         return acc;
     }, []);
 
     useEffect(() => {
         dispatch(asyncFetchCustomerOrder(user._id));
-    }, [dispatch, user._id]);
+    }, [dispatch, user?._id]);
 
     const handleReturnRequest = (orderId, userId) => {
-        dispatch(asyncReturnRequest(orderId, user._id));
+        dispatch(asyncReturnRequest(orderId, user?._id));
         console.log("Return requested for order:", orderId);
 
         // Iterate through each order in the products array
@@ -40,14 +40,14 @@ const Order = () => {
             // Iterate through each product in the order
             order.products.forEach(async (product) => {
                 // Check if the product ID matches any of the IDs in the array
-                if (productIdsToUpdateStock.includes(product.productId._id)) {
+                if (productIdsToUpdateStock.includes(product.productId?._id)) {
                     try {
                         // Update the stock for the product
                         const newStock = product.productId.stock + product.quantity; // Add returned quantity back to the stock
-                         dispatch(asyncUpdateStock(product.productId._id, newStock));
-                        console.log(`Stock updated for product ${product.productId._id}`);
+                         dispatch(asyncUpdateStock(product.productId?._id, newStock));
+                        console.log(`Stock updated for product ${product.productId?._id}`);
                     } catch (error) {
-                        console.error(`Error updating stock for product ${product.productId._id}:`, error);
+                        console.error(`Error updating stock for product ${product.productId?._id}:`, error);
                     }
                 }
             });
@@ -73,24 +73,24 @@ const Order = () => {
                     <tbody>
                         {products?.data?.map((order) => (
                             <tr key={order._id} className="bg-white">
-                                <td className="border px-4 py-2">{order.status}</td>
-                                <td className="border px-4 py-2">{order.totalGrandPrice}</td>
-                                <td className="border px-4 py-2">{order.userId.email}</td>
-                                <td className="border px-4 py-2">{order.reqCancellation}</td>
+                                <td className="border px-4 py-2">{order?.status}</td>
+                                <td className="border px-4 py-2">{order?.totalGrandPrice}</td>
+                                <td className="border px-4 py-2">{order?.userId?.email}</td>
+                                <td className="border px-4 py-2">{order?.reqCancellation}</td>
                                 <td className="border px-4 py-2">
                                     <ul className="space-y-4">
-                                        {order.products.map((product) => (
-                                            <li key={product._id}>
+                                        {order?.products?.map((product) => (
+                                            <li key={product?._id}>
                                                 <div className="flex items-center space-x-4">
                                                     <div>
-                                                        <img src={product.productId.image.url} alt="" className="w-20 h-20 object-cover rounded-lg" />
+                                                        <img src={product?.productId?.image?.url} alt="" className="w-20 h-20 object-cover rounded-lg" />
                                                     </div>
                                                     <div>
-                                                        <h3 className="text-lg font-semibold">{product.productId.ProductName}</h3>
-                                                        <p className="text-sm text-gray-600">{product.productId.description}</p>
-                                                        <p className="text-sm text-gray-700">Price: Rs {product.productId.sellingPrice}</p>
-                                                        <p className="text-sm text-gray-700">Stock: {product.productId.stock}</p>
-                                                        <p className="text-sm text-gray-700">Quantity: {product.quantity}</p>
+                                                        <h3 className="text-lg font-semibold">{product?.productId?.ProductName}</h3>
+                                                        <p className="text-sm text-gray-600">{product?.productId?.description}</p>
+                                                        <p className="text-sm text-gray-700">Price: Rs {product?.productId?.sellingPrice}</p>
+                                                        <p className="text-sm text-gray-700">Stock: {product?.productId?.stock}</p>
+                                                        <p className="text-sm text-gray-700">Quantity: {product?.quantity}</p>
                                                     </div>
                                                 </div>
                                             </li>

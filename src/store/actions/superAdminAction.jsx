@@ -31,6 +31,16 @@ export const asyncSuperAdminSignIn = (data, navigate) => async (dispatch, getSta
     try {
         const res = await axios.post('/superadmin/login', data);
         await dispatch(asyncCurrentSuperAdmin(res.data.token));
+        const expiresInMilliseconds = res.data.expiresIn;
+
+        // Calculate the token expiration time in milliseconds from the current time
+        const expirationTime = Date.now() + expiresInMilliseconds;
+
+        localStorage.setItem('token', res.data.token);
+        localStorage.setItem('tokenExpiration', expirationTime);
+
+        // Dispatch action to save token expiration in Redux store
+        dispatch(saveTokenExpiration(expirationTime));
         toast.success("LoggedIn sucessfully")
 
     } catch (error) {

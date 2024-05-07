@@ -1,9 +1,10 @@
-import { saveUser, removeUser, saveWishlist, saveCheckOutCart } from "../reducers/userSlice";
+import { saveUser, removeUser, saveWishlist, saveCheckOutCart, saveTokenExpiration } from "../reducers/userSlice";
 import axios from '../../config/axios'
 import { saveProduct } from "../reducers/productSlice";
 import { saveOrders } from "../reducers/adminSlice";
 import { toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
+import { Navigate } from "react-router-dom";
 
 export const asyncCurrentUser = (token) => async (dispatch, getState) => {
     try {
@@ -39,6 +40,16 @@ export const asyncSignIn=(data)=>async(dispatch,getState)=>{
     try {
         const response=await axios.post('/user/login',data)
         await dispatch(asyncCurrentUser(response.data.token));
+        const expiresInMilliseconds = response.data.expiresIn;
+
+        // Calculate the token expiration time in milliseconds from the current time
+        const expirationTime = Date.now() + expiresInMilliseconds;
+
+        localStorage.setItem('token', response.data.token);
+        localStorage.setItem('tokenExpiration', expirationTime);
+
+        // Dispatch action to save token expiration in Redux store
+        dispatch(saveTokenExpiration(expirationTime));
         toast.success("LoggedIn Successfully !")
 
     } catch (error) {
@@ -51,12 +62,12 @@ export const asyncSignIn=(data)=>async(dispatch,getState)=>{
     }
 }
 
-export const asyncSignOut=(data)=>async(dispacth,getState)=>{
+export const asyncSignOut=(navigate)=>async(dispacth,getState)=>{
     try {
         const response=await axios.get('/user/logout')
         dispacth(removeUser())
         toast.success("Logout Successfully !")
-
+        navigate('/')
     } catch (error) {
         toast.error("Logout Error !")
 

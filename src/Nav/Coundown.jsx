@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 
 const TokenExpirationCountdown = () => {
     const tokenExpiration = useSelector(state => state.user.tokenExpiration);
-  
+    console.log(tokenExpiration)
     const [countdown, setCountdown] = useState('');
 
     useEffect(() => {
@@ -19,6 +19,8 @@ const TokenExpirationCountdown = () => {
                 // Convert remaining time to minutes and seconds
                 const minutes = Math.floor((remainingTime / (1000 * 60)) % 60);
                 const seconds = Math.floor((remainingTime / 1000) % 60);
+
+                console.log('Minutes:', minutes, 'Seconds:', seconds); // Log minutes and seconds
 
                 // Format the countdown string
                 const formattedCountdown = `${minutes}m ${seconds}s`;
