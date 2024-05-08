@@ -70,9 +70,11 @@ export const AdminLoginForm = () => {
                     >
                         <option value="">Select Store Name</option>
                         <option value="Minal Residency">Minal Residency</option>
+                        <option value="Katara Hills">Katara Hills</option>
                         <option value="Rohit Nagar">Rohit Nagar</option>
                         <option value="Awadhpuri">Awadhpuri</option>
                         <option value="Jhansi">Jhansi</option>
+
                     </select>
                 </div>
                 <button
@@ -168,6 +170,7 @@ export const AdminRegistrationForm = () => {
                         <option value="Rohit Nagar">Rohit Nagar</option>
                         <option value="Awadhpuri">Awadhpuri</option>
                         <option value="Jhansi">Jhansi</option>
+                        <option value="Katara Hills">Katara Hills</option>
                     </select>
                 </div>
                 <button

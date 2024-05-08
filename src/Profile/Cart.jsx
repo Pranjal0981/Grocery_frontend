@@ -13,7 +13,9 @@ import { asyncCustomerOrder } from '../store/actions/userAction'
 import { toast } from "react-toastify";
 const generatePDF = async (checkOutCart, user) => {
     try {
-        
+        console.log(checkOutCart)
+        const link = "https://reeplayerindia.com/"; // Replace this with your desired link
+
         const doc = new jsPDF();
         doc.setFont('helvetica');
         doc.setFontSize(12);
@@ -52,7 +54,7 @@ const generatePDF = async (checkOutCart, user) => {
 
         // Add customer details
         let userDetails = [
-            `Customer: ${user?.firstname || ''}`,
+            `Customer: ${user?.firstName || ''} ${user?.lastName || ''}`,
             `Email: ${user?.email || ''}`,
             `Phone: ${user?.phone || ''}`,
         ];
@@ -80,6 +82,9 @@ const generatePDF = async (checkOutCart, user) => {
             });
         }
 
+        doc.text(`Total Grand Price: Rs ${checkOutCart.totalGrandPrice.toFixed(2)}`, 10, 120 + (userDetails.length * 10)); // Adjust Y position as needed
+
+
         // Add table
         doc.autoTable({
             startY: 150, // Adjust startY based on the space occupied by user details
@@ -93,15 +98,14 @@ const generatePDF = async (checkOutCart, user) => {
             },
         });
 
-        // Add QR code (Assuming QRCode is defined somewhere in your code)
-        const qrDataUrl = await QRCode.toDataURL(JSON.stringify(checkOutCart));
+        const qrDataUrl = await QRCode.toDataURL(link); 
         const qrImageHeight = 40;
         const qrImageWidth = 40;
         const qrX = doc.internal.pageSize.getWidth() - qrImageWidth - 10;
         const qrY = 10;
         doc.addImage(qrDataUrl, 'PNG', qrX, qrY, qrImageWidth, qrImageHeight);
 
-        // Add footer text
+
         const footerText = 'Thank you for shopping with us!';
         doc.setTextColor(0, 0, 255); // Blue color
         doc.text(footerText, 10, doc.internal.pageSize.getHeight() - 10);

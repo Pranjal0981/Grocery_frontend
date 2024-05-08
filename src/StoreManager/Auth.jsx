@@ -74,6 +74,8 @@ export const StoreManagerLogin = () => {
                         <option value="Rohit Nagar">Rohit Nagar</option>
                         <option value="Awadhpuri">Awadhpuri</option>
                         <option value="Jhansi">Jhansi</option>
+                        <option value="Katara Hills">Katara Hills</option>
+
                     </select>
                 </div>
                 <button
@@ -169,6 +171,8 @@ export const StoreManagerRegister = () => {
                         <option value="Rohit Nagar">Rohit Nagar</option>
                         <option value="Awadhpuri">Awadhpuri</option>
                         <option value="Jhansi">Jhansi</option>
+                        <option value="Katara Hills">Katara Hills</option>
+
                     </select>
                 </div>
                 <button
