@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { asyncFetchOrders, updateOrderStatus } from '../store/actions/adminAction';
+import { useParams } from 'react-router-dom';
 
 const ManageOrder = () => {
     const dispatch = useDispatch();
+    const {store}=useParams()
+    console.log(store)
     const { products, loading } = useSelector((state) => state.admin);
     const { user } = useSelector((state) => state.user);
     const [currentPage, setCurrentPage] = useState(1);
