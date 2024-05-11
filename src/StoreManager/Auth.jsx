@@ -91,7 +91,7 @@ export const StoreManagerLogin = () => {
                     Don't have an account? Register here
                 </Link>
                 <Link
-                    to="/admin/forget-password"
+                    to="/storemanager/forget-password"
                     className="block text-center text-gray-700 text-sm mt-2 hover:underline"
                 >
                     Forgot Password?
@@ -189,3 +189,4 @@ export const StoreManagerRegister = () => {
         </div>
     );
 }
+

@@ -263,7 +263,6 @@ export const asyncAdminSendForgetLink = (email) => async (dispatch, getState) =>
     } catch (error) {
         toast.error("Error sending mail")
 
-
     }
 }
 

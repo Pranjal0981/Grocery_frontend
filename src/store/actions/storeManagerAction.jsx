@@ -57,3 +57,26 @@ export const asyncStoreLogout = () => async (dispatch, getState) => {
         }
     }
 }
+
+
+export const asyncStoreManagerPassword=()=>async(dispatch,getState)=>{
+    try {
+        const response = await axios.post('/storemanager/send-mail', email)
+        toast.success("Reset mail sent")
+    } catch (error) {
+        toast.error("Error sending mail")
+
+
+    }
+}
+
+export const asyncSendForgetLinkStoremanager = (email)=>async(dispatch,getState)=>{
+    try {
+        const response = await axios.post('/storemanager/send-mail',email) 
+        toast.success("Reset Link Sent")
+    } catch (error) {
+        console.log(error)
+        toast.error("Error Sending Link")
+    }
+}
+

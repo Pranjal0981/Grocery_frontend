@@ -1,8 +1,8 @@
 import { Routes, Route, useParams } from 'react-router-dom'
 import Dashboard from '../Profile/Dashboard'
 import HomePage from '../components/HomePage'
-import {ForgetPassword,ForgetAdminPassword,ForgetSuperAdminPassword} from '../Profile/ForgetPassword'
-import { ResetPassword, ResetAdminPassword, ResetSuperAdminPassword } from '../Profile/ResetPassword'
+import {ForgetPassword,ForgetAdminPassword,ForgetSuperAdminPassword, ForgetStoreManagerPassword} from '../Profile/ForgetPassword'
+import { ResetPassword, ResetAdminPassword, ResetSuperAdminPassword, ResetStoreManagerPassword } from '../Profile/ResetPassword'
 import { useSelector } from 'react-redux'
 import NotFound from '../components/NotFound'
 import ProductStore from '../Admin/ProductStore'
@@ -72,11 +72,13 @@ const Routing = () => {
             <Route path='/forget-password' element={<ForgetPassword />} />
             <Route path='/storemanager/login' element={<StoreManagerLogin/>}/>
             <Route path='/storemanager/register' element={<StoreManagerRegister/>}/>
-            <Route path='/admin/forget-password' element={<ForgetAdminPassword />} />
+            <Route path='/storemanager/forget-password' element={<ForgetStoreManagerPassword />} />
+            <Route path="/storemanager/forget-link/:id" element={<ResetStoreManagerPassword />} />
             <Route path='/superadmin/forget-password' element={<ForgetSuperAdminPassword/>} />
             <Route path='/superadmin/login' element={<SuperAdminLogin/>}/>
             <Route path='/superadmin/register' element={<SuperAdminRegistrationForm/>}/>
             <Route path="/forget-link/:id" element={<ResetPassword/>} />
+            <Route path='/admin/forget-password' element={<ForgetAdminPassword />} />
             <Route path="/admin/forget-link/:id" element={<ResetAdminPassword />} />
             <Route path="/superadmin/forget-link/:id" element={<ResetSuperAdminPassword />} />
             <Route path='/superadmin/allproducts' element={isSuperAdmin ? <AllProducts /> : <Unauthorized />} />

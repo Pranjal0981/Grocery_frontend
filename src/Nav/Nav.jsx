@@ -502,7 +502,7 @@ const Nav = () => {
                                         </ListItem>
                                     </Link>
                     </div>
-                            ) : (<div className="flex justify-center items-center h-screen">
+                ) : (<div className="flex justify-center items-center h-screen">
                                 <div className="bg-gray-200  rounded-lg shadow-md">
                                     <Tabs
                                         value={selectedTab}
