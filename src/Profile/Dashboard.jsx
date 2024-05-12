@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { FaUser } from "react-icons/fa";
 import { FaCircleUser } from "react-icons/fa6";
 import { Link, useNavigate } from 'react-router-dom';
@@ -10,15 +10,56 @@ import { CiLogout } from "react-icons/ci";
 import { CiHeart } from "react-icons/ci";
 import { MdAccountCircle } from "react-icons/md";
 import { useSelector, useDispatch } from 'react-redux';
-import { asyncSignOut } from '../store/actions/userAction';
+import { asyncSignOut, asyncSetPreferredStore } from '../store/actions/userAction';
+
 const Dashboard = () => {
-    const navigate=useNavigate()
+    const navigate = useNavigate();
     const dispatch = useDispatch();
     const { user, isAuth } = useSelector((state) => state.user);
-    const handleLogout=()=>{
-        dispatch(asyncSignOut(navigate))
-       
+    const [preferredStore, setPreferredStore] = useState('');
+    const [selectedStore, setSelectedStore] = useState(user?.PreferredStore);
+    const [products, setProducts] = useState([]); // State to hold the products
+console.log(user)
+    const handleLogout = () => {
+        dispatch(asyncSignOut(navigate));
     }
+
+    const handleStoreChange = (store) => {
+        setSelectedStore(store);
+    }
+
+    const handleSubmitPreferredStore = (e) => {
+        e.preventDefault();
+        // Here you can add logic to submit preferred store
+        console.log("Preferred Store:", selectedStore);
+        dispatch(asyncSetPreferredStore({ selectedStore }, user._id));
+    }
+
+    // useEffect(() => {
+    //     // Fetch products when the component mounts or when selectedStore changes
+    //     if (selectedStore) {
+    //         fetchProducts(); // Function to fetch products by store
+    //     }
+    // }, [selectedStore]);
+
+    // Function to fetch products by store
+    const fetchProducts = async () => {
+        try {
+            const response = await fetchProductsByStore(selectedStore); // Fetch products by selected store
+            setProducts(response.data.products); // Update products state with fetched products
+        } catch (error) {
+            console.error("Error fetching products:", error);
+        }
+    };
+
+    // Dummy store list
+    const stores = [
+        "Minal Residency",
+        "Awadhpuri",
+        "Katara Hills",
+        "Jhansi",
+    ];
+
     return (
         <div className="h-full w-full">
             <h1 className='flex gap-[20px] w-full items-center justify-center text-4xl p-[30px] bg-gray-100'><FaUser /> MY ACCOUNT</h1>
@@ -51,7 +92,7 @@ const Dashboard = () => {
                             <CiHeart />
                             Compare
                         </Link>
-                        <Link  className='flex items-center gap-[10px]' onClick={handleLogout}>
+                        <Link className='flex items-center gap-[10px]' onClick={handleLogout}>
                             <CiLogout />
                             Logout
                         </Link>
@@ -74,6 +115,30 @@ const Dashboard = () => {
                             <MdAccountCircle />
                             Account Details
                         </Link>
+                    </div>
+                    <form onSubmit={handleSubmitPreferredStore} className="flex flex-col md:flex-row items-center justify-center gap-[20px] mt-4">
+                        <select
+                            value={selectedStore}
+                            onChange={(e) => handleStoreChange(e.target.value)}
+                            className="border-2 border-gray-400 px-4 py-2 rounded-md focus:outline-none focus:border-blue-500"
+                        >
+                            <option value="" disabled>Select Store</option>
+                            {stores.map((store, index) => (
+                                <option key={index} value={store}>{store}</option>
+                            ))}
+                        </select>
+                        <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 focus:outline-none focus:bg-blue-600">
+                            Set Preferred Store
+                        </button>
+                    </form>
+
+                    <div>
+                        <h2>Products for {user.preferredStore}</h2>
+                        <ul>
+                            {products.map((product) => (
+                                <li key={product.id}>{product.name}</li>
+                            ))}
+                        </ul>
                     </div>
                 </div>
             </div>

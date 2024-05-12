@@ -1,9 +1,10 @@
 import { saveProduct, removeProduct, setLoading } from "../reducers/productSlice";
 import axios from "../../config/axios";
-export const asyncFetchProducts = (page) => async (dispatch, getState) => {
+export const asyncFetchProducts = (page, preferredStore) => async (dispatch, getState) => {
     try {
         dispatch(setLoading(true));
-        const response = await axios.get(`/products/getproduct?page=${page}`);
+        const url = preferredStore ? `/products/getproduct?page=${page}&preferredStore=${preferredStore}` : `/products/getproduct?page=${page}`;
+        const response = await axios.get(url);
         const totalPages = response.data.totalPages; // Extract totalPages from response
         await dispatch(saveProduct(response.data.data));
         return totalPages; // Return totalPages to be used in component logic
@@ -39,6 +40,7 @@ toast.error(error.response.data.message)
 
     }
 }
+
 export const asyncSearch = (searchTerm, selectedCategory) => async (dispatch, getState) => {
     try {
         const encodedCategory = encodeURIComponent(selectedCategory);

@@ -49,7 +49,6 @@ const FirstComp = () => {
 
             <div className="second w-full ">
                 <div className="head flex flex-col items-center justify-center">
-                    <h1 className='bg-orange-200 px-4 py-2 rounded-full'>We Love them</h1>
                     <h1 className='text-4xl uppercase m-[10px]'>Top Selling Products</h1>
                     
 

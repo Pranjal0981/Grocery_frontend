@@ -119,12 +119,7 @@ const AccountDetails = () => {
                             >
                                 Edit
                             </button>
-                            <button
-                                onClick={handleDelete}
-                                className="bg-red-500 text-white px-4 py-2 rounded-md w-full md:w-auto mt-2 md:mt-0"
-                            >
-                                Delete Account
-                            </button>
+                           
                         </div>
                     )}
                 </div>

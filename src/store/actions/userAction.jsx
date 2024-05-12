@@ -88,7 +88,8 @@ export const asyncAddToWishlist=(userId,data)=>async(dispatch,getState)=>{
         const resposne = await axios.post(`/user/addToWishlist/${userId}`,data)
         toast.success("Product Added to wishlist")
     } catch (error) {
-        toast.error(error.response.data.message)
+        toast.error("Login to Continue")
+
     }
 }
 
@@ -101,7 +102,7 @@ export const asyncAddToCart = (userId, data) => async (dispatch, getState) => {
         toast.success("Added to cart")
        await dispatch(saveCheckOutCart(response.data))
     } catch (error) {
-        toast.error(error.response.data.message)
+        toast.error("Login to Continue")
 
     }
 }
@@ -264,5 +265,16 @@ export const asyncContactUs=(data)=>async(dispatch,getState)=>{
         toast.success("Thanks for contacting with us! We will reply shortly")
     } catch (error) {
         toast.error('Please try again')
+    }
+}
+
+export const asyncSetPreferredStore=(selectedStore,userId)=>async(dispatch,getState)=>{
+    try {
+        console.log(selectedStore)
+        const response=await axios.post(`/user/selectStore/${userId}/`,selectedStore)
+        dispatch(asyncCurrentUser())
+
+    } catch (error) {
+        toast.error("Error Setting the store")
     }
 }
