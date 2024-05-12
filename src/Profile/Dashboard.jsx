@@ -133,7 +133,7 @@ console.log(user)
                     </form>
 
                     <div>
-                        <h2>Products for {user.preferredStore}</h2>
+                        <h2>Products for {user?.preferredStore}</h2>
                         <ul>
                             {products.map((product) => (
                                 <li key={product.id}>{product.name}</li>
