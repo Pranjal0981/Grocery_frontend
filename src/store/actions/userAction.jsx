@@ -69,7 +69,7 @@ export const asyncSignOut=(navigate)=>async(dispacth,getState)=>{
         toast.success("Logout Successfully !")
         navigate('/')
     } catch (error) {
-        toast.error("Logout Error !")
+        console.log(error)
 
     }
 }

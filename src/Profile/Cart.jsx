@@ -11,6 +11,7 @@ import rgsLogo from '/rgslogo.jpeg';
 import { asyncUpdateStock } from '../store/actions/userAction'
 import { asyncCustomerOrder } from '../store/actions/userAction'
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 const generatePDF = async (checkOutCart, user) => {
     try {
         console.log(checkOutCart)
@@ -130,11 +131,12 @@ const Cart = () => {
             dispatch(asyncFetchCartProduct(user._id));
         }
     }, [dispatch, user._id]);
-
+const navigate=useNavigate()
     const handlePlaceOrder = () => {
         if (!user.address || user.address.length === 0 || !user.phone) {
             toast.error("Please add your details and phone number before placing the order.");
-            return;
+            navigate('/edit-address')
+           
         }
         if (!checkOutCart || !checkOutCart.data || checkOutCart.data.length === 0) {
             toast.success("Checkout cart is empty");
