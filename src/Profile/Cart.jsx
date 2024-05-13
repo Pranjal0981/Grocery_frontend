@@ -33,8 +33,8 @@ const generatePDF = async (checkOutCart, user) => {
         doc.text(companyAddress, 70, 30);
 
         // Address details
-        const addressHeader = ['Name','Address Line 1', 'Address Line 2', 'City', 'State', 'Postal Code', 'Country'];
-        const addressData = user?.address[0];
+        const addressHeader = ['Name','Address Line 1', 'Address Line 2', 'City', 'State', 'Postal Code', 'Phone Number'];
+        const addressData = user?.address[user?.selectedAddressIndex];
         const addressRows = Object.keys(addressData).map(key => {
             return addressData[key];
         });
@@ -83,7 +83,11 @@ const generatePDF = async (checkOutCart, user) => {
             });
         }
 
-        doc.text(`Total Grand Price: Rs ${checkOutCart.totalGrandPrice.toFixed(2)}`, 10, 120 + (userDetails.length * 10)); // Adjust Y position as needed
+
+        const totalGrandPriceY = 150 + (tableBody.length * 20) + (userDetails.length * 10);
+
+
+        doc.text(`Total Grand Price: Rs ${checkOutCart.totalGrandPrice.toFixed(2)}`, 10, totalGrandPriceY);
 
 
         // Add table

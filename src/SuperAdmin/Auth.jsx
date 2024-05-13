@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { asyncSuperAdminSignUp,asyncSuperAdminSignIn } from '../store/actions/superAdminAction';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 export const SuperAdminLogin = () => {
     const dispatch = useDispatch();
+    const navigate=useNavigate()
     const [formData, setFormData] = useState({
         email: '',
         password: ''
@@ -16,7 +17,7 @@ export const SuperAdminLogin = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        dispatch(asyncSuperAdminSignIn(formData)); 
+        dispatch(asyncSuperAdminSignIn(formData, navigate)); 
     };
 
     return (

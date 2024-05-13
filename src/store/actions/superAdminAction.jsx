@@ -37,6 +37,7 @@ export const asyncSuperAdminSignIn = (data, navigate) => async (dispatch, getSta
         localStorage.setItem('tokenExpiration', expirationTime);
         dispatch(saveTokenExpiration(expirationTime));
         toast.success("LoggedIn sucessfully")
+        navigate('/superadmin/dashboard')
 
     } catch (error) {
         if (error.response && error.response.status === 401) {

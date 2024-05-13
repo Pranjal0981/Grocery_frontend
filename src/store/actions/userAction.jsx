@@ -275,3 +275,12 @@ export const asyncSetPreferredStore=(selectedStore,userId)=>async(dispatch,getSt
         toast.error("Error Setting the store")
     }
 }
+
+export const asyncSelectAddressIndex=(id,index)=>async(dispatch,getState)=>{
+    try {
+        const response=await axios.post(`/user/${id}/setAddressIndex`,index)
+        dispatch(asyncCurrentUser())
+    } catch (error) {
+        toast.error("Unabler to set address")
+    }
+}
