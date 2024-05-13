@@ -11,6 +11,7 @@ import { CiHeart } from "react-icons/ci";
 import { MdAccountCircle } from "react-icons/md";
 import { useSelector, useDispatch } from 'react-redux';
 import { asyncSignOut, asyncSetPreferredStore } from '../store/actions/userAction';
+import { toast } from 'react-toastify';
 
 const Dashboard = () => {
     const navigate = useNavigate();
@@ -18,8 +19,8 @@ const Dashboard = () => {
     const { user, isAuth } = useSelector((state) => state.user);
     const [preferredStore, setPreferredStore] = useState('');
     const [selectedStore, setSelectedStore] = useState(user?.PreferredStore);
-    const [products, setProducts] = useState([]); // State to hold the products
-console.log(user)
+    const [products, setProducts] = useState([]);
+
     const handleLogout = () => {
         dispatch(asyncSignOut(navigate));
     }
@@ -30,29 +31,10 @@ console.log(user)
 
     const handleSubmitPreferredStore = (e) => {
         e.preventDefault();
-        // Here you can add logic to submit preferred store
-        console.log("Preferred Store:", selectedStore);
         dispatch(asyncSetPreferredStore({ selectedStore }, user._id));
+        toast.success("Store Set");
     }
 
-    // useEffect(() => {
-    //     // Fetch products when the component mounts or when selectedStore changes
-    //     if (selectedStore) {
-    //         fetchProducts(); // Function to fetch products by store
-    //     }
-    // }, [selectedStore]);
-
-    // Function to fetch products by store
-    const fetchProducts = async () => {
-        try {
-            const response = await fetchProductsByStore(selectedStore); // Fetch products by selected store
-            setProducts(response.data.products); // Update products state with fetched products
-        } catch (error) {
-            console.error("Error fetching products:", error);
-        }
-    };
-
-    // Dummy store list
     const stores = [
         "Minal Residency",
         "Awadhpuri",
@@ -61,16 +43,15 @@ console.log(user)
     ];
 
     return (
-        <div className="h-full w-full">
+        <div className="h-auto w-full">
             <h1 className='flex gap-[20px] w-full items-center justify-center text-4xl p-[30px] bg-gray-100'><FaUser /> MY ACCOUNT</h1>
-            <div className="main-dv w-full h-[70vh] flex flex-col md:flex-row">
+            <div className="main-dv w-full  flex flex-col md:flex-row">
                 <div className="left w-full md:w-[30%] h-[100%] bg-gray-200 flex flex-col justify-evenly p-[10px]">
                     <div className="flex flex-col justify-center items-center">
                         <FaCircleUser className='text-6xl text-gray-600' />
                         <h1>{user?.firstName} {user?.lastName}</h1>
                         <h1>{user?.email}</h1>
                     </div>
-
                     <div className='flex flex-col gap-[20px]'>
                         <Link to='/dashboard' className='flex items-center gap-[10px]'>
                             <MdDashboard />
@@ -98,7 +79,6 @@ console.log(user)
                         </Link>
                     </div>
                 </div>
-
                 <div className="right w-full md:w-[70%] h-full p-[10px]">
                     <h1 className='text-2xl'>Welcome to your Account Page</h1>
                     <p>Hi {user?.firstName} {user?.lastName}, today is a great day to check your account page. You can also check:</p>
@@ -116,7 +96,7 @@ console.log(user)
                             Account Details
                         </Link>
                     </div>
-                    <form onSubmit={handleSubmitPreferredStore} className="flex flex-col md:flex-row items-center justify-center gap-[20px] mt-4">
+                    <form onSubmit={handleSubmitPreferredStore} className="flex flex-col md:flex-row items-center justify-center  mt-4">
                         <select
                             value={selectedStore}
                             onChange={(e) => handleStoreChange(e.target.value)}
@@ -131,7 +111,6 @@ console.log(user)
                             Set Preferred Store
                         </button>
                     </form>
-
                     <div>
                         <h2>Products for {user?.preferredStore}</h2>
                         <ul>
