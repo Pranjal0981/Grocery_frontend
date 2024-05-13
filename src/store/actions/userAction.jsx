@@ -25,13 +25,10 @@ export const asyncSignupUser = (data) => async (dispatch) => {
         const response = await axios.post('/user/signup', data);
         console.log(response);
         dispatch(saveUser(response.data));
-
-        // Show success notification
         toast.success("SignUp Successfully !")
     } catch (error) {
         console.error(error);
-        // Show error notification
-        toast.error('Failed to sign up user. Please try again later.');
+        toast.error('Email Already exist.');
     }
 };
 

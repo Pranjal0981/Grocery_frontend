@@ -53,11 +53,11 @@ const navigate=useNavigate()
       imageUrl: "/categories/ORAL-CARE.webp"
     },
     {
-      title: "Atta, Rice & Dal",
+      title: "Pulses",
       imageUrl: "/categories/Pulses-Dal.webp"
     },
     {
-      title: "Atta, Rice & Dal",
+      title: "Rice",
       imageUrl: "/categories/RICE.webp"
     },
     {
@@ -65,11 +65,11 @@ const navigate=useNavigate()
       imageUrl: "/categories/SNACKS.webp"
     },
     {
-      title: "Spices, Salt & Sugar",
+      title: "Spices",
       imageUrl: "/categories/SPICES.webp"
     },
     {
-      title: "Spices, Salt & Sugar",
+      title: "grocery",
       imageUrl: "/categories/SUGER.webp"
     }
   ];
