@@ -9,7 +9,7 @@ import Swal from 'sweetalert2';
 import { asyncFetchCartProduct, asyncDeleteCheckoutCart } from "../store/actions/userAction";
 import rgsLogo from '/rgslogo.jpeg';
 import { asyncUpdateStock } from '../store/actions/userAction'
-import { asyncCustomerOrder } from '../store/actions/userAction'
+import { asyncCustomerOrder, asyncPayment } from '../store/actions/userAction'
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 const generatePDF = async (checkOutCart, user) => {
@@ -177,6 +177,14 @@ const navigate=useNavigate()
             });
         }
     };
+    
+    const handleOnlinePayment = async (amount,checkOutCart )=>{
+
+        console.log(checkOutCart)
+        console.log(amount)
+        const products = checkOutCart?.data?.map((item) => item?.productId?.ProductName).join(', ');
+        dispatch(asyncPayment(user?._id, {amount, products }));
+    }
 
     const handleDeleteItem = (itemId) => {
         dispatch(asyncDeleteCheckoutCart(user?._id, itemId));
@@ -202,7 +210,7 @@ const navigate=useNavigate()
                                         </div>
                                         <div className="flex justify-between items-center">
                                             <h2 className="text-xl font-bold mb-2 text-indigo-800">{item?.quantity}</h2>
-                                            <h2 className="text-xl font-bold mb-2 text-indigo-800">Rs {item?.totalPrice}</h2>
+                                            <p>Total Price: Rs {(item?.totalPrice)}</p>
                                         </div>
                                         <button onClick={() => handleDeleteItem(item?._id)} className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mt-2">
                                             Delete
@@ -216,7 +224,7 @@ const navigate=useNavigate()
                     )}
                     <div className="mt-8 flex justify-between items-center">
                         <h3 className="text-xl font-bold text-indigo-800">Total Grand Price:</h3>
-                        <p className="text-2xl font-bold text-indigo-900">Rs {checkOutCart?.totalGrandPrice?.toFixed(2)}</p>
+                        <p>Total Grand Price: Rs {(checkOutCart?.totalGrandPrice)}</p>
                     </div>
                     <div className="flex justify-end mt-4">
                         <button
@@ -232,6 +240,9 @@ const navigate=useNavigate()
                                     <h2 className="text-xl font-bold mb-4">Select Payment Method</h2>
                                     <button onClick={handleCashOnDelivery} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-4">
                                         Cash on Delivery
+                                    </button>
+                                    <button onClick={() => handleOnlinePayment(checkOutCart?.totalGrandPrice, checkOutCart)} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-4" id="ebz-checkout-btn">
+                                    Online Payment
                                     </button>
                                     {/* Add Pay Now button here */}
                                     <button onClick={handleCloseModal} className="absolute top-0 right-0 p-2 text-gray-500 hover:text-gray-700">

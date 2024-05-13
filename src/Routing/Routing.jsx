@@ -38,6 +38,7 @@ import ContactUs from '../components/ContactUs'
 import { AdminLoginForm, AdminRegistrationForm } from '../Admin/Auth'
 import { SuperAdminLogin, SuperAdminRegistrationForm } from '../SuperAdmin/Auth'
 import { StoreManagerLogin, StoreManagerRegister } from '../StoreManager/Auth'
+import PrivacyPolicy from '../components/PrivacyPolicy'
 const Routing = () => {
     const { user, isAuth } = useSelector((state) => state.user)
     const isAdmin = isAuth && user.userType === 'Admin';
@@ -92,6 +93,7 @@ const Routing = () => {
             <Route path='/contact' element={<ContactUs/>}/>
             <Route path='/Customer Care' element={<CustomerCare/>}/>
             <Route path='/Exchange Policy' element={<ExchangePolicy/>}/>
+            <Route path='/Privacy Policy' element={<PrivacyPolicy/>}/>
             {categories.map((category, index) => (
                 <Route key={index} path={`/category/:category`} element={<CategoryProduct />} />
             ))}

@@ -3,35 +3,24 @@ import React from 'react';
 const ReturnPolicy = () => {
     return (
         <div className="container mx-auto px-4 py-8">
-            <h1 className="text-4xl font-bold text-center mb-8">Return Policy</h1>
             <div className="bg-white shadow-md rounded-lg p-8">
                 <p className="text-lg mb-6">
-                    At RGS Grocery, we want to ensure that you are completely satisfied with your purchase.
-                    If for any reason you are not satisfied with a product you've purchased from us,
-                    you may be eligible for a return or exchange subject to the following conditions:
+                    At RGS India Group Grocery, we are committed to ensuring transparency and trust with our customers.
+                    To uphold this commitment, we offer an "Open Box Delivery" policy.
                 </p>
-                <ul className="list-disc pl-6 mb-6">
-                    <li className="text-base mb-3">
-                        Items must be returned within <span className="font-semibold">2 days</span> of delivery.
-                    </li>
-                    <li className="text-base mb-3">
-                        Items must be <span className="font-semibold">unused</span>, <span className="font-semibold">unopened</span>, and in their original packaging.
-                    </li>
-                    <li className="text-base mb-3">
-                        Perishable items such as <span className="font-semibold">fruits</span>, <span className="font-semibold">vegetables</span>, and <span className="font-semibold">dairy products</span> are not eligible for return.
-                    </li>
-                    <li className="text-base mb-3">
-                        Returns are subject to inspection and approval by our team.
-                    </li>
-                </ul>
                 <p className="text-lg mb-6">
-                    To initiate a return, please contact our customer support team with your order details
-                    and the reason for the return. Our team will guide you through the return process
-                    and provide further instructions.
+                    With our Open Box Delivery policy, customers have the option to inspect their order upon delivery before accepting it.
+                    This allows customers to verify the contents of their order and ensure its quality and accuracy before final acceptance.
+                </p>
+                <p className="text-lg mb-6">
+                    Once the customer accepts the delivery, the order is considered complete, and no returns or exchanges will be accepted, except in cases where the product is damaged or defective upon inspection.
+                </p>
+                <p className="text-lg mb-6">
+                    If you receive a damaged or defective product during the Open Box inspection, please contact our customer support team immediately with clear photos of the issue.
+                    We will assess the situation and provide a suitable solution, which may include a refund or replacement of the damaged item.
                 </p>
                 <p className="text-lg">
-                    If your return is approved, we will process a refund or exchange as per our policy.
-                    Please note that shipping fees may apply and are non-refundable.
+                    We appreciate your understanding and cooperation in adhering to our Open Box Delivery policy as we strive to maintain transparency and satisfaction for our valued customers.
                 </p>
             </div>
         </div>
