@@ -101,7 +101,8 @@ const Nav = () => {
         { label: 'Shop', to: '/shop' },
         { label: 'About Us', to: '/About Us' },
         { label: 'Blog', to: '/blog' },
-        { label: 'Contacts', to: '/contact' }
+        { label: 'Contacts', to: '/contact' },
+
     ];
     const socialMediaLinks = [
         { icon: <FaFacebook />, to: 'https://facebook.com' },
@@ -308,6 +309,17 @@ const Nav = () => {
                             <Link to="/contact" style={{ textDecoration: 'none', color: 'inherit' }}>
                                 <ListItem button>
                                     <ListItemText primary="Contact Us" />
+                                </ListItem>
+                            </Link>
+
+                            <Link to="/contact" style={{ textDecoration: 'none', color: 'inherit' }}>
+                                <ListItem button>
+                                    <ListItemText primary="Contact Us" />
+                                </ListItem>
+                            </Link>
+                            <Link to="/storemanager/login" style={{ textDecoration: 'none', color: 'inherit' }}>
+                                <ListItem button>
+                                    <ListItemText primary="Store Login" />
                                 </ListItem>
                             </Link>
                             <div className="flex mt-auto mb-5">

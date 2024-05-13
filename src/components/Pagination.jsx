@@ -72,6 +72,10 @@ const Pagination = ({ currentPage, onPageChange }) => {
         console.log(filterObject)
         await dispatch(asyncFilterAll(filterObject));
     };
+    const userId = user?._id
+    const handleAddtoCart = (productId) => {
+        dispatch(asyncAddToCart(userId, { productId, quantity: 1 }));
+    }
 
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -106,10 +110,6 @@ const Pagination = ({ currentPage, onPageChange }) => {
                 </div>
             </div>
         );
-    }
-const userId=user?._id
-    const handleAddtoCart=()=>{
-         dispatch(asyncAddToCart(userId, { productId: product._id, quantity:1 }));
     }
 
     return (
@@ -199,7 +199,7 @@ const userId=user?._id
                 )}
             </div>
             <div className="lg:col-span-2">
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4">
                     {Array.isArray(product) && product.map((product) => (
                         <div key={product?._id} className="bg-white rounded-lg shadow-md cursor-pointer transition duration-300 ease-in-out transform hover:scale-105">
                             <img src={product.image.url} alt={product?.ProductName} className="w-full h-64 object-cover rounded-t-md object-center hover:opacity-90" onClick={() => handleExploreProduct(product?._id)} />
@@ -211,7 +211,8 @@ const userId=user?._id
                                 <p className="text-sm mb-2">MRP: {product?.MRP}</p>
                                 <p className="text-sm text-gray-600">Selling Price: Rs {product?.sellingPrice}</p>
                             </div>
-                            <button onClick={handleAddtoCart} className="block w-full py-2 bg-blue-500 hover:bg-blue-600 focus:outline-none focus:bg-blue-600 text-white font-bold rounded-md shadow-md transition duration-300 ease-in-out transform hover:scale-105">
+                            {/* Pass product._id to handleAddToCart */}
+                            <button onClick={() => handleAddtoCart(product._id)} className="block w-full py-2 bg-blue-500 hover:bg-blue-600 focus:outline-none focus:bg-blue-600 text-white font-bold rounded-md shadow-md transition duration-300 ease-in-out transform hover:scale-105">
                                 <span className="flex items-center justify-center">
                                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
                                         <path fillRule="evenodd" d="M9 5a1 1 0 0 1 2 0v3h3a1 1 0 1 1 0 2h-3v3a1 1 0 1 1-2 0v-3H6a1 1 0 1 1 0-2h3V5z" clipRule="evenodd" />
@@ -220,6 +221,7 @@ const userId=user?._id
                                 </span>
                             </button>
                         </div>
+
                     ))}
                 </div>
                 <div className="flex justify-center mt-4">
