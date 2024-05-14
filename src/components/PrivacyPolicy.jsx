@@ -6,14 +6,13 @@ const PrivacyPolicy = () => {
             <div className="bg-white shadow-md rounded-lg p-8">
                 <h2 className="text-2xl font-bold mb-4">Introduction:</h2>
                 <p className="text-lg mb-6">
-                    Welcome to our Online Grocery Store! Your privacy is important to us. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website or use our mobile application ("Services").
+                    Welcome to our Online Grocery Store! Your privacy is important to us. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our websiste .
                 </p>
                 <h2 className="text-2xl font-bold mb-4">Information We Collect:</h2>
                 <p className="text-lg mb-6">
                     <strong>Personal Information:</strong> We may collect personal information from you such as your name, email address, phone number, shipping address, and payment details when you place an order or register on our website.
                 </p>
                 <p className="text-lg mb-6">
-                    <strong>Usage Information:</strong> We may automatically collect information about how you interact with our Services, including your IP address, browser type, device information, and pages visited.
                 </p>
                 <p className="text-lg mb-6">
                     <strong>Cookies:</strong> We use cookies and similar tracking technologies to enhance your browsing experience, analyze usage patterns, and personalize content and advertisements.
@@ -41,7 +40,7 @@ const PrivacyPolicy = () => {
                 </p>
                 <h2 className="text-2xl font-bold mb-4">Contact Us:</h2>
                 <p className="text-lg mb-6">
-                    If you have any questions or concerns about our Privacy Policy or our data practices, please contact us at support@example.com.
+                    If you have any questions or concerns about our Privacy Policy or our data practices, please contact us at indiagrouprgs@gmail.com.
                 </p>
                 <h2 className="text-2xl font-bold mb-4">Acceptance of Terms:</h2>
                 <p className="text-lg">

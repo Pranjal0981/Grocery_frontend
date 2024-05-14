@@ -290,11 +290,7 @@ export const asyncPayment = (userId, data) => async (dispatch, getState) => {
         console.log(userId); // Log the userId to the console
         const response = await axios.post(`/user/${userId}/paymentInitialisation/`, data);
      console.log(response)
-        if (response.data && response.data.paymentLink) {
-            window.location.href = response.data.paymentLink;
-        } else {
-            console.error('Payment link not found in the response');
-        }
+        window.location.href = "https://pay.easebuzz.in/"
     } catch (error) {
         console.log(error); // Log any errors that occur during the POST request
     }
