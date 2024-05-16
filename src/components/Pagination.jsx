@@ -2,14 +2,19 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import CustomSpinner from '../Spinner';
+import { Tooltip } from 'react-tippy'; // Import Tooltip component
+
 import { CiFilter } from "react-icons/ci";
 import {asyncFilterAll} from '../store/actions/productAction'
 import { asyncAddToCart } from '../store/actions/userAction';
 const Pagination = ({ currentPage, onPageChange }) => {
+    
     const {user}=useSelector((state)=>state.user)
     const [isEndOfPage, setIsEndOfPage] = useState(false);
    
     const { product, loading } = useSelector(state => state.product);
+    const isOutOfStock = product.stock === 0;
+
     const [totalPages, setTotalPages] = useState(1); // Total
     const productsPerPage = 8; // Number of products per page
     const [showSpinner, setShowSpinner] = useState(true);
@@ -221,7 +226,7 @@ const Pagination = ({ currentPage, onPageChange }) => {
             <div className="lg:col-span-2">
                 <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4">
                     {Array.isArray(product) && product.map((product) => (
-                        <div key={product?._id} className="bg-white rounded-lg shadow-md cursor-pointer transition duration-300 ease-in-out transform hover:scale-105">
+                        <div key={product?._id} className="bg-white rounded-lg shadow-md cursor-pointer transition duration-300 ease-in-out transform hover:scale-105 relative">
                             <img src={product.image.url} alt={product?.ProductName} className="w-full h-64 object-cover rounded-t-md object-center hover:opacity-90" onClick={() => handleExploreProduct(product?._id)} />
                             <div className="p-4">
                                 <h3 className="text-lg font-semibold mb-2">{product?.ProductName}</h3>
@@ -231,8 +236,12 @@ const Pagination = ({ currentPage, onPageChange }) => {
                                 <p className="text-sm mb-2">MRP: {product?.MRP}</p>
                                 <p className="text-sm text-gray-600">Selling Price: Rs {product?.sellingPrice}</p>
                             </div>
-                            {/* Pass product._id to handleAddToCart */}
-                            <button onClick={() => handleAddtoCart(product._id)} className="block w-full py-2 bg-blue-500 hover:bg-blue-600 focus:outline-none focus:bg-blue-600 text-white font-bold rounded-md shadow-md transition duration-300 ease-in-out transform hover:scale-105">
+                            {/* Disable Add to Cart button if stock is 0 */}
+                            <button
+                                onClick={() => handleAddtoCart(product._id)}
+                                disabled={product.stock === 0}
+                                className={`block w-full py-2 ${product.stock === 0 ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-500 hover:bg-blue-600 focus:outline-none focus:bg-blue-600'} text-white font-bold rounded-md shadow-md transition duration-300 ease-in-out transform hover:scale-105`}
+                            >
                                 <span className="flex items-center justify-center">
                                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
                                         <path fillRule="evenodd" d="M9 5a1 1 0 0 1 2 0v3h3a1 1 0 1 1 0 2h-3v3a1 1 0 1 1-2 0v-3H6a1 1 0 1 1 0-2h3V5z" clipRule="evenodd" />
@@ -240,6 +249,12 @@ const Pagination = ({ currentPage, onPageChange }) => {
                                     Add to Cart
                                 </span>
                             </button>
+                            {/* Tooltip to show "Out of Stock" on hover */}
+                            {product.stock === 0 && (
+                                <div className="absolute inset-0 flex items-center justify-center opacity-0 hover:opacity-100 transition duration-300 ease-in-out bg-gray-800 bg-opacity-75 rounded-lg">
+                                    <span className="text-white text-sm">Out of Stock</span>
+                                </div>
+                            )}
                         </div>
 
                     ))}
@@ -260,6 +275,8 @@ const Pagination = ({ currentPage, onPageChange }) => {
                     </button>
                 </div>
             </div>
+
+
 
 
 
