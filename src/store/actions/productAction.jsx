@@ -41,10 +41,10 @@ toast.error(error.response.data.message)
     }
 }
 
-export const asyncSearch = (searchTerm, selectedCategory) => async (dispatch, getState) => {
+export const asyncSearch = (searchTerm, selectedCategory,store) => async (dispatch, getState) => {
     try {
         const encodedCategory = encodeURIComponent(selectedCategory);
-        const response = await axios.get(`/products/searchProducts/?searchTerm=${searchTerm}&category=${encodedCategory}`);
+        const response = await axios.get(`/products/searchProducts/?searchTerm=${searchTerm}&category=${encodedCategory}&store=${store}`);
         dispatch(saveProduct(response.data.products))
     } catch (error) {
         console.log(error)

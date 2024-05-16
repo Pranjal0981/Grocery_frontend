@@ -50,11 +50,13 @@ const Nav = () => {
     const handleChangeCategory = (event) => {
         setSelectedCategory(event.target.value);
     };
-
+ const { user, isAuth } = useSelector((state) => state.user)
+ console.log(user)
+// conso
     const handleSearch = async(searchTerm, selectedCategory)=> {
        
-        await dispatch(asyncSearch(searchTerm, selectedCategory));
-        navigate(`/search-results?searchTerm=${searchTerm}&category=${selectedCategory}`)
+        await dispatch(asyncSearch(searchTerm, selectedCategory, user?.PreferredStore));
+        navigate(`/search-results?searchTerm=${searchTerm}&category=${selectedCategory}&store=${user?.PreferredStore}`)
     }
     const handleStoreClick = () => {
         setOpenStore(!openStore);
@@ -66,7 +68,6 @@ const Nav = () => {
         userType: '',
         store:''
     });
-    const { user, isAuth } = useSelector((state) => state.user)
     // console.log(user.store)
 
     const toggleDrawer = (open) => (event) => {

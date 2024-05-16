@@ -13,7 +13,7 @@ const Pagination = ({ currentPage, onPageChange }) => {
     const [isEndOfPage, setIsEndOfPage] = useState(false);
    
     const { product, loading } = useSelector(state => state.product);
-    const isOutOfStock = product.stock === 0;
+    const isOutOfStock = product?.stock === 0;
 
     const [totalPages, setTotalPages] = useState(1); // Total
     const productsPerPage = 8; // Number of products per page
