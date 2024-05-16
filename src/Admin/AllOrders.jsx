@@ -5,17 +5,16 @@ import { useParams } from 'react-router-dom';
 
 const ManageOrder = () => {
     const dispatch = useDispatch();
-    const {store}=useParams()
-    console.log(store)
     const { products, loading } = useSelector((state) => state.admin);
     const { user } = useSelector((state) => state.user);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalOrders, setTotalOrders] = useState(0);
-    const ordersPerPage = 2; // Number of orders per page
+    const ordersPerPage = 2;
+    const { store } = useParams();
 
     useEffect(() => {
-        dispatch(asyncFetchOrders(currentPage, user?.store));
-    }, [dispatch, currentPage, user?.store]);
+        dispatch(asyncFetchOrders(currentPage, store));
+    }, [dispatch, currentPage, store]);
 
     useEffect(() => {
         setTotalOrders(products?.length);
@@ -34,7 +33,7 @@ const ManageOrder = () => {
                 <div className="text-center mt-4">Loading...</div>
             ) : (
                 <>
-                    <p>Total Orders: {totalOrders}</p>
+                    <p className="mb-4">Total Orders: {totalOrders}</p>
                     <div className="overflow-x-auto">
                         <table className="w-full table-auto divide-y divide-gray-200">
                             <thead className="bg-gray-50">
@@ -46,6 +45,8 @@ const ManageOrder = () => {
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Payment Method</th>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User Contact</th>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User Details</th>
+                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User Invoice</th>
+
                                 </tr>
                             </thead>
                             <tbody className="bg-white divide-y divide-gray-200">
@@ -58,7 +59,6 @@ const ManageOrder = () => {
                                                     <li key={idx}>
                                                         <strong>Product Name:</strong> {item?.productId?.ProductName}<br />
                                                         <strong>Description:</strong> {item?.productId?.description}<br />
-                                                        <img src={item?.productId?.image.url} alt="" className="w-16 h-16 object-cover rounded-lg" />
                                                         <strong>Selling Price:</strong> {item?.productId?.sellingPrice}<br />
                                                         <strong>Category:</strong> {item?.productId?.category}<br />
                                                         <strong>Brand:</strong> {item?.productId?.brand}<br />
@@ -72,6 +72,7 @@ const ManageOrder = () => {
                                                 onChange={(e) => handleStatusChange(product._id, e.target.value)}
                                                 className="block w-full p-2 border border-gray-300 rounded-md"
                                             >
+                                                <option value="Cancelled">Cancelled</option>
                                                 <option value="Pending">Pending</option>
                                                 <option value="Confirmed">Confirmed</option>
                                                 <option value="Shipped">Shipped</option>
@@ -80,23 +81,41 @@ const ManageOrder = () => {
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap">{product?.reqCancellation}</td>
                                         <td className="px-6 py-4 whitespace-nowrap">{product?.PaymentType}</td>
+                                        
                                         <td className="px-6 py-4 whitespace-nowrap">
-                                            <div>Phone: {product?.userId?.phone}</div>
-                                            <div>Email: {product?.userId?.email}</div>
-                                        </td>
-                                        <td className="px-6 py-4 whitespace-nowrap">
-                                            {product?.userId?.address?.map((address, index) => (
-                                                <div key={index}>
-                                                    <div>Name: {address?.fullName}</div>
-                                                    <div>Address Line 1: {address?.addressLine1}</div>
-                                                    <div>Address Line 2: {address?.addressLine2}</div>
-                                                    <div>City: {address?.city}</div>
-                                                    <div>State: {address?.state}</div>
-                                                    <div>Postal Code: {address?.postalCode}</div>
-                                                    <div>Country: {address?.country}</div>
-                                                </div>
+                                            {product?.userId?.address?.map((address, idx) => (
+                                                idx === product.userId.selectedAddressIndex && (
+                                                    <div key={idx}>
+                                                        <div><strong>Name:</strong> {address?.fullName}</div>
+                                                        <div><strong>Address Line 1:</strong> {address?.addressLine1}</div>
+                                                        <div><strong>Address Line 2:</strong> {address?.addressLine2}</div>
+                                                        <div><strong>City:</strong> {address?.city}</div>
+                                                        <div><strong>State:</strong> {address?.state}</div>
+                                                        <div><strong>Postal Code:</strong> {address?.postalCode}</div>
+                                                        <div><strong>Phone:</strong> {address?.phone}</div>
+                                                    </div>
+                                                )
                                             ))}
                                         </td>
+
+                                        <td className="px-6 py-4 whitespace-nowrap">
+                                            <div>
+                                                <strong>Phone:</strong> {product?.userId?.phone}<br />
+                                                <strong>Email:</strong> {product?.userId?.email}
+                                            </div>
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap">
+                                            <div>
+                                                <strong>Invoice URL:</strong> 
+                                                <button
+                                                    className="text-blue-500 underline"
+                                                    onClick={() => window.open(product?.pdfUrl, '_blank')}
+                                                >
+                                                    Open PDF
+                                                </button>
+                                            </div>
+                                        </td>
+
                                     </tr>
                                 ))}
                             </tbody>

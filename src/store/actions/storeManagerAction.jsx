@@ -28,12 +28,13 @@ export const asyncStoreRegister=(data)=>async(dispatch,getState)=>{
     }
 }
 
-export const asyncStoreLogin=(data,navigate,store)=>async(dispatch,getState)=>{
+export const asyncStoreLogin=(data,navigate)=>async(dispatch,getState)=>{
     try {
         const response=await axios.post('/storemanager/login',data)
         await dispatch(asyncCurrentManager(response.data.token))
         toast.success("Login Successfull")
-        navigate(`/store/allorders/${store}`)
+        console.log(store)
+        navigate(`/store/allorders/${data.store}`)
 
     } catch (error) {
         console.log(error)

@@ -42,6 +42,8 @@ import PrivacyPolicy from '../components/PrivacyPolicy'
 const Routing = () => {
     const { user, isAuth } = useSelector((state) => state.user)
     const isAdmin = isAuth && user.userType === 'Admin';
+    const {store}=useParams()
+    console.log(store)
     const isStoreManager=isAuth && user.userType==='Storemanager'
     const isUser = isAuth && user.userType === 'customer';
     const isSuperAdmin=isAuth && user.userType==='SuperAdmin'

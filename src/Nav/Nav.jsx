@@ -23,7 +23,6 @@ import { useEffect } from 'react';
 import CountdownTimer from './Coundown';
 
 const Nav = () => {
-    
     const navigate=useNavigate()
     const [expirationTime, setExpirationTime] = useState();
 
@@ -68,6 +67,7 @@ const Nav = () => {
         store:''
     });
     const { user, isAuth } = useSelector((state) => state.user)
+    // console.log(user.store)
 
     const toggleDrawer = (open) => (event) => {
         if (

@@ -7,6 +7,8 @@ import {asyncFilterAll} from '../store/actions/productAction'
 import { asyncAddToCart } from '../store/actions/userAction';
 const Pagination = ({ currentPage, onPageChange }) => {
     const {user}=useSelector((state)=>state.user)
+    const [isEndOfPage, setIsEndOfPage] = useState(false);
+   
     const { product, loading } = useSelector(state => state.product);
     const [totalPages, setTotalPages] = useState(1); // Total
     const productsPerPage = 8; // Number of products per page
@@ -85,6 +87,24 @@ const Pagination = ({ currentPage, onPageChange }) => {
         return () => clearTimeout(timer);
     }, []);
 
+    const loadMoreProducts = async () => {
+        setIsLoading(true);
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        setIsLoading(false);
+    };
+
+    useEffect(() => {
+        const handleScroll = () => {
+            const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
+            if (scrollTop + clientHeight >= scrollHeight - 20) {
+                loadMoreProducts();
+            }
+        };
+
+        window.addEventListener('scroll', handleScroll);
+
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
     useEffect(() => {
         // Calculate total pages when products change
         if (product?.length > 0) {
