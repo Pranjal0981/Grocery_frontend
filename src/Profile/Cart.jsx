@@ -183,7 +183,8 @@ const navigate=useNavigate()
         console.log(checkOutCart)
         console.log(amount)
         const products = checkOutCart?.data?.map((item) => item?.productId?.ProductName).join(', ');
-        dispatch(asyncPayment(user?._id, {amount, products }));
+        // dispatch(asyncPayment(user?._id, {amount, products }));
+        alert("Please try another method")
     }
 
     const handleDeleteItem = (itemId) => {
