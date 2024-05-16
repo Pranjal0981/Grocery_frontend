@@ -137,7 +137,7 @@ const Cart = () => {
     }, [dispatch, user._id]);
 const navigate=useNavigate()
     const handlePlaceOrder = () => {
-        if (!user.address || user.address.length === 0 || !user.phone) {
+        if (!user.address || user.address.length === 0) {
             toast.error("Please add your details and phone number before placing the order.");
             navigate('/edit-address')
            
