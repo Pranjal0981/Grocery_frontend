@@ -93,7 +93,6 @@ const AddProductForm = () => {
         formData.append('brand', selectedBrand);
         formData.append('image', image); // Image is already a File object
         formData.append('gst', gst);
-        formData.append('quantity', quantity);
 
         formData.append('cgst', cgst);
         formData.append('size', size);
