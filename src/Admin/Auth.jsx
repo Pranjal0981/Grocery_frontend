@@ -12,7 +12,6 @@ export const AdminLoginForm = () => {
     const [formData, setFormData] = useState({
         email: "",
         password: "",
-        store: ""
     });
 
     const handleInputChange = (e) => {
@@ -57,26 +56,7 @@ export const AdminLoginForm = () => {
                         onChange={handleInputChange}
                     />
                 </div>
-                <div className="mb-4">
-                    <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="store">
-                        Select Store Name
-                    </label>
-                    <select
-                        id="store"
-                        name="store"
-                        value={formData.store}
-                        onChange={handleInputChange}
-                        className="border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                    >
-                        <option value="">Select Store Name</option>
-                        <option value="Minal Residency">Minal Residency</option>
-                        <option value="Katara Hills">Katara Hills</option>
-                        <option value="Rohit Nagar">Rohit Nagar</option>
-                        <option value="Awadhpuri">Awadhpuri</option>
-                        <option value="Jhansi">Jhansi</option>
-
-                    </select>
-                </div>
+             
                 <button
                     type="submit"
                     className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 focus:outline-none focus:shadow-outline"
@@ -107,7 +87,6 @@ export const AdminRegistrationForm = () => {
     const [formData, setFormData] = useState({
         email: '',
         password: '',
-        store: ''
     });
 
     const handleInputChange = (e) => {
@@ -154,25 +133,7 @@ export const AdminRegistrationForm = () => {
                     />
                 </div>
 
-                <div className="mb-4">
-                    <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="store">
-                        Select Store Name
-                    </label>
-                    <select
-                        id="store"
-                        name="store"
-                        value={formData.store}
-                        onChange={handleInputChange}
-                        className="border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                    >
-                        <option value="">Select Store Name</option>
-                        <option value="Minal Residency">Minal Residency</option>
-                        <option value="Rohit Nagar">Rohit Nagar</option>
-                        <option value="Awadhpuri">Awadhpuri</option>
-                        <option value="Jhansi">Jhansi</option>
-                        <option value="Katara Hills">Katara Hills</option>
-                    </select>
-                </div>
+               
                 <button
                     type="submit"
                     className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 focus:outline-none focus:shadow-outline"

@@ -13,13 +13,12 @@ const ExploreProductById = () => {
     const { id } = useParams();
     const dispatch = useDispatch();
     const { product, loading } = useSelector((state) => state.product);
-    console.log(product)
+    const { store } = useSelector((state) => state.product);
     const { user } = useSelector((state) => state.user);
     const userId = user?._id;
-    console.log(product)
-   
     const [quantity, setQuantity] = useState(1);
-   
+    const [selectedStore, setSelectedStore] = useState('');
+
     useEffect(() => {
         dispatch(asyncExploreById(id));
     }, [dispatch, id]);
@@ -32,10 +31,12 @@ const ExploreProductById = () => {
     };
 
     const handleAddToBag = async () => {
-        // Calculate the total price
-    
-        const totalPrice = product.DiscountedPrice * quantity;
-        await dispatch(asyncAddToCart(userId, { productId: product._id,quantity }));
+        if (!selectedStore) {
+            toast.error('Please select a store');
+            return;
+        }
+
+        await dispatch(asyncAddToCart(userId, { productId: product._id, quantity, store: selectedStore }));
     };
 
     if (loading) {
@@ -57,7 +58,14 @@ const ExploreProductById = () => {
                         <p className="mb-4 text-lg font-medium text-gray-900"> Rs {product?.sellingPrice}</p>
                         <p className="mb-4 text-lg font-medium text-gray-900">Product Code: {product?.ProductCode}</p>
                         <p className="mb-4 text-lg font-medium text-gray-900">{product?.category}</p>
-                        <div className="mb-4 flex items-center">
+                        <div className="mb-4">
+                            <label htmlFor="store" className="block text-gray-700">Select Store:</label>
+                            <select id="store" name="store" value={selectedStore} onChange={(e) => setSelectedStore(e.target.value)} className="block w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none">
+                                <option value="">Select Store</option>
+                                {store?.map((store, index) => (
+                                    <option key={index} value={store.storeName}>{store.storeName}</option>
+                                ))}
+                            </select>
                         </div>
                         <div className="mb-4">
                             <select className="block w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none" value={quantity} onChange={(e) => setQuantity(parseInt(e.target.value))}>

@@ -66,8 +66,8 @@ const generatePDF = async (checkOutCart, user) => {
 
         const header = ['Brand Name', 'Quantity', 'Category', 'Product Name', 'MRP', 'GST', 'CGST', 'Selling Price', 'Total Price'];
         const tableBody = [];
-        if (checkOutCart?.data && checkOutCart?.data?.length > 0) {
-            checkOutCart.data.forEach((item) => {
+        if (checkOutCart?.products && checkOutCart?.products?.length > 0) {
+            checkOutCart.products.forEach((item) => {
                 const product = item?.productId;
                 tableBody.push([
                     product?.brand || '',
@@ -128,7 +128,7 @@ const Cart = () => {
     const [showModal, setShowModal] = useState(false);
     const dispatch = useDispatch();
     const { checkOutCart, user } = useSelector((state) => state.user);
-    console.log(user)
+    console.log(checkOutCart)
 
     useEffect(() => {
         if (user?._id) {
@@ -142,7 +142,7 @@ const navigate=useNavigate()
             navigate('/edit-address')
            
         }
-        if (!checkOutCart || !checkOutCart.data || checkOutCart.data.length === 0) {
+        if (!checkOutCart || checkOutCart.products.length === 0) {
             toast.success("Checkout cart is empty");
             return;
         }
@@ -157,10 +157,12 @@ const navigate=useNavigate()
         try {
             const pdfBlob = await generatePDF(checkOutCart, user);
             dispatch(asyncCustomerOrder({ checkOutCart, PaymentType: "Cash on delivery" }, user._id, user.email, pdfBlob));
-            checkOutCart.data.forEach(async (item) => {
+            checkOutCart.products.forEach(async (item) => {
                 const { productId, quantity } = item;
-                const newStock = productId.stock - quantity;
-                await dispatch(asyncUpdateStock(productId._id, newStock));
+console.log(item)
+                const newStock = item.stock - item.quantity;
+                console.log(newStock)
+                await dispatch(asyncUpdateStock(productId._id, newStock,item?.store,user?._id));
             });
             setShowModal(false);
             Swal.fire({
@@ -197,21 +199,24 @@ const navigate=useNavigate()
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 <div>
                     <h2 className="text-2xl font-bold mb-4 text-indigo-800">Your Order Details</h2>
-                    {checkOutCart?.data && checkOutCart?.data?.length > 0 ? (
+                    {checkOutCart?.products && checkOutCart?.products?.length > 0 ? (
                         <ul>
-                            {checkOutCart?.data?.map((item, index) => (
+                            {checkOutCart.products?.map((item, index) => (
                                 <li key={index} className="bg-white shadow-md rounded-lg overflow-hidden mb-4">
                                     <img src={item?.productId?.image?.url} alt={item?.productId?.ProductName} className="h-48 w-full object-cover rounded-t-lg" />
                                     <div className="p-4">
                                         <h2 className="text-xl font-bold mb-2 text-indigo-800">{item?.productId?.ProductName}</h2>
                                         <p className="text-gray-700 mb-2">{item?.productId?.description}</p>
                                         <div className="flex justify-between items-center mb-2">
-                                            <p className="text-gray-800 font-bold">Stock: {item?.productId?.stock}</p>
-                                            <p className="text-gray-800 font-bold">Product Code: {item?.productId?.ProductCode}</p>
+                                            <p className="text-gray-800 font-bold">Stock: {item?.stock}</p>
+                                            <p className="text-gray-800 font-bold">Product Code: {item?.productId?.productCode}</p>
                                         </div>
                                         <div className="flex justify-between items-center">
-                                            <h2 className="text-xl font-bold mb-2 text-indigo-800">{item?.quantity}</h2>
                                             <p>Total Price: Rs {(item?.totalPrice)}</p>
+                                        </div>
+                                        <div className="flex justify-between items-center">
+                                            <h2 className="text-xl font-bold mb-2 text-indigo-800">Quantity:{item?.quantity}</h2>
+                                            <p>Chosen Store: {(item?.store)}</p>
                                         </div>
                                         <button onClick={() => handleDeleteItem(item?._id)} className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mt-2">
                                             Delete

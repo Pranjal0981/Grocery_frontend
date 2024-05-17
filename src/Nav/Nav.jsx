@@ -42,11 +42,17 @@ const Nav = () => {
     const [selectedCategory, setSelectedCategory] = useState('All categories');
     const [searchResults, setSearchResults] = useState([]);
     const [searchTerm,setSearchTerm]=useState([])
-    const stores = ["Minal Residency", "AwadhPuri","Rohit Nagar","Jhansi"];
+    const [stores, setStores] = useState([]);
     const handleChangeSearchTerm = (event) => {
         setSearchTerm(event.target.value);
     };
-
+    useEffect(() => {
+        // Fetch the list of stores from the JSON file
+        fetch('/stores.json')
+            .then((response) => response.json())
+            .then((data) => setStores(data))
+            .catch((error) => console.error('Error fetching stores:', error));
+    }, []);
     const handleChangeCategory = (event) => {
         setSelectedCategory(event.target.value);
     };
@@ -435,13 +441,17 @@ const Nav = () => {
                                     <ListItemText primary="Out Of Stock" />
                                 </ListItem>
                             </Link>
-
-                            <Link to={`/admin/store/${user.store}`} className="" style={{ textDecoration: 'none' }}>
-                                <ListItem button>
-                                    <ListItemText primary='Your Store' />
+                                <ListItem button onClick={() => handleStoreClick()}>
+                                    <ListItemText primary="Stores" />
+                                    {openStore ? <ExpandLess /> : <ExpandMore />}
                                 </ListItem>
-                            </Link>
-
+                                <Collapse in={openStore} timeout="auto" unmountOnExit>
+                                    {stores.map((store, index) => (
+                                        <ListItemButton key={index} component={Link} to={`/stores/fetchProducts/${store}`}>
+                                            <ListItemText primary={store} />
+                                        </ListItemButton>
+                                    ))}
+                                </Collapse>
                             <Link to="/admin/logout" className="" style={{ textDecoration: 'none' }} onClick={handleLogout}>
                                 <ListItem button>
                                     <ListItemText primary="Logout" />

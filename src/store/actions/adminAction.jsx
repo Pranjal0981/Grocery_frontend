@@ -3,6 +3,7 @@ import { saveStoreProducts, saveAllUsers, saveOrders, saveDashBoardInfo, setLoad
 import { saveProduct } from '../reducers/productSlice';
 import { saveUser, removeUser, saveTokenExpiration } from '../reducers/userSlice'
 import { toast } from 'react-toastify';
+import { asyncExploreById } from './productAction';
 
 export const asyncCurrentAdmin = (token) => async (dispatch, getState) => {
     try {
@@ -94,7 +95,9 @@ export const fetchProductsByStore = (store, page, searchQuery = '') => async (di
         dispatch(setLoading(true));
         const response = await axios.get(`/admin/fetchProductStore/${store}?page=${page}&search=${searchQuery}`);
         const { products, totalPages } = response.data; // Destructure products and totalPages from response.data
-        dispatch(saveStoreProducts({ products, totalPages })); // Save both products and totalPages in the Redux state
+        dispatch(saveStoreProducts({ products, totalPages }));
+        console.log(response)
+
     } catch (error) {
         console.log(error);
     }
@@ -166,11 +169,13 @@ export const asyncDelProduct = (productId,store) => async (dispatch, getState) =
 
 export const asyncUpdateProduct = (id, formData) => async (dispatch, getState) => {
     try {
+        console.log(formData)
         const response = await axios.put(`/admin/updateProduct/${id}`, formData);
         console.log(response.data);
         toast.success('Product updated successfully', {
             position: "top-right"
         });
+        dispatch(asyncExploreById(id))
     } catch (error) {
         console.error('Error updating product:', error);
         toast.error('Error updating product. Please try again.', {
@@ -243,6 +248,7 @@ export const asyncFetchAllProducts = (page, searchTerm = '', searchType = '') =>
 
 export const asyncUploadProducts = (formData) => async (dispatch, getState) => {
     try {
+        console.log(formData)
         const response = await axios.post('/admin/upload-products', formData, {
             headers: {
                 'Content-Type': 'multipart/form-data' // Set content type to multipart/form-data

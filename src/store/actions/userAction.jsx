@@ -120,7 +120,8 @@ export const asyncDeleteFromWishlist = (userId, productId) => async (dispatch, g
 export const asyncFetchCartProduct=(userId)=>async(dispatch,getState)=>{
     try {
         const response=await axios.get(`/user/fetchCart/${userId}`)
-        dispatch(saveCheckOutCart(response.data))
+        console.log(response)
+        dispatch(saveCheckOutCart(response.data.cart))
     } catch (error) {
         toast.error(error.response.data.message)
     }
@@ -211,6 +212,7 @@ export const asyncCustomerOrder = (data, userId,userEmail, pdfBlob) => async (di
     try {
         // Create FormData and append data
         const formData = new FormData();
+        console.log(data)
         formData.append('checkOutCart', JSON.stringify(data.checkOutCart)); // Assuming data.checkOutCart is the JSON object you want to send
         formData.append('pdfFile', pdfBlob, 'checkout_bill.pdf');
         formData.append('email', userEmail)
@@ -234,11 +236,12 @@ export const asyncFetchCustomerOrder=(userId)=>async(dispatch,getState)=>{
     }
 }
 
-export const asyncUpdateStock = (productId, newStock)=>async(dispatch,getState)=>{
+export const asyncUpdateStock = (productId, newStock,store,userId)=>async(dispatch,getState)=>{
     try {
-        console.log(productId,newStock)
-        const response = await axios.post(`/products/updateProductStock/${productId}`, { newStock })
+        console.log(productId,newStock,store)
+        const response = await axios.post(`/products/updateProductStock/${productId}`, { newStock,store })
         console.log(response)
+        dispatch(asyncFetchCartProduct(userId))
     } catch (error) {
      console.log(error)   
     }
@@ -269,7 +272,7 @@ export const asyncSetPreferredStore=(selectedStore,userId)=>async(dispatch,getSt
     try {
         console.log(selectedStore)
         const response=await axios.post(`/user/selectStore/${userId}/`,selectedStore)
-        dispatch(asyncCurrentUser())
+        dispatch(asyncCurrentUser(userId))
 
     } catch (error) {
         toast.error("Error Setting the store")

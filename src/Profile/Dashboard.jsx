@@ -17,9 +17,17 @@ const Dashboard = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const { user, isAuth } = useSelector((state) => state.user);
-    const [preferredStore, setPreferredStore] = useState('');
-    const [selectedStore, setSelectedStore] = useState(user?.PreferredStore);
+    const [preferredStore, setPreferredStore] = useState([]);
+    const [selectedStore, setSelectedStore] = useState(user?.PreferredStore || '');
     const [products, setProducts] = useState([]);
+
+    useEffect(() => {
+        // Fetch the list of stores from the JSON file
+        fetch('/stores.json')
+            .then((response) => response.json())
+            .then((data) => setPreferredStore(data))
+            .catch((error) => console.error('Error fetching stores:', error));
+    }, []);
 
     const handleLogout = () => {
         dispatch(asyncSignOut(navigate));
@@ -34,13 +42,6 @@ const Dashboard = () => {
         dispatch(asyncSetPreferredStore({ selectedStore }, user._id));
         toast.success("Store Set");
     }
-
-    const stores = [
-        "Minal Residency",
-        "Awadhpuri",
-        "Katara Hills",
-        "Jhansi",
-    ];
 
     return (
         <div className="h-auto w-full">
@@ -68,10 +69,6 @@ const Dashboard = () => {
                         <Link to='/wishlist' className='flex items-center gap-[10px]'>
                             <LuGitCompare />
                             Wishlist
-                        </Link>
-                        <Link to='/compare' className='flex items-center gap-[10px]'>
-                            <CiHeart />
-                            Compare
                         </Link>
                         <Link className='flex items-center gap-[10px]' onClick={handleLogout}>
                             <CiLogout />
@@ -103,7 +100,7 @@ const Dashboard = () => {
                             className="border-2 border-gray-400 px-4 py-2 rounded-md focus:outline-none focus:border-blue-500"
                         >
                             <option value="" disabled>Select Store</option>
-                            {stores.map((store, index) => (
+                            {preferredStore.map((store, index) => (
                                 <option key={index} value={store}>{store}</option>
                             ))}
                         </select>

@@ -9,7 +9,10 @@ const Order = () => {
 
     const [disableReturnButton, setDisableReturnButton] = useState(false);
 
-    // Calculate difference in days between two dates
+    useEffect(() => {
+        dispatch(asyncFetchCustomerOrder(user?._id));
+    }, [dispatch, user?._id]);
+
     const calculateDaysDifference = (date1, date2) => {
         const diffTime = Math.abs(date2 - date1);
         return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
@@ -22,37 +25,26 @@ const Order = () => {
         return acc;
     }, []);
 
-    useEffect(() => {
-        dispatch(asyncFetchCustomerOrder(user._id));
-    }, [dispatch, user?._id]);
-
-    const handleReturnRequest = (orderId, userId) => {
+    const handleReturnRequest = (orderId) => {
         dispatch(asyncReturnRequest(orderId, user?._id));
-        console.log("Return requested for order:", orderId);
+        setDisableReturnButton(true);
 
-        // Iterate through each order in the products array
         products?.data?.forEach((order) => {
-            // Calculate order date and days difference here
             const orderDate = new Date(order.createdAt);
             const currentDate = new Date();
             const daysDifference = calculateDaysDifference(orderDate, currentDate);
 
-            // Iterate through each product in the order
             order.products.forEach(async (product) => {
-                // Check if the product ID matches any of the IDs in the array
                 if (productIdsToUpdateStock.includes(product.productId?._id)) {
                     try {
-                        // Update the stock for the product
-                        const newStock = product.productId.stock + product.quantity; // Add returned quantity back to the stock
-                         dispatch(asyncUpdateStock(product.productId?._id, newStock));
-                        console.log(`Stock updated for product ${product.productId?._id}`);
+                        const newStock = product.productId.stock + product.quantity;
+                        dispatch(asyncUpdateStock(product.productId?._id, newStock));
                     } catch (error) {
                         console.error(`Error updating stock for product ${product.productId?._id}:`, error);
                     }
                 }
             });
         });
-
     };
 
     return (
@@ -83,13 +75,9 @@ const Order = () => {
                                             <li key={product?._id}>
                                                 <div className="flex items-center space-x-4">
                                                     <div>
-                                                        <img src={product?.productId?.image?.url} alt="" className="w-20 h-20 object-cover rounded-lg" />
-                                                    </div>
-                                                    <div>
-                                                        <h3 className="text-lg font-semibold">{product?.productId?.ProductName}</h3>
+                                                        <h3 className="text-lg font-semibold">{product?.productId?.productName}</h3>
                                                         <p className="text-sm text-gray-600">{product?.productId?.description}</p>
                                                         <p className="text-sm text-gray-700">Price: Rs {product?.productId?.sellingPrice}</p>
-                                                        <p className="text-sm text-gray-700">Stock: {product?.productId?.stock}</p>
                                                         <p className="text-sm text-gray-700">Quantity: {product?.quantity}</p>
                                                     </div>
                                                 </div>
@@ -98,15 +86,13 @@ const Order = () => {
                                     </ul>
                                 </td>
                                 <td className="border px-4 py-2">
-                                    {order.reqCancellation === 'Yes' ? (
-                                        <button className="bg-gray-300 text-white px-4 py-2 rounded-md" disabled>
-                                            Return Requested
-                                        </button>
-                                    ) : (
-                                        <button onClick={() => handleReturnRequest(order._id)} className={`bg-blue-500 text-white px-4 py-2 rounded-md ${disableReturnButton ? 'cursor-not-allowed opacity-50' : ''}`} disabled={disableReturnButton}>
-                                            Return Request
-                                        </button>
-                                    )}
+                                    <button
+                                        onClick={() => handleReturnRequest(order._id)}
+                                        className={`bg-blue-500 text-white px-4 py-2 rounded-md ${disableReturnButton ? 'cursor-not-allowed opacity-50' : ''}`}
+                                        disabled={disableReturnButton}
+                                    >
+                                        Return Request
+                                    </button>
                                 </td>
                             </tr>
                         ))}

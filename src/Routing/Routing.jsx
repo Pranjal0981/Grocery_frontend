@@ -104,14 +104,14 @@ const Routing = () => {
             <Route path='/cart' element={isUser ? <Cart /> : <Unauthorized />} />
             <Route path='/edit-address' element={<AddressForm />} />
             <Route path='/address' element={<Address />} />
-            <Route path='/admin/store/:store' element={isAdmin? <ProductStore />:<Unauthorized/>} />
+            <Route path='/stores/fetchProducts/:store' element={isAdmin? <ProductStore />:<Unauthorized/>} />
             <Route path='/shop' element={<Product />} />
             <Route path='/account-details' element={<AccountDetails />} />
             <Route path='/superadmin/fetchallusers' element={isSuperAdmin ? <AllUser /> : <Unauthorized />} />
             <Route path='/admin/fetchOutOfStockProducts' element={isAdmin ? <OutOfStock /> : <Unauthorized />} />
             <Route path='/superadmin/activeMembers' element={isSuperAdmin ? <ActiveUser /> : <Unauthorized />} />
             <Route path='/superadmin/inactiveMembers' element={isSuperAdmin ? <InactiveUser /> : <Unauthorized />} />
-            <Route path='/admin/update-product/:id' element={isAdmin ? <UpdateProduct /> : <Unauthorized />} />
+            <Route path='/update-product/:id' element={isAdmin ? <UpdateProduct /> : <Unauthorized />} />
             <Route path='/superadmin/dashboard' element={isSuperAdmin ? <AdminDashboard /> : <Unauthorized />} />
             <Route path='/admin/allOrders' element={isAdmin ?<ManageOrder/>:<Unauthorized/>}/>
             <Route path='/store/allOrders/:store' element={isStoreManager ? <ManageOrder /> : <Unauthorized />} />

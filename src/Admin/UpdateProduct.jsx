@@ -7,11 +7,15 @@ import { asyncUpdateProduct } from "../store/actions/adminAction";
 const UpdateProduct = () => {
     const { id } = useParams();
     const dispatch = useDispatch();
-const [imageFile,setImageFile]=useState(null)
+    const [selectedStore, setSelectedStore] = useState(null);
+
+    const [imageFile, setImageFile] = useState(null);
     // Accessing product from Redux state
     const { product } = useSelector((state) => state.product);
+    const stores = useSelector((state) => state.product.store);
+    console.log(stores);
     const [updatedProduct, setUpdatedProduct] = useState({});
-console.log(product)
+    console.log(product);
     // Set initial values of updatedProduct when product data is available
     useEffect(() => {
         if (product) {
@@ -37,20 +41,19 @@ console.log(product)
     const handleSubmit = async (e) => {
         e.preventDefault();
         const formData = new FormData();
-        formData.append("ProductName", updatedProduct.ProductName);
+        formData.append("productName", updatedProduct.productName);
         formData.append("description", updatedProduct.description);
         formData.append("sellingPrice", updatedProduct.sellingPrice);
-        formData.append("PurchasePrice", updatedProduct.PurchasePrice);
-
+        formData.append("PurchasePrice", updatedProduct.purchasePrice);
         formData.append("MRP", updatedProduct.MRP);
-        formData.append("Size", updatedProduct.Size);
+        formData.append("size", updatedProduct.size);
         formData.append("category", updatedProduct.category);
         formData.append("brand", updatedProduct.brand);
         formData.append("gst", updatedProduct.gst);
         formData.append("cgst", updatedProduct.cgst);
         formData.append("stock", updatedProduct.stock);
-        formData.append("store", product.store);
-        formData.append("ProductCode", updatedProduct.ProductCode);
+        formData.append("store", selectedStore ? selectedStore.storeName : "");
+        formData.append("productCode", updatedProduct.productCode);
         if (imageFile) {
             formData.append("image", imageFile);
         }
@@ -58,6 +61,30 @@ console.log(product)
         // Dispatch action to update product
         dispatch(asyncUpdateProduct(id, formData));
     };
+
+    const handleStoreChange = (e) => {
+        const storeName = e.target.value;
+        const selectedStore = stores.find((store) => store.storeName === storeName);
+        setSelectedStore(selectedStore);
+        setUpdatedProduct((prevProduct) => ({
+            ...prevProduct,
+            stock: selectedStore ? selectedStore.stock : "",
+        }));
+    };
+
+    useEffect(() => {
+        if (product) {
+            setUpdatedProduct(product);
+            if (stores && stores.length > 0) {
+                setSelectedStore(stores[0]);
+                setUpdatedProduct((prevProduct) => ({
+                    ...prevProduct,
+                    stock: stores[0].stock,
+                }));
+            }
+        }
+    }, [product, stores]);
+
 
     // Show loading or empty state while product data is being fetched
     if (!product) {
@@ -73,19 +100,19 @@ console.log(product)
                     {/* Update the value prop of each input field */}
                     {/* Make sure the name attribute matches the key of updatedProduct */}
                     <div className="mb-4">
-                        <label htmlFor="ProductName" className="block text-gray-700">
+                        <label htmlFor="productName" className="block text-gray-700">
                             Product Name:
                         </label>
                         <input
                             type="text"
-                            id="ProductName"
-                            name="ProductName"
-                            value={updatedProduct.ProductName || ""}
+                            id="productName"
+                            name="productName"
+                            value={updatedProduct.productName || ""}
                             onChange={handleChange}
                             className="form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
                         />
                     </div>
-                   
+
                     <div className="mb-4">
                         <label htmlFor="description" className="block text-gray-700">
                             Description:
@@ -207,6 +234,41 @@ console.log(product)
                             className="form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
                         />
                     </div>
+
+
+                    <div className="mb-4">
+                        <label htmlFor="Size" className="block text-gray-700">
+                            Quantity:
+                        </label>
+                        <input
+                            type="text"
+                            id="size"
+                            name="size"
+                            value={updatedProduct.size || ""}
+                            onChange={handleChange}
+                            className="form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
+                        />
+                    </div>
+                    <div className="mb-4">
+                        <label htmlFor="store" className="block text-gray-700">
+                            Store:
+                        </label>
+                        <select
+                            id="store"
+                            name="store"
+                            value={selectedStore ? selectedStore.storeName : ""}
+                            onChange={handleStoreChange}
+                            className="form-select mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
+                        >
+                            {stores?.map((store, index) => (
+                                <option key={index} value={store.storeName}>
+                                    {store.storeName} (Stock: {store.stock})
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                    {/* Render other input fields */}
+
                     <div className="mb-4">
                         <label htmlFor="stock" className="block text-gray-700">
                             Stock:
@@ -220,42 +282,15 @@ console.log(product)
                             className="form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
                         />
                     </div>
-
                     <div className="mb-4">
-                        <label htmlFor="Size" className="block text-gray-700">
-                            Quantity:
-                        </label>
-                        <input
-                            type="text"
-                            id="size"
-                            name="Size"
-                            value={updatedProduct.Size || ""}
-                            onChange={handleChange}
-                            className="form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
-                        />
-                    </div>
-                    <div className="mb-4">
-                        <label htmlFor="store" className="block text-gray-700">
-                            Store:
-                        </label>
-                        <input
-                            type="text"
-                            id="store"
-                            name="store"
-                            value={product.store || ""}
-                            onChange={handleChange} disabled
-                            className="form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
-                        />
-                    </div>
-                    <div className="mb-4">
-                        <label htmlFor="ProductCode" className="block text-gray-700">
+                        <label htmlFor="productCode" className="block text-gray-700">
                             Product Code:
                         </label>
                         <input
                             type="text"
-                            id="ProductCode"
-                            name="ProductCode"
-                            value={updatedProduct.ProductCode || ""}
+                            id="productCode"
+                            name="productCode"
+                            value={updatedProduct.productCode || ""}
                             onChange={handleChange}
                             className="form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
                         />
