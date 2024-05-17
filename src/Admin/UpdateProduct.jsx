@@ -8,7 +8,20 @@ const UpdateProduct = () => {
     const { id } = useParams();
     const dispatch = useDispatch();
     const [selectedStore, setSelectedStore] = useState(null);
+    const [storeOptions, setStoreOptions] = useState([]);
+    const [additionalStock, setAdditionalStock] = useState([{ store: '', stock: '' }]);
+    const selectedStores = new Set();
+    if (selectedStore) selectedStores.add(selectedStore.storeName);
+    additionalStock.forEach(item => selectedStores.add(item.store));
 
+    useEffect(() => {
+        // Fetch the list of stores from the JSON file
+        fetch('/stores.json')
+            .then((response) => response.json())
+            .then((data) => setStoreOptions(data))
+            .catch((error) => console.error('Error fetching stores:', error));
+    }, []);
+    
     const [imageFile, setImageFile] = useState(null);
     // Accessing product from Redux state
     const { product } = useSelector((state) => state.product);
@@ -52,6 +65,7 @@ const UpdateProduct = () => {
         formData.append("gst", updatedProduct.gst);
         formData.append("cgst", updatedProduct.cgst);
         formData.append("stock", updatedProduct.stock);
+
         formData.append("store", selectedStore ? selectedStore.storeName : "");
         formData.append("productCode", updatedProduct.productCode);
         if (imageFile) {
@@ -90,18 +104,31 @@ const UpdateProduct = () => {
     if (!product) {
         return <div>Loading...</div>;
     }
+    const handleAddStock = () => {
+        // Create a new object for the additional stock of a store
+        const newStock = { store: '', stock: '' };
+        // Add the new stock to the additionalStock array
+        setAdditionalStock([...additionalStock, newStock]);
+    };
+
+    const handleStockChange = (index, field, value) => {
+        // Create a copy of additionalStock array
+        const updatedStock = [...additionalStock];
+        // Update the specified field value at the specified index
+        updatedStock[index][field] = value;
+        // Update the state with the modified array
+        setAdditionalStock(updatedStock);
+    };
 
     return (
         <div className="max-w-4xl mx-auto mt-8 p-8 bg-white rounded-lg shadow-lg">
-            <h2 className="text-2xl font-semibold mb-4">Update Product</h2>
+            <h2 className="text-2xl font-semibold mb-6 text-center">Update Product</h2>
             <form onSubmit={handleSubmit}>
-                <div className="grid grid-cols-2 gap-4">
-                    {/* Render input fields with updatedProduct values */}
-                    {/* Update the value prop of each input field */}
-                    {/* Make sure the name attribute matches the key of updatedProduct */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {/* Product Name */}
                     <div className="mb-4">
-                        <label htmlFor="productName" className="block text-gray-700">
-                            Product Name:
+                        <label htmlFor="productName" className="block text-gray-700 font-semibold">
+                            Product Name
                         </label>
                         <input
                             type="text"
@@ -112,10 +139,10 @@ const UpdateProduct = () => {
                             className="form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
                         />
                     </div>
-
-                    <div className="mb-4">
-                        <label htmlFor="description" className="block text-gray-700">
-                            Description:
+                    {/* Description */}
+                    <div className="mb-4 md:col-span-2">
+                        <label htmlFor="description" className="block text-gray-700 font-semibold">
+                            Description
                         </label>
                         <textarea
                             id="description"
@@ -125,50 +152,52 @@ const UpdateProduct = () => {
                             className="form-textarea mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
                         />
                     </div>
+                    {/* Selling Price */}
                     <div className="mb-4">
-                        <label htmlFor="price" className="block text-gray-700">
-                            Selling Price:
+                        <label htmlFor="sellingPrice" className="block text-gray-700 font-semibold">
+                            Selling Price
                         </label>
                         <input
                             type="number"
-                            id="price"
+                            id="sellingPrice"
                             name="sellingPrice"
                             value={updatedProduct.sellingPrice || ""}
                             onChange={handleChange}
                             className="form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
                         />
                     </div>
-
+                    {/* Purchase Price */}
                     <div className="mb-4">
-                        <label htmlFor="price" className="block text-gray-700">
-                            Purchase Price:
+                        <label htmlFor="purchasePrice" className="block text-gray-700 font-semibold">
+                            Purchase Price
                         </label>
                         <input
                             type="number"
-                            id="price"
-                            name="PurchasePrice"
-                            value={updatedProduct.PurchasePrice || ""}
+                            id="purchasePrice"
+                            name="purchasePrice"
+                            value={updatedProduct.purchasePrice || ""}
                             onChange={handleChange}
                             className="form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
                         />
                     </div>
-
+                    {/* MRP */}
                     <div className="mb-4">
-                        <label htmlFor="price" className="block text-gray-700">
+                        <label htmlFor="MRP" className="block text-gray-700 font-semibold">
                             MRP
                         </label>
                         <input
                             type="number"
-                            id="price"
+                            id="MRP"
                             name="MRP"
                             value={updatedProduct.MRP || ""}
                             onChange={handleChange}
                             className="form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
                         />
                     </div>
+                    {/* Category */}
                     <div className="mb-4">
-                        <label htmlFor="category" className="block text-gray-700">
-                            Category:
+                        <label htmlFor="category" className="block text-gray-700 font-semibold">
+                            Category
                         </label>
                         <input
                             type="text"
@@ -179,9 +208,10 @@ const UpdateProduct = () => {
                             className="form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
                         />
                     </div>
+                    {/* Brand */}
                     <div className="mb-4">
-                        <label htmlFor="brand" className="block text-gray-700">
-                            Brand:
+                        <label htmlFor="brand" className="block text-gray-700 font-semibold">
+                            Brand
                         </label>
                         <input
                             type="text"
@@ -192,25 +222,27 @@ const UpdateProduct = () => {
                             className="form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
                         />
                     </div>
-                    <div className="mb-4">
-                        <label htmlFor="image" className="block text-gray-700">
-                            Image Upload:
+                    {/* Image Upload */}
+                    <div className="mb-4 md:col-span-2">
+                        <label htmlFor="image" className="block text-gray-700 font-semibold">
+                            Image Upload
                         </label>
-                        {product.image.url && (
-                            <img src={product.image.url} alt="Product" className="mb-2" style={{ maxWidth: '200px' }} />
+                        {updatedProduct.image?.url && (
+                            <img src={updatedProduct.image.url} alt="Product" className="mb-2 rounded-md" style={{ maxWidth: '200px' }} />
                         )}
                         <input
                             type="file"
                             id="image"
                             name="image"
                             accept="image/*"
-                            onChange={handleImageChange}
+                            onChange={handleChange}
                             className="form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
                         />
                     </div>
+                    {/* GST */}
                     <div className="mb-4">
-                        <label htmlFor="gst" className="block text-gray-700">
-                            GST:
+                        <label htmlFor="gst" className="block text-gray-700 font-semibold">
+                            GST
                         </label>
                         <input
                             type="number"
@@ -221,9 +253,10 @@ const UpdateProduct = () => {
                             className="form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
                         />
                     </div>
+                    {/* CGST */}
                     <div className="mb-4">
-                        <label htmlFor="cgst" className="block text-gray-700">
-                            CGST:
+                        <label htmlFor="cgst" className="block text-gray-700 font-semibold">
+                            CGST
                         </label>
                         <input
                             type="number"
@@ -234,11 +267,10 @@ const UpdateProduct = () => {
                             className="form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
                         />
                     </div>
-
-
+                    {/* Quantity */}
                     <div className="mb-4">
-                        <label htmlFor="Size" className="block text-gray-700">
-                            Quantity:
+                        <label htmlFor="size" className="block text-gray-700 font-semibold">
+                            Quantity
                         </label>
                         <input
                             type="text"
@@ -249,9 +281,10 @@ const UpdateProduct = () => {
                             className="form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
                         />
                     </div>
+                    {/* Store */}
                     <div className="mb-4">
-                        <label htmlFor="store" className="block text-gray-700">
-                            Store:
+                        <label htmlFor="store" className="block text-gray-700 font-semibold">
+                            Store
                         </label>
                         <select
                             id="store"
@@ -261,17 +294,19 @@ const UpdateProduct = () => {
                             className="form-select mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
                         >
                             {stores?.map((store, index) => (
-                                <option key={index} value={store.storeName}>
+                                <option
+                                    key={index}
+                                    value={store.storeName}
+                                >
                                     {store.storeName} (Stock: {store.stock})
                                 </option>
                             ))}
                         </select>
                     </div>
-                    {/* Render other input fields */}
-
+                    {/* Stock */}
                     <div className="mb-4">
-                        <label htmlFor="stock" className="block text-gray-700">
-                            Stock:
+                        <label htmlFor="stock" className="block text-gray-700 font-semibold">
+                            Stock
                         </label>
                         <input
                             type="number"
@@ -282,9 +317,10 @@ const UpdateProduct = () => {
                             className="form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
                         />
                     </div>
+                    {/* Product Code */}
                     <div className="mb-4">
-                        <label htmlFor="productCode" className="block text-gray-700">
-                            Product Code:
+                        <label htmlFor="productCode" className="block text-gray-700 font-semibold">
+                            Product Code
                         </label>
                         <input
                             type="text"
@@ -295,16 +331,71 @@ const UpdateProduct = () => {
                             className="form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
                         />
                     </div>
+                    {/* Additional Stock */}
+                    {additionalStock.map((item, index) => (
+                        <div key={index} className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label htmlFor={`store-${index}`} className="block text-gray-700 font-semibold">
+                                    Additional Store {index + 1}
+                                </label>
+                             <select
+    id={`store-${index}`}
+    value={item.store}
+    onChange={(e) => handleStockChange(index, 'store', e.target.value)}
+    className="form-select mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full border-gray-300 rounded-md"
+>
+
+                                    <option value="">Select Store</option>
+                                    {storeOptions?.map((option, idx) => (
+                                        <option
+                                            key={idx}
+                                            value={option}
+                                            disabled={selectedStores.has(option)}
+                                        >
+                                            {option}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+                            <div>
+                                <label htmlFor={`stock-${index}`} className="block text-sm font-medium text-gray-700">Stock</label>
+                                <input
+                                    type="text"
+                                    id={`stock-${index}`}
+                                    value={item.stock}
+                                    onChange={(e) => handleStockChange(index, e.target.value)}
+                                    className="form-input mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full border-gray-300 rounded-md"
+                                />
+                            </div>
+                        </div>
+                    ))}
+                    {/* Add Additional Stock Button */}
+                    <div className="md:col-span-2">
+                        <button
+                            type="button"
+                            onClick={handleAddStock}
+                            className="w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition-colors duration-300"
+                        >
+                            Add Additional Stock
+                        </button>
+                    </div>
                 </div>
-                <button
-                    type="submit"
-                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                >
-                    Update Product
-                </button>
+                {/* Submit Button */}
+                <div className="mt-6 text-center">
+                    <button
+                        type="submit"
+                        className="w-full md:w-auto bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                    >
+                        Update Product
+                    </button>
+                </div>
             </form>
         </div>
     );
+
+
+
+
 };
 
 export default UpdateProduct;
