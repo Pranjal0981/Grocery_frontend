@@ -18,6 +18,8 @@ const AddProductForm = () => {
     const [productCode, setProductCode] = useState('');
     const [sellingPrice, setSellingPrice] = useState('');
     const [newBrand, setNewBrand] = useState('');
+    const [quantity, setQuantity] = useState('');
+
     const [newCategory, setNewCategory] = useState('');
     const [isCategorySelected, setIsCategorySelected] = useState(false);
     const [isBrandSelected, setIsBrandSelected] = useState(false);
@@ -92,6 +94,8 @@ const AddProductForm = () => {
         formData.append('brand', selectedBrand);
         formData.append('image', image); // Image is already a File object
         formData.append('gst', gst);
+        formData.append('quantity', quantity);
+
         formData.append('cgst', cgst);
         formData.append('size', size);
         // Append additional stock data
@@ -170,6 +174,13 @@ const AddProductForm = () => {
                         <label htmlFor="sellingPrice" className="block text-sm font-medium text-gray-700">Selling Price</label>
                         <input type="number" id="sellingPrice" value={sellingPrice} onChange={(e) => setSellingPrice(e.target.value)} className="form-input mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full border-gray-300 rounded-md" />
                     </div>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <div>
+                        <label htmlFor="quantity" className="block text-sm font-medium text-gray-700">Quantity</label>
+                        <input type="number" id="quantity" value={quantity} onChange={(e) => setQuantity(e.target.value)} className="form-input mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full border-gray-300 rounded-md" />
+                    </div>
+                  
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                     <div>
