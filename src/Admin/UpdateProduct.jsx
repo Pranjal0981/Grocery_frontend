@@ -68,10 +68,15 @@ const UpdateProduct = () => {
 
         formData.append("store", selectedStore ? selectedStore.storeName : "");
         formData.append("productCode", updatedProduct.productCode);
+        additionalStock.forEach((item, index) => {
+            formData.append(`stores[${index}][store]`, item.store);
+            formData.append(`stores[${index}][stock]`, item.stock);
+        });
+        console.log(formData)
         if (imageFile) {
             formData.append("image", imageFile);
         }
-
+console.log(additionalStock)
         // Dispatch action to update product
         dispatch(asyncUpdateProduct(id, formData));
     };
@@ -111,11 +116,12 @@ const UpdateProduct = () => {
         setAdditionalStock([...additionalStock, newStock]);
     };
 
-    const handleStockChange = (index, field, value) => {
+
+    const handleStockChange = (index, value) => {
         // Create a copy of additionalStock array
         const updatedStock = [...additionalStock];
-        // Update the specified field value at the specified index
-        updatedStock[index][field] = value;
+        // Update the stock value at the specified index
+        updatedStock[index].stock = value;
         // Update the state with the modified array
         setAdditionalStock(updatedStock);
     };
@@ -333,27 +339,23 @@ const UpdateProduct = () => {
                     </div>
                     {/* Additional Stock */}
                     {additionalStock.map((item, index) => (
-                        <div key={index} className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div key={index} className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                             <div>
-                                <label htmlFor={`store-${index}`} className="block text-gray-700 font-semibold">
-                                    Additional Store {index + 1}
-                                </label>
-                             <select
-    id={`store-${index}`}
-    value={item.store}
-    onChange={(e) => handleStockChange(index, 'store', e.target.value)}
-    className="form-select mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full border-gray-300 rounded-md"
->
-
+                                <label htmlFor={`store-${index}`} className="block text-sm font-medium text-gray-700">Store {index + 1}</label>
+                                <select
+                                    id={`store-${index}`}
+                                    value={item.store}
+                                    onChange={(e) => {
+                                        const value = e.target.value;
+                                        const updatedStock = [...additionalStock];
+                                        updatedStock[index].store = value;
+                                        setAdditionalStock(updatedStock);
+                                    }}
+                                    className="form-select mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full border-gray-300 rounded-md"
+                                >
                                     <option value="">Select Store</option>
                                     {storeOptions?.map((option, idx) => (
-                                        <option
-                                            key={idx}
-                                            value={option}
-                                            disabled={selectedStores.has(option)}
-                                        >
-                                            {option}
-                                        </option>
+                                        <option key={idx} value={option}>{option}</option>
                                     ))}
                                 </select>
                             </div>

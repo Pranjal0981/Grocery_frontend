@@ -127,7 +127,7 @@ export const InactiveUser = () => {
                                 {users?.map((user) => (
                                     <tr key={user?._id}>
                                         <td className="px-6 py-4 whitespace-nowrap">
-                                            <div className="h-4 w-4 rounded-full bg-green-400"></div>
+                                            <div className="h-4 w-4 rounded-full bg-red-400"></div>
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap">
                                             <div className="text-sm font-medium text-gray-900">{user?.name}</div>

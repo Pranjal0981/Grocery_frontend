@@ -209,3 +209,13 @@ export const asyncSuperAdminResetPassword = (id, password) => async (dispatch, g
 
     }
 };
+
+export const asyncSearchUsers=(searchTerm,page)=>async(dispatch,getState)=>{
+try {
+    const response = await axios.get(`/superadmin/searchUser?query=${searchTerm}&page=${page}`);
+    console.log(response)
+    dispatch(saveAllUsers(response.data.users));
+} catch (error) {
+    console.log(error)
+}
+}

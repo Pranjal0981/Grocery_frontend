@@ -14,15 +14,20 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 const generatePDF = async (checkOutCart, user) => {
     try {
-        console.log(checkOutCart)
-        const link = "https://reeplayerindia.com/"; // Replace this with your desired link
-
+        console.log(checkOutCart);
+        const link = "https://reeplayerindia.com/";
+        const GSTNo = "23AAMCR9828E1Z3";
+        const FoodLicenseNo = "21424010002578";
         const doc = new jsPDF();
+
         doc.setFont('helvetica');
-        doc.setFontSize(12);
+
+        // Add company logo
         const logoWidth = 50;
         const logoHeight = 20;
         doc.addImage(rgsLogo, 'JPEG', 10, 10, logoWidth, logoHeight);
+
+        // Company details
         const companyName = 'RGS Grocery';
         const companyAddress = 'IT Park, Gandhinagar, Bhopal';
         doc.setFontSize(16);
@@ -32,8 +37,13 @@ const generatePDF = async (checkOutCart, user) => {
         doc.setFontSize(12);
         doc.text(companyAddress, 70, 30);
 
+        // Add GST and Food License Numbers
+        doc.setFontSize(10);
+        doc.text(`GST No: ${GSTNo}`, 70, 40);
+        doc.text(`Food License No: ${FoodLicenseNo}`, 70, 45);
+
         // Address details
-        const addressHeader = ['Name','Address Line 1', 'Address Line 2', 'City', 'State', 'Postal Code', 'Phone Number'];
+        const addressHeader = ['Name', 'Address Line 1', 'Address Line 2', 'City', 'State', 'Postal Code', 'Phone Number'];
         const addressData = user?.address[user?.selectedAddressIndex];
         const addressRows = Object.keys(addressData).map(key => {
             return addressData[key];
@@ -42,7 +52,7 @@ const generatePDF = async (checkOutCart, user) => {
 
         // Add address table
         doc.autoTable({
-            startY: 50,
+            startY: 60,
             head: [addressTable[0]],
             body: [addressTable[1]],
             theme: 'plain',
@@ -54,7 +64,7 @@ const generatePDF = async (checkOutCart, user) => {
         });
 
         // Add customer details
-        let userDetails = [
+        const userDetails = [
             `Customer: ${user?.firstName || ''} ${user?.lastName || ''}`,
             `Email: ${user?.email || ''}`,
             `Phone: ${user?.phone || ''}`,
@@ -64,8 +74,10 @@ const generatePDF = async (checkOutCart, user) => {
             doc.text(detail, 10, 110 + (index * 10));
         });
 
+        // Product table
         const header = ['Brand Name', 'Quantity', 'Category', 'Product Name', 'MRP', 'GST', 'CGST', 'Selling Price', 'Total Price'];
         const tableBody = [];
+
         if (checkOutCart?.products && checkOutCart?.products?.length > 0) {
             checkOutCart.products.forEach((item) => {
                 const product = item?.productId;
@@ -74,25 +86,18 @@ const generatePDF = async (checkOutCart, user) => {
                     item?.quantity || '',
                     product?.category || '',
                     product?.ProductName || '',
-                    `Rs ${product?.MRP || ''}`, // Assuming PurchasePrice is the MRP
-                    `${product?.gst || ''}%`, // Assuming gst is the GST
-                    `${product?.cgst || ''}%`, // Assuming cgst is the CGST
-                    `Rs ${product?.sellingPrice || ''}`, // Assuming sellingPrice is the Selling Price
-                    `Rs ${item?.totalPrice || ''}` // Assuming totalPrice is the Total Price
+                    `Rs ${product?.MRP || ''}`,
+                    `${product?.gst || ''}%`,
+                    `${product?.cgst || ''}%`,
+                    `Rs ${product?.sellingPrice || ''}`,
+                    `Rs ${item?.totalPrice || ''}`,
                 ]);
             });
         }
 
-
-        const totalGrandPriceY = 150 + (tableBody.length * 20) + (userDetails.length * 10);
-
-
-        doc.text(`Total Grand Price: Rs ${checkOutCart.totalGrandPrice.toFixed(2)}`, 10, totalGrandPriceY);
-
-
         // Add table
         doc.autoTable({
-            startY: 150, // Adjust startY based on the space occupied by user details
+            startY: 140, // Adjust startY based on the space occupied by user details
             head: [header],
             body: tableBody,
             theme: 'grid',
@@ -100,19 +105,32 @@ const generatePDF = async (checkOutCart, user) => {
                 font: 'helvetica',
                 fontSize: 10,
                 cellPadding: 3,
+                halign: 'center', // Center align the table text
+                valign: 'middle', // Vertically align the table text
+            },
+            headStyles: {
+                fillColor: [0, 0, 255], // Blue background for the header
+                textColor: [255, 255, 255], // White text color for the header
             },
         });
 
-        const qrDataUrl = await QRCode.toDataURL(link); 
+        // Add total grand price
+        const totalGrandPriceY = 140 + (tableBody.length * 10) + 20;
+        doc.setFontSize(12);
+        doc.text(`Total Grand Price: Rs ${checkOutCart.totalGrandPrice.toFixed(2)}`, 10, totalGrandPriceY);
+
+        // Add QR code
+        const qrDataUrl = await QRCode.toDataURL(link);
         const qrImageHeight = 40;
         const qrImageWidth = 40;
         const qrX = doc.internal.pageSize.getWidth() - qrImageWidth - 10;
         const qrY = 10;
         doc.addImage(qrDataUrl, 'PNG', qrX, qrY, qrImageWidth, qrImageHeight);
 
-
+        // Add footer
         const footerText = 'Thank you for shopping with us!';
         doc.setTextColor(0, 0, 255); // Blue color
+        doc.setFontSize(12);
         doc.text(footerText, 10, doc.internal.pageSize.getHeight() - 10);
         doc.setTextColor(0, 0, 0); // Reset text color
 
@@ -122,6 +140,7 @@ const generatePDF = async (checkOutCart, user) => {
         console.error("Error generating PDF:", error);
         throw error;
     }
+
 };
 
 const Cart = () => {
