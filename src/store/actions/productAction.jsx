@@ -7,7 +7,6 @@ export const asyncFetchProducts = (page, preferredStore) => async (dispatch, get
         const response = await axios.get(url);
         const totalPages = response.data.totalPages; // Extract totalPages from response
         await dispatch(saveProduct(response.data.data));
-        console.log(response)
         return totalPages; // Return totalPages to be used in component logic
     } catch (error) {
         toast.error('Error fetching  products:', error.response?.data || error.message);
@@ -88,5 +87,14 @@ export const asyncFetchProdByBrand=(brand)=>async(dispatch,getState)=>{
         dispatch(saveProduct(response.data.products))
     } catch (error) {
         toast.error(error.response.data.message)
+    }
+}
+
+export const asyncFetchStorebyPID=(productId)=>async(dispatch,getState)=>{
+    try {
+        const response=await axios.get(`/products/stores/${productId}`)
+        dispatch(saveStoreStocks(response.data.stores))
+    } catch (error) {
+        console.log(error)
     }
 }

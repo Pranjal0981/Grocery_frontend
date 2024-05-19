@@ -14,13 +14,14 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 const generatePDF = async (checkOutCart, user) => {
     try {
-        console.log(checkOutCart);
-        const link = "https://reeplayerindia.com/";
+        console.log(checkOutCart)
+        const link = "https://reeplayerindia.com/"; // Replace this with your desired link
         const GSTNo = "23AAMCR9828E1Z3";
         const FoodLicenseNo = "21424010002578";
-        const doc = new jsPDF();
 
+        const doc = new jsPDF();
         doc.setFont('helvetica');
+        doc.setFontSize(12);
 
         // Add company logo
         const logoWidth = 50;
@@ -43,25 +44,36 @@ const generatePDF = async (checkOutCart, user) => {
         doc.text(`Food License No: ${FoodLicenseNo}`, 70, 45);
 
         // Address details
+        console.log(user)
         const addressHeader = ['Name', 'Address Line 1', 'Address Line 2', 'City', 'State', 'Postal Code', 'Phone Number'];
-        const addressData = user?.address[user?.selectedAddressIndex];
-        const addressRows = Object.keys(addressData).map(key => {
-            return addressData[key];
-        });
-        const addressTable = [addressHeader, addressRows];
+        const selectedAddressIndex = user?.selectedAddressIndex ?? 0; // Default to 0 if undefined
+        const addressData = user?.address?.[selectedAddressIndex] || user?.address?.[0]; // Fallback to the first address if the index is out of bounds
 
-        // Add address table
-        doc.autoTable({
-            startY: 60,
-            head: [addressTable[0]],
-            body: [addressTable[1]],
-            theme: 'plain',
-            styles: {
-                font: 'helvetica',
-                fontSize: 10,
-                cellPadding: 3,
-            },
-        });
+        if (addressData) {
+            const addressRows = [
+                addressData.fullName || '',
+                addressData.addressLine1 || '',
+                addressData.addressLine2 || '',
+                addressData.city || '',
+                addressData.state || '',
+                addressData.postalCode || '',
+                user.phone || '' // Assuming phone is not part of the address object but of the user object
+            ];
+            const addressTable = [addressHeader, addressRows];
+
+            // Add address table
+            doc.autoTable({
+                startY: 50,
+                head: [addressTable[0]],
+                body: [addressTable[1]],
+                theme: 'plain',
+                styles: {
+                    font: 'helvetica',
+                    fontSize: 10,
+                    cellPadding: 3,
+                },
+            });
+        }
 
         // Add customer details
         const userDetails = [
@@ -77,7 +89,6 @@ const generatePDF = async (checkOutCart, user) => {
         // Product table
         const header = ['Brand Name', 'Quantity', 'Category', 'Product Name', 'MRP', 'GST', 'CGST', 'Selling Price', 'Total Price'];
         const tableBody = [];
-
         if (checkOutCart?.products && checkOutCart?.products?.length > 0) {
             checkOutCart.products.forEach((item) => {
                 const product = item?.productId;
@@ -85,19 +96,19 @@ const generatePDF = async (checkOutCart, user) => {
                     product?.brand || '',
                     item?.quantity || '',
                     product?.category || '',
-                    product?.ProductName || '',
-                    `Rs ${product?.MRP || ''}`,
-                    `${product?.gst || ''}%`,
-                    `${product?.cgst || ''}%`,
-                    `Rs ${product?.sellingPrice || ''}`,
-                    `Rs ${item?.totalPrice || ''}`,
+                    product?.productName || '',
+                    `Rs ${product?.MRP || ''}`, // Assuming MRP is the MRP
+                    `${product?.gst || ''}%`, // Assuming gst is the GST
+                    `${product?.cgst || ''}%`, // Assuming cgst is the CGST
+                    `Rs ${product?.sellingPrice || ''}`, // Assuming sellingPrice is the Selling Price
+                    `Rs ${item?.totalPrice || ''}` // Assuming totalPrice is the Total Price
                 ]);
             });
         }
 
-        // Add table
+        // Add product table
         doc.autoTable({
-            startY: 140, // Adjust startY based on the space occupied by user details
+            startY: 150, // Adjust startY based on the space occupied by user details
             head: [header],
             body: tableBody,
             theme: 'grid',
@@ -105,17 +116,11 @@ const generatePDF = async (checkOutCart, user) => {
                 font: 'helvetica',
                 fontSize: 10,
                 cellPadding: 3,
-                halign: 'center', // Center align the table text
-                valign: 'middle', // Vertically align the table text
-            },
-            headStyles: {
-                fillColor: [0, 0, 255], // Blue background for the header
-                textColor: [255, 255, 255], // White text color for the header
             },
         });
 
         // Add total grand price
-        const totalGrandPriceY = 140 + (tableBody.length * 10) + 20;
+        const totalGrandPriceY = 150 + (tableBody.length * 20) + (userDetails.length * 10);
         doc.setFontSize(12);
         doc.text(`Total Grand Price: Rs ${checkOutCart.totalGrandPrice.toFixed(2)}`, 10, totalGrandPriceY);
 
@@ -130,7 +135,6 @@ const generatePDF = async (checkOutCart, user) => {
         // Add footer
         const footerText = 'Thank you for shopping with us!';
         doc.setTextColor(0, 0, 255); // Blue color
-        doc.setFontSize(12);
         doc.text(footerText, 10, doc.internal.pageSize.getHeight() - 10);
         doc.setTextColor(0, 0, 0); // Reset text color
 
@@ -140,8 +144,9 @@ const generatePDF = async (checkOutCart, user) => {
         console.error("Error generating PDF:", error);
         throw error;
     }
+}
 
-};
+
 
 const Cart = () => {
     const [showModal, setShowModal] = useState(false);
@@ -174,6 +179,7 @@ const navigate=useNavigate()
 
     const handleCashOnDelivery = async () => {
         try {
+            console.log(checkOutCart)
             const pdfBlob = await generatePDF(checkOutCart, user);
             dispatch(asyncCustomerOrder({ checkOutCart, PaymentType: "Cash on delivery" }, user._id, user.email, pdfBlob));
             checkOutCart.products.forEach(async (item) => {

@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { IoBagHandle } from "react-icons/io5";
 import { useDispatch, useSelector } from 'react-redux';
 import { asyncFetchProducts } from '../store/actions/productAction';
-import Pagination from './Pagination';
+import BottomRoller from './Pagination';
 
 
 
@@ -24,7 +24,7 @@ export const Product = () => {
   };
 
   return (
-    <Pagination currentPage={currentPage} onPageChange={handlePageChange} />
+    <BottomRoller currentPage={currentPage} onPageChange={handlePageChange} />
   );
 };
 

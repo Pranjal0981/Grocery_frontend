@@ -3,17 +3,20 @@ import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import CustomSpinner from '../Spinner';
 import { Tooltip } from 'react-tippy'; // Import Tooltip component
-
 import { CiFilter } from "react-icons/ci";
-import {asyncFilterAll} from '../store/actions/productAction'
-import { asyncAddToCart } from '../store/actions/userAction';
+import { asyncFilterAll, asyncFetchStorebyPID } from '../store/actions/productAction'
+import { asyncAddToCart, } from '../store/actions/userAction';
 const Pagination = ({ currentPage, onPageChange }) => {
-    
-    const {user}=useSelector((state)=>state.user)
+
+    const { user } = useSelector((state) => state.user)
     const [isEndOfPage, setIsEndOfPage] = useState(false);
-   
+
     const { product, loading } = useSelector(state => state.product);
     const isOutOfStock = product?.stock === 0;
+    const {store}=useSelector((state)=>state.product)
+
+console.log(store)
+    const [selectedStore, setSelectedStore] = useState('');
 
     const [totalPages, setTotalPages] = useState(1); // Total
     const productsPerPage = 8; // Number of products per page
@@ -44,7 +47,14 @@ const Pagination = ({ currentPage, onPageChange }) => {
             window.removeEventListener('resize', updateIsMobile);
         };
     }, []);
-  
+    useEffect(() => {
+        if (product && product.length > 0) {
+            product.forEach(prod => {
+                dispatch(asyncFetchStorebyPID(prod._id));
+            });
+        }
+    }, [product, dispatch]);
+
     const handleExploreProduct = (id, brand) => {
         navigate(`/products/${id}`);
     };
@@ -123,7 +133,7 @@ const Pagination = ({ currentPage, onPageChange }) => {
     } else if (!product || product.length === 0) {
         return (
             <div className="container mx-auto mt-20 flex justify-center items-center">
-           
+
                 <div className="text-center">
                     <h2 className="text-3xl font-bold text-gray-800 mb-4">No Products Found</h2>
                     <img src="https://static-00.iconduck.com/assets.00/404-page-not-found-illustration-2048x998-yjzeuy4v.png" alt="No Products Found" className="w-64 h-64 mx-auto mb-8" />
@@ -136,6 +146,14 @@ const Pagination = ({ currentPage, onPageChange }) => {
             </div>
         );
     }
+
+    const handleStoreChange = (productId, storeName) => {
+        setSelectedStore(prevState => ({
+            ...prevState,
+            [productId]: storeName
+        }));
+    };
+
 
     return (
         <div className=" container mx-auto mt-10 grid gap-6 grid-cols-1 lg:grid-cols-3">
@@ -224,44 +242,67 @@ const Pagination = ({ currentPage, onPageChange }) => {
                 )}
             </div>
             <div className="lg:col-span-2">
-                <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-6">
                     {Array.isArray(product) && product.map((product) => (
-                        <div key={product?._id} className="bg-white rounded-lg shadow-md cursor-pointer transition duration-300 ease-in-out transform hover:scale-105 relative">
-                            <img src={product.image.url} alt={product?.ProductName} className="w-full h-64 object-cover rounded-t-md object-center hover:opacity-90" onClick={() => handleExploreProduct(product?._id)} />
+                        <div
+                            key={product?._id}
+                            className="bg-white rounded-lg shadow-md cursor-pointer transition duration-300 ease-in-out transform hover:scale-105 relative"
+                        >
+                            <img
+                                src={product.image.url}
+                                alt={product?.productName}
+                                className="w-full h-64 object-cover rounded-t-lg object-center hover:opacity-90"
+                                onClick={() => handleExploreProduct(product?._id)}
+                            />
                             <div className="p-4">
-                                <h3 className="text-lg font-semibold mb-2">{product?.ProductName}</h3>
-                                <p className="text-sm mb-2">{product?.description}</p>
-                                <p className="text-sm mb-2">{product?.brand}</p>
-                                <p className="text-sm mb-2">{product?.Size}</p>
-                                <p className="text-sm mb-2">MRP: {product?.MRP}</p>
-                                <p className="text-sm text-gray-600">Selling Price: Rs {product?.sellingPrice}</p>
+                                <h3 className="text-lg font-semibold mb-2">{product?.productName}</h3>
+                                <p className="text-sm mb-2 text-gray-700">{product?.description}</p>
+                                <p className="text-sm mb-2 text-gray-700">{product?.brand}</p>
+                                <p className="text-sm mb-2 text-gray-700">{product?.size}</p>
+                                <p className="text-sm mb-2 text-gray-700">MRP: Rs {product?.MRP}</p>
+                                <p className="text-sm font-semibold text-blue-600">Selling Price: Rs {product?.sellingPrice}</p>
                             </div>
-                            {/* Disable Add to Cart button if stock is 0 */}
-                            <button
-                                onClick={() => handleAddtoCart(product._id)}
-                                disabled={product.stock === 0}
-                                className={`block w-full py-2 ${product.stock === 0 ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-500 hover:bg-blue-600 focus:outline-none focus:bg-blue-600'} text-white font-bold rounded-md shadow-md transition duration-300 ease-in-out transform hover:scale-105`}
-                            >
-                                <span className="flex items-center justify-center">
-                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-                                        <path fillRule="evenodd" d="M9 5a1 1 0 0 1 2 0v3h3a1 1 0 1 1 0 2h-3v3a1 1 0 1 1-2 0v-3H6a1 1 0 1 1 0-2h3V5z" clipRule="evenodd" />
-                                    </svg>
-                                    Add to Cart
-                                </span>
-                            </button>
-                            {/* Tooltip to show "Out of Stock" on hover */}
-                            {product.stock === 0 && (
-                                <div className="absolute inset-0 flex items-center justify-center opacity-0 hover:opacity-100 transition duration-300 ease-in-out bg-gray-800 bg-opacity-75 rounded-lg">
-                                    <span className="text-white text-sm">Out of Stock</span>
-                                </div>
-                            )}
+                            <div className="px-4 pb-4">
+                                <label htmlFor={`storeSelect-${product._id}`} className="block text-sm font-medium text-gray-700">Select Store:</label>
+                                <select
+                                    id={`storeSelect-${product._id}`}
+                                    value={selectedStore[product._id] || ''}
+                                    onChange={(e) => handleStoreChange(product._id, e.target.value)}
+                                    className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                                >
+                                    <option value="">Select Store</option>
+                                    {store?.map((store) => (
+                                        <option key={store.storeName} value={store.storeName}>
+                                            {store.storeName}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+                            <div className="px-4 pb-4">
+                                <button
+                                    onClick={() => handleAddToCart(product._id, selectedStore[product._id])}
+                                    disabled={product.stock === 0}
+                                    className={`block w-full py-2 text-white font-bold rounded-md shadow-md transition duration-300 ease-in-out transform hover:scale-105 ${product.stock === 0 ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-500 hover:bg-blue-600 focus:outline-none focus:bg-blue-600'}`}
+                                >
+                                    <span className="flex items-center justify-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                                            <path fillRule="evenodd" d="M9 5a1 1 0 0 1 2 0v3h3a1 1 0 1 1 0 2h-3v3a1 1 0 1 1-2 0v-3H6a1 1 0 1 1 0-2h3V5z" clipRule="evenodd" />
+                                        </svg>
+                                        Add to Cart
+                                    </span>
+                                </button>
+                                {product.stock === 0 && (
+                                    <div className="absolute inset-0 flex items-center justify-center opacity-0 hover:opacity-100 transition duration-300 ease-in-out bg-gray-800 bg-opacity-75 rounded-lg">
+                                        <span className="text-white text-sm">Out of Stock</span>
+                                    </div>
+                                )}
+                            </div>
                         </div>
-
                     ))}
                 </div>
-                <div className="flex justify-center mt-4">
+                <div className="flex justify-center mt-8">
                     <button
-                        className={`px-4 py-2 mr-2 ${currentPage === 1 ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-500 hover:bg-blue-600 focus:outline-none focus:bg-blue-600'} text-white rounded`}
+                        className={`px-4 py-2 mr-2 text-white rounded ${currentPage === 1 ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-500 hover:bg-blue-600 focus:outline-none focus:bg-blue-600'}`}
                         disabled={currentPage === 1}
                         onClick={() => onPageChange(currentPage - 1)}
                     >
@@ -275,6 +316,7 @@ const Pagination = ({ currentPage, onPageChange }) => {
                     </button>
                 </div>
             </div>
+
 
 
 
@@ -325,7 +367,7 @@ const MobileFilter = ({ filters, handleFilterChange, handleFilterSubmit }) => {
                             className="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:border-blue-400"
                         />
                     </div>
-                  
+
                     <div className="flex flex-col">
                         <label htmlFor="store" className="text-sm font-medium mb-1">Store</label>
                         <input
