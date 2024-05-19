@@ -51,12 +51,12 @@ const ExploreProductById = () => {
                         <motion.img src={product?.image?.url} className="w-full rounded-lg shadow-lg h-auto md:h-[70vh]" alt={product?.name} whileHover={{ scale: 1.1 }} transition={{ duration: 0.3 }} />
                     </div>
                     <div className="md:border-l-2 md:border-red-200 md:pl-8">
-                        <h1 className="text-3xl font-semibold text-gray-900 mb-4">{product?.ProductName}</h1>
+                        <h1 className="text-3xl font-semibold text-gray-900 mb-4">{product?.productName}</h1>
                         <p className="mb-4 text-gray-700">{product.description}</p>
                         <p className="mb-4 text-lg font-medium text-gray-900">MRP: <s>Rs{product?.MRP}</s></p>
                         <p className="mb-4 text-lg font-medium text-gray-900">Quantity {product?.size}</p>
                         <p className="mb-4 text-lg font-medium text-gray-900"> Rs {product?.sellingPrice}</p>
-                        <p className="mb-4 text-lg font-medium text-gray-900">Product Code: {product?.ProductCode}</p>
+                        <p className="mb-4 text-lg font-medium text-gray-900">Product Code: {product?.productCode}</p>
                         <p className="mb-4 text-lg font-medium text-gray-900">{product?.category}</p>
                         <div className="mb-4">
                             <label htmlFor="store" className="block text-gray-700">Select Store:</label>
