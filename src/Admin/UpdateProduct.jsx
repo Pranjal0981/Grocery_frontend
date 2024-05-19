@@ -66,7 +66,10 @@ const UpdateProduct = () => {
 
         formData.append("store", selectedStore ? selectedStore.storeName : "");
         formData.append("productCode", updatedProduct.productCode);
-        additionalStock.forEach((item, index) => {
+
+        // Filter out invalid additional stock entries
+        const validAdditionalStock = additionalStock.filter(item => item.store && item.stock);
+        validAdditionalStock.forEach((item, index) => {
             formData.append(`stores[${index}][store]`, item.store);
             formData.append(`stores[${index}][stock]`, item.stock);
         });
@@ -108,10 +111,13 @@ const UpdateProduct = () => {
     }
 
     const handleAddStock = () => {
-        // Create a new object for the additional stock of a store
-        const newStock = { store: '', stock: '' };
-        // Add the new stock to the additionalStock array
-        setAdditionalStock([...additionalStock, newStock]);
+        // Only add additional stock if we haven't exceeded the store options length
+        if (additionalStock.length < storeOptions.length-1) {
+            // Create a new object for the additional stock of a store
+            const newStock = { store: '', stock: '' };
+            // Add the new stock to the additionalStock array
+            setAdditionalStock([...additionalStock, newStock]);
+        }
     };
 
     const handleStockChange = (index, value) => {
