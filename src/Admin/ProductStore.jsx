@@ -2,6 +2,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { asyncDelProduct, asyncUpdateProduct, fetchProductsByStore } from '../store/actions/adminAction';
+
 const ProductStore = () => {
     const { products, totalPages } = useSelector((state) => state.admin);
     const { store } = useParams();
@@ -12,7 +13,7 @@ const ProductStore = () => {
 
     useEffect(() => {
         dispatch(fetchProductsByStore(store, currentPage, searchQuery));
-    }, [dispatch, store, currentPage]);
+    }, [dispatch, store, currentPage, searchQuery]);
 
     const handleSearchInputChange = (event) => {
         setSearchQuery(event.target.value);
@@ -20,6 +21,8 @@ const ProductStore = () => {
 
     const handleDelete = async (id) => {
         await dispatch(asyncDelProduct(id, store));
+        // Refresh the product list after deletion
+        dispatch(fetchProductsByStore(store, currentPage, searchQuery));
     };
 
     const handleSearch = () => {
@@ -27,12 +30,13 @@ const ProductStore = () => {
         dispatch(fetchProductsByStore(store, 1, searchQuery));
     };
 
-    const handleUpdateProduct = async (id) => {
-        navigate(`/update-product/${id}`);
+    const handleUpdateProduct = (id) => {
+        navigate(`/admin/update-product/${id}`);
     };
 
-    const handleClick = () => {
-        // Handle click action here if needed
+    const handleClick = (productId) => {
+        console.log(`Product clicked: ${productId}`);
+        // Add any additional functionality here if needed
     };
 
     return (
@@ -50,19 +54,19 @@ const ProductStore = () => {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {products?.map((product) => (
-                    <div key={product.productId._id} className="bg-white shadow-lg rounded-lg overflow-hidden" onClick={handleClick}>
-                        <img src={product.productId.image.url} alt={product.productId.productName} className="w-full h-64 object-cover object-center" />
+                    <div key={product?._id} className="bg-white shadow-lg rounded-lg overflow-hidden" onClick={() => handleClick(product?._id)}>
+                        <img src={product?.productId?.image?.url} alt={product.productId?.ProductName} className="w-full h-64 object-cover object-center" />
                         <div className="p-4">
-                            <h2 className="text-xl font-semibold">{product.productId.productName}</h2>
-                            <p className="text-gray-600">{product.productId.category}</p>
-                            <p className="text-gray-700">{product.productId.description}</p>
-                            <p className="text-gray-800 font-bold mt-2">MRP: Rs <s>{product.productId.MRP}</s></p>
-                            <p className="text-gray-800 font-bold mt-2">Selling Price: Rs {product.productId.sellingPrice}</p>
-                            <p className="text-gray-800 font-bold mt-2">Stock: {product.stock}</p>
-                            <p className="text-gray-800 font-bold mt-2">Product Code: {product.productId.productCode}</p>
+                            <h2 className="text-xl font-semibold">{product?.productId?.productName}</h2>
+                            <p className="text-gray-600">{product?.productId?.category}</p>
+                            <p className="text-gray-700">{product?.productId?.description}</p>
+                            <p className="text-gray-800 font-bold mt-2">MRP: Rs <s>{product?.productId?.MRP}</s></p>
+                            <p className="text-gray-800 font-bold mt-2">Selling Price: Rs {product?.productId?.sellingPrice}</p>
+                            <p className="text-gray-800 font-bold mt-2">Stock: {product?.stock}</p>
+                            <p className="text-gray-800 font-bold mt-2">Product Code: {product?.productId?.productCode}</p>
                             <div className="flex gap-[30px]">
-                                <button onClick={() => handleDelete(product.productId._id)} className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded mt-2">Delete</button>
-                                <button onClick={() => handleUpdateProduct(product.productId._id)} className="bg-sky-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded mt-2">Update</button>
+                                <button onClick={() => handleDelete(product?._id)} className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded mt-2">Delete</button>
+                                <button onClick={() => handleUpdateProduct(product?._id)} className="bg-sky-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded mt-2">Update</button>
                             </div>
                         </div>
                     </div>
@@ -78,7 +82,5 @@ const ProductStore = () => {
         </div>
     );
 };
-
-
 
 export default ProductStore;

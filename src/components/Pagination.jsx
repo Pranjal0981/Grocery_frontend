@@ -6,19 +6,12 @@ import { Tooltip } from 'react-tippy'; // Import Tooltip component
 import { CiFilter } from "react-icons/ci";
 import { asyncFilterAll, asyncFetchStorebyPID } from '../store/actions/productAction'
 import { asyncAddToCart, } from '../store/actions/userAction';
+
 const Pagination = ({ currentPage, onPageChange }) => {
-
-    const { user } = useSelector((state) => state.user)
-    const [isEndOfPage, setIsEndOfPage] = useState(false);
-
-    const { product, loading } = useSelector(state => state.product);
-    const isOutOfStock = product?.stock === 0;
-    const {store}=useSelector((state)=>state.product)
-
-console.log(store)
-    const [selectedStore, setSelectedStore] = useState('');
-
-    const [totalPages, setTotalPages] = useState(1); // Total
+    const { user } = useSelector((state) => state.user);
+    const { product, loading, store } = useSelector(state => state.product);
+    const [selectedStore, setSelectedStore] = useState({});
+    const [totalPages, setTotalPages] = useState(1); // Total pages
     const productsPerPage = 8; // Number of products per page
     const [showSpinner, setShowSpinner] = useState(true);
     const navigate = useNavigate();
@@ -30,14 +23,15 @@ console.log(store)
         store: ''
     });
     const [isMobile, setIsMobile] = useState(false);
-    const updateIsMobile = () => {
-        setIsMobile(window.innerWidth <= 768); // Set breakpoint as per your design
-    };
     const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
 
     // Function to toggle the mobile filter
     const toggleMobileFilter = () => {
         setIsMobileFilterOpen(prevState => !prevState);
+    };
+
+    const updateIsMobile = () => {
+        setIsMobile(window.innerWidth <= 768); // Set breakpoint as per your design
     };
 
     useEffect(() => {
@@ -47,6 +41,7 @@ console.log(store)
             window.removeEventListener('resize', updateIsMobile);
         };
     }, []);
+
     useEffect(() => {
         if (product && product.length > 0) {
             product.forEach(prod => {
@@ -55,9 +50,10 @@ console.log(store)
         }
     }, [product, dispatch]);
 
-    const handleExploreProduct = (id, brand) => {
+    const handleExploreProduct = (id) => {
         navigate(`/products/${id}`);
     };
+
     const handleFilterChange = (e) => {
         const { name, value } = e.target;
         setFilters(prevFilters => ({
@@ -65,6 +61,7 @@ console.log(store)
             [name]: value
         }));
     };
+
     const handleFilterSubmit = async () => {
         // Filter object to be sent to the backend
         const filterObject = {};
@@ -86,13 +83,15 @@ console.log(store)
         }
 
         // Dispatch the action to fetch filtered products
-        console.log(filterObject)
+        console.log(filterObject);
         await dispatch(asyncFilterAll(filterObject));
     };
-    const userId = user?._id
-    const handleAddtoCart = (productId) => {
-        dispatch(asyncAddToCart(userId, { productId, quantity: 1 }));
-    }
+
+    const userId = user?._id;
+
+    const handleAddToCart = (productId, store) => {
+        dispatch(asyncAddToCart(userId, { productId, quantity: 1, store }));
+    };
 
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -103,9 +102,9 @@ console.log(store)
     }, []);
 
     const loadMoreProducts = async () => {
-        setIsLoading(true);
+        setShowSpinner(true);
         await new Promise(resolve => setTimeout(resolve, 1000));
-        setIsLoading(false);
+        setShowSpinner(false);
     };
 
     useEffect(() => {
@@ -120,6 +119,7 @@ console.log(store)
 
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
+
     useEffect(() => {
         // Calculate total pages when products change
         if (product?.length > 0) {
@@ -133,7 +133,6 @@ console.log(store)
     } else if (!product || product.length === 0) {
         return (
             <div className="container mx-auto mt-20 flex justify-center items-center">
-
                 <div className="text-center">
                     <h2 className="text-3xl font-bold text-gray-800 mb-4">No Products Found</h2>
                     <img src="https://static-00.iconduck.com/assets.00/404-page-not-found-illustration-2048x998-yjzeuy4v.png" alt="No Products Found" className="w-64 h-64 mx-auto mb-8" />
@@ -154,9 +153,8 @@ console.log(store)
         }));
     };
 
-
     return (
-        <div className=" container mx-auto mt-10 grid gap-6 grid-cols-1 lg:grid-cols-3">
+        <div className="container mx-auto mt-10 grid gap-6 grid-cols-1 lg:grid-cols-3">
             <div className="lg:col-span-1 relative">
                 {/* Sidebar for Filters */}
                 {isMobile && (
@@ -182,9 +180,8 @@ console.log(store)
                     </>
                 )}
                 {!isMobile && (
-
                     <div className="bg-white w-[20vw] rounded-lg shadow-md p-6 mb-6 sticky top-[10%]">
-                        <h2 className="text-xl font-semibold mb-4 ">Filters</h2>
+                        <h2 className="text-xl font-semibold mb-4">Filters</h2>
                         <div className="space-y-4">
                             <div className="flex flex-col">
                                 <label htmlFor="brandName" className="text-sm font-medium mb-1">Brand Name</label>
@@ -316,14 +313,6 @@ console.log(store)
                     </button>
                 </div>
             </div>
-
-
-
-
-
-
-
-
         </div>
     );
 };
