@@ -16,7 +16,6 @@ function FooterItem({ title, items }) {
             <Link to={`/${item}`}>{item}</Link>
           </div>
         ))}
-
       </ul>
     </div>
   );
@@ -26,7 +25,7 @@ function Footer() {
   return (
     <footer className="mt-[20vh]">
       {/* top part */}
-      <div className="border grid gap-4 grid-cols-1 sm:grid-cols-3 md:grid-cols-4 ">
+      <div className="border grid gap-4 grid-cols-1 sm:grid-cols-3 md:grid-cols-4">
         <FooterItem
           title="ALL POLICY"
           items={["Return Policy", "Exchange Policy", "Privacy Policy"]}
@@ -53,26 +52,16 @@ function Footer() {
         />
       </div>
       {/* middle part */}
-
       <div className="grid grid-cols-1 md:grid-cols-3">
         <div className="h-[200px] flex flex-col justify-center items-center gap-2">
           <h1 className="m-2 font-bold text-lg">PAYMENT OPTIONS</h1>
-          <img
-            src={paymentImage}
-            alt=""
-          />
+          <img src={paymentImage} alt="Payment Options" />
         </div>
         <div className="h-[200px] flex flex-col justify-center items-center gap-2">
           <h1 className="m-2 font-bold text-lg">DOWNLOAD APP</h1>
           <div className="grid grid-cols-2 gap-2">
-            <img
-              src={playStoreImage}
-              alt=""
-            />
-            <img
-              src={appStoreImage}
-              alt=""
-            />
+            <img src={playStoreImage} alt="Play Store" />
+            <img src={appStoreImage} alt="App Store" />
           </div>
         </div>
         <div className="h-[200px] flex flex-col justify-center items-center gap-2">
@@ -92,10 +81,14 @@ function Footer() {
             </a>
           </div>
         </div>
-
-        <center className="m-2">
+      </div>
+      <div className="text-center m-2">
+        <p>
           Copyright © 2024 <span className="font-bold">RGS Grocery.</span>
-        </center>
+        </p>
+        <p>
+          Built and Maintained by <span className="font-bold">Mr. Pranjal Shukla</span>.
+        </p>
       </div>
     </footer>
   );

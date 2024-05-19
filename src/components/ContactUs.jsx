@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { asyncContactUs } from '../store/actions/userAction';
 
@@ -6,19 +6,31 @@ const ContactUs = () => {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [message, setMessage] = useState('');
+    const [stores, setStores] = useState([]);
+    const [selectedStore, setSelectedStore] = useState('');
+
     const dispatch = useDispatch();
+
+    useEffect(() => {
+        // Fetch the list of stores from the JSON file
+        fetch('/stores.json')
+            .then((response) => response.json())
+            .then((data) => setStores(data))
+            .catch((error) => console.error('Error fetching stores:', error));
+    }, []);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
         try {
             // Dispatch async action to send contact form data to backend
-            await dispatch(asyncContactUs({ name, email, message }));
+            await dispatch(asyncContactUs({ name, email, message, store: selectedStore }));
 
             // Clear form fields after submission
             setName('');
             setEmail('');
             setMessage('');
+            setSelectedStore('');
 
             // Display success message to user
         } catch (error) {
@@ -61,6 +73,25 @@ const ContactUs = () => {
                             rows="4"
                             required
                         ></textarea>
+                    </div>
+                    <div className="mb-4">
+                        <label htmlFor="store" className="block text-sm font-medium text-gray-700">
+                            Select Store
+                        </label>
+                        <select
+                            id="store"
+                            name="store"
+                            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
+                            value={selectedStore}
+                            onChange={(e) => setSelectedStore(e.target.value)}
+                        >
+                            <option value="">Select a store</option>
+                            {stores.map((store, index) => (
+                                <option key={index} value={store}>
+                                    {store}
+                                </option>
+                            ))}
+                        </select>
                     </div>
                     <button
                         type="submit"

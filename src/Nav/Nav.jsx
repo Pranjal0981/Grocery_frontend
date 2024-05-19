@@ -490,6 +490,11 @@ const Nav = () => {
                                     <ListItemText primary="InActive Users" />
                                 </ListItem>
                             </Link>
+                                    <Link to="/superadmin/getUserQuery" className="" style={{ textDecoration: 'none' }}>
+                                        <ListItem button>
+                                            <ListItemText primary="User Query" />
+                                        </ListItem>
+                                    </Link>
                             {/* Store Section */}
                             <ListItem button onClick={() => handleStoreClick()}>
                                 <ListItemText primary="Stores" />
@@ -504,6 +509,7 @@ const Nav = () => {
                             </Collapse>
 
                             {/* End of Store Section */}
+                                   
                             <Link to="/superadmin/logout" className="" style={{ textDecoration: 'none' }} onClick={handleLogout}>
                                 <ListItem button>
                                     <ListItemText primary="Logout" />

@@ -39,6 +39,7 @@ import { AdminLoginForm, AdminRegistrationForm } from '../Admin/Auth'
 import { SuperAdminLogin, SuperAdminRegistrationForm } from '../SuperAdmin/Auth'
 import { StoreManagerLogin, StoreManagerRegister } from '../StoreManager/Auth'
 import PrivacyPolicy from '../components/PrivacyPolicy'
+import UserQuery from '../SuperAdmin/UserQuery'
 const Routing = () => {
     const { user, isAuth } = useSelector((state) => state.user)
     const isAdmin = isAuth && user.userType === 'Admin';
@@ -83,6 +84,7 @@ const Routing = () => {
             <Route path="/forget-link/:id" element={<ResetPassword/>} />
             <Route path='/admin/forget-password' element={<ForgetAdminPassword />} />
             <Route path="/admin/forget-link/:id" element={<ResetAdminPassword />} />
+            <Route path='/superadmin/getUserQuery' element={<UserQuery/>}/>
             <Route path="/superadmin/forget-link/:id" element={<ResetSuperAdminPassword />} />
             <Route path='/superadmin/allproducts' element={isSuperAdmin ? <AllProducts /> : <Unauthorized />} />
             <Route path='/admin/upload-products' element={isAdmin ? <AddProductForm /> : <Unauthorized />} />
@@ -111,7 +113,7 @@ const Routing = () => {
             <Route path='/admin/fetchOutOfStockProducts' element={isAdmin ? <OutOfStock /> : <Unauthorized />} />
             <Route path='/superadmin/activeMembers' element={isSuperAdmin ? <ActiveUser /> : <Unauthorized />} />
             <Route path='/superadmin/inactiveMembers' element={isSuperAdmin ? <InactiveUser /> : <Unauthorized />} />
-            <Route path='/admin/update-product/:id' element={isAdmin ? <UpdateProduct /> : <Unauthorized />} />
+            <Route path='/update-product/:id' element={isAdmin ? <UpdateProduct /> : <Unauthorized />} />
             <Route path='/superadmin/dashboard' element={isSuperAdmin ? <AdminDashboard /> : <Unauthorized />} />
             <Route path='/admin/allOrders' element={isAdmin ?<ManageOrder/>:<Unauthorized/>}/>
             <Route path='/store/allOrders/:store' element={isStoreManager ? <ManageOrder /> : <Unauthorized />} />

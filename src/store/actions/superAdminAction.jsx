@@ -1,5 +1,5 @@
 import axios from '../../config/axios'
-import { saveStoreProducts, saveAllUsers, saveOrders, setLoading } from '../reducers/superAdminSlice';
+import { saveStoreProducts, saveAllUsers, saveOrders, setLoading, saveUserQuery } from '../reducers/superAdminSlice';
 import { saveProduct } from '../reducers/productSlice';
 import { saveUser, removeUser, saveTokenExpiration } from '../reducers/userSlice'
 import { saveDashBoardInfo } from '../reducers/superAdminSlice';
@@ -218,4 +218,15 @@ try {
 } catch (error) {
     console.log(error)
 }
+}
+
+export const asyncContactQuery=()=>async(dispatch,getState)=>{
+    try {
+        const response = await axios.get('/superadmin/getUserQuery')
+        console.log(response)
+        dispatch(saveUserQuery(response.data.data))
+    } catch (error) {
+        console.log(error)
+        
+    }
 }
