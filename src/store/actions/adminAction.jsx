@@ -1,6 +1,6 @@
 import axios from '../../config/axios'
 import { saveStoreProducts, saveAllUsers, saveOrders, saveDashBoardInfo, setLoading } from '../reducers/adminSlice';
-import { saveProduct } from '../reducers/productSlice';
+import { saveProduct, saveStoreStocks } from '../reducers/productSlice';
 import { saveUser, removeUser, saveTokenExpiration } from '../reducers/userSlice'
 import { toast } from 'react-toastify';
 import { asyncExploreById } from './productAction';
@@ -175,7 +175,7 @@ export const asyncUpdateProduct = (id, formData) => async (dispatch, getState) =
         toast.success('Product updated successfully', {
             position: "top-right"
         });
-        dispatch(asyncExploreById(id))
+        await dispatch(asyncExploreById(id))
     } catch (error) {
         console.error('Error updating product:', error);
         toast.error('Error updating product. Please try again.', {

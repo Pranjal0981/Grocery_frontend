@@ -6,6 +6,7 @@ import { asyncUpdateProduct } from "../store/actions/adminAction";
 
 const UpdateProduct = () => {
     const { id } = useParams();
+    console.log(id)
     const dispatch = useDispatch();
     const [selectedStore, setSelectedStore] = useState(null);
     const [storeOptions, setStoreOptions] = useState([]);

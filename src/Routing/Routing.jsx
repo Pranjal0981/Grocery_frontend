@@ -111,7 +111,7 @@ const Routing = () => {
             <Route path='/admin/fetchOutOfStockProducts' element={isAdmin ? <OutOfStock /> : <Unauthorized />} />
             <Route path='/superadmin/activeMembers' element={isSuperAdmin ? <ActiveUser /> : <Unauthorized />} />
             <Route path='/superadmin/inactiveMembers' element={isSuperAdmin ? <InactiveUser /> : <Unauthorized />} />
-            <Route path='/update-product/:id' element={isAdmin ? <UpdateProduct /> : <Unauthorized />} />
+            <Route path='/admin/update-product/:id' element={isAdmin ? <UpdateProduct /> : <Unauthorized />} />
             <Route path='/superadmin/dashboard' element={isSuperAdmin ? <AdminDashboard /> : <Unauthorized />} />
             <Route path='/admin/allOrders' element={isAdmin ?<ManageOrder/>:<Unauthorized/>}/>
             <Route path='/store/allOrders/:store' element={isStoreManager ? <ManageOrder /> : <Unauthorized />} />

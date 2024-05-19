@@ -1,5 +1,6 @@
 import { saveProduct, removeProduct, setLoading, saveStoreStocks } from "../reducers/productSlice";
 import axios from "../../config/axios";
+import { toast } from "react-toastify";
 export const asyncFetchProducts = (page, preferredStore) => async (dispatch, getState) => {
     try {
         dispatch(setLoading(true));
@@ -18,13 +19,14 @@ export const asyncFetchProducts = (page, preferredStore) => async (dispatch, get
 
 export const asyncExploreById = (id) => async (dispatch, getState) => {
     try {
+        console.log(id)
         dispatch(setLoading(true));
         const response = await axios.get(`/products/explore/${id}`)
-        console.log(response.data.data.stores)
+        console.log(response)
         await dispatch(saveProduct(response.data.data.product));
         await dispatch(saveStoreStocks(response.data.data.stores))
     } catch (error) {
-        toast.error('Error fetching current user data:', error.response?.data || error.message);
+        console.log(error)
         throw error;
     }
     finally {
