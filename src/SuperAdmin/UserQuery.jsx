@@ -19,13 +19,13 @@ const UserQuery = () => {
                 <p className="text-red-500">{error}</p>
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {queries.map((query) => (
+                    {queries?.map((query) => (
                         <div key={query._id} className="bg-white p-4 rounded shadow-md">
-                            <h3 className="text-xl font-semibold mb-2">{query.name}</h3>
-                            <p className="text-gray-700"><strong>Email:</strong> {query.email}</p>
-                            <p className="text-gray-700"><strong>Store:</strong> {query.store}</p>
-                            <p className="text-gray-700 mt-2">{query.message}</p>
-                            <p className="text-gray-500 text-sm mt-2">Submitted on: {new Date(query.createdAt).toLocaleDateString()}</p>
+                            <h3 className="text-xl font-semibold mb-2">{query?.name}</h3>
+                            <p className="text-gray-700"><strong>Email:</strong> {query?.email}</p>
+                            <p className="text-gray-700"><strong>Store:</strong> {query?.store}</p>
+                            <p className="text-gray-700 mt-2">{query?.message}</p>
+                            <p className="text-gray-500 text-sm mt-2">Submitted on: {new Date(query?.createdAt).toLocaleDateString()}</p>
                         </div>
                     ))}
                 </div>
