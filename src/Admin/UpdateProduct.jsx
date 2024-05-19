@@ -6,14 +6,10 @@ import { asyncUpdateProduct } from "../store/actions/adminAction";
 
 const UpdateProduct = () => {
     const { id } = useParams();
-    console.log(id)
     const dispatch = useDispatch();
     const [selectedStore, setSelectedStore] = useState(null);
     const [storeOptions, setStoreOptions] = useState([]);
     const [additionalStock, setAdditionalStock] = useState([{ store: '', stock: '' }]);
-    const selectedStores = new Set();
-    if (selectedStore) selectedStores.add(selectedStore.storeName);
-    additionalStock.forEach(item => selectedStores.add(item.store));
 
     useEffect(() => {
         // Fetch the list of stores from the JSON file
@@ -22,14 +18,13 @@ const UpdateProduct = () => {
             .then((data) => setStoreOptions(data))
             .catch((error) => console.error('Error fetching stores:', error));
     }, []);
-    
+
     const [imageFile, setImageFile] = useState(null);
     // Accessing product from Redux state
     const { product } = useSelector((state) => state.product);
     const stores = useSelector((state) => state.product.store);
-    console.log(stores);
     const [updatedProduct, setUpdatedProduct] = useState({});
-    console.log(product);
+
     // Set initial values of updatedProduct when product data is available
     useEffect(() => {
         if (product) {
@@ -49,9 +44,11 @@ const UpdateProduct = () => {
             [name]: value,
         }));
     };
+
     const handleImageChange = (e) => {
         setImageFile(e.target.files[0]);
     };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         const formData = new FormData();
@@ -73,11 +70,11 @@ const UpdateProduct = () => {
             formData.append(`stores[${index}][store]`, item.store);
             formData.append(`stores[${index}][stock]`, item.stock);
         });
-        console.log(formData)
+
         if (imageFile) {
             formData.append("image", imageFile);
         }
-console.log(additionalStock)
+
         // Dispatch action to update product
         dispatch(asyncUpdateProduct(id, formData));
     };
@@ -105,18 +102,17 @@ console.log(additionalStock)
         }
     }, [product, stores]);
 
-
     // Show loading or empty state while product data is being fetched
     if (!product) {
         return <div>Loading...</div>;
     }
+
     const handleAddStock = () => {
         // Create a new object for the additional stock of a store
         const newStock = { store: '', stock: '' };
         // Add the new stock to the additionalStock array
         setAdditionalStock([...additionalStock, newStock]);
     };
-
 
     const handleStockChange = (index, value) => {
         // Create a copy of additionalStock array
@@ -126,6 +122,14 @@ console.log(additionalStock)
         // Update the state with the modified array
         setAdditionalStock(updatedStock);
     };
+
+    // Collect all selected stores
+    const selectedStores = new Set(stores?.map(store => store.storeName));
+    additionalStock.forEach(item => {
+        if (item.store) {
+            selectedStores.add(item.store);
+        }
+    });
 
     return (
         <div className="max-w-4xl mx-auto mt-8 p-8 bg-white rounded-lg shadow-lg">
@@ -242,7 +246,7 @@ console.log(additionalStock)
                             id="image"
                             name="image"
                             accept="image/*"
-                            onChange={handleChange}
+                            onChange={handleImageChange}
                             className="form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
                         />
                     </div>
@@ -356,7 +360,9 @@ console.log(additionalStock)
                                 >
                                     <option value="">Select Store</option>
                                     {storeOptions?.map((option, idx) => (
-                                        <option key={idx} value={option}>{option}</option>
+                                        <option key={idx} value={option} disabled={selectedStores.has(option)}>
+                                            {option}
+                                        </option>
                                     ))}
                                 </select>
                             </div>
@@ -395,10 +401,6 @@ console.log(additionalStock)
             </form>
         </div>
     );
-
-
-
-
 };
 
 export default UpdateProduct;
