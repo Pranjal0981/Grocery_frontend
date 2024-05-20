@@ -1,5 +1,5 @@
 // AdminLoginForm.jsx
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { asyncStoreRegister, asyncStoreLogin } from '../store/actions/storeManagerAction';
 import { Link, useNavigate } from 'react-router-dom';
@@ -8,7 +8,15 @@ import { Link, useNavigate } from 'react-router-dom';
 export const StoreManagerLogin = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const [stores, setStores] = useState([]);
 
+    useEffect(() => {
+        // Fetch the list of stores from the JSON file
+        fetch('/stores.json')
+            .then((response) => response.json())
+            .then((data) => setStores(data))
+            .catch((error) => console.error('Error fetching stores:', error));
+    }, []);
     const [formData, setFormData] = useState({
         email: "",
         password: "",
@@ -31,6 +39,7 @@ export const StoreManagerLogin = () => {
         <div className="max-w-md mx-auto">
             <form onSubmit={handleSubmit} className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
                 <h2 className="text-2xl font-bold mb-4">Store Manager Login</h2>
+
                 <div className="mb-4">
                     <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">
                         Email
@@ -59,6 +68,7 @@ export const StoreManagerLogin = () => {
                         onChange={handleInputChange}
                     />
                 </div>
+
                 <div className="mb-4">
                     <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="store">
                         Select Store Name
@@ -67,16 +77,15 @@ export const StoreManagerLogin = () => {
                         id="store"
                         name="store"
                         value={formData.store}
-                        onChange={handleInputChange}
                         className="border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        onChange={handleInputChange}
                     >
-                        <option value="">Select Store Name</option>
-                        <option value="Minal Residency">Minal Residency</option>
-                        <option value="Rohit Nagar">Rohit Nagar</option>
-                        <option value="Awadhpuri">Awadhpuri</option>
-                        <option value="Jhansi">Jhansi</option>
-                        <option value="Katara Hills">Katara Hills</option>
-
+                        <option value="">Select a store</option>
+                        {stores.map((store, index) => (
+                            <option key={index} value={store}>
+                                {store}
+                            </option>
+                        ))}
                     </select>
                 </div>
                 <button
@@ -106,6 +115,16 @@ export const StoreManagerLogin = () => {
 
 export const StoreManagerRegister = () => {
     const dispatch = useDispatch();
+    const [stores, setStores] = useState([]);
+
+    useEffect(() => {
+        // Fetch the list of stores from the JSON file
+        fetch('/stores.json')
+            .then((response) => response.json())
+            .then((data) => setStores(data))
+            .catch((error) => console.error('Error fetching stores:', error));
+    }, []);
+
     const [formData, setFormData] = useState({
         email: '',
         password: '',
@@ -119,7 +138,7 @@ export const StoreManagerRegister = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        dispatch(asyncStoreRegister(formData)); // Assuming asyncAdminRegister handles the registration logic
+        dispatch(asyncStoreRegister(formData)); // Assuming asyncStoreRegister handles the registration logic
     };
 
     return (
@@ -164,16 +183,15 @@ export const StoreManagerRegister = () => {
                         id="store"
                         name="store"
                         value={formData.store}
-                        onChange={handleInputChange}
                         className="border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        onChange={handleInputChange}
                     >
-                        <option value="">Select Store Name</option>
-                        <option value="Minal Residency">Minal Residency</option>
-                        <option value="Rohit Nagar">Rohit Nagar</option>
-                        <option value="Awadhpuri">Awadhpuri</option>
-                        <option value="Jhansi">Jhansi</option>
-                        <option value="Katara Hills">Katara Hills</option>
-
+                        <option value="">Select a store</option>
+                        {stores.map((store,index) => (
+                            <option key={index} value={store}>
+                                {store}
+                            </option>
+                        ))}
                     </select>
                 </div>
                 <button
@@ -189,5 +207,4 @@ export const StoreManagerRegister = () => {
             </form>
         </div>
     );
-}
-
+};
