@@ -37,7 +37,7 @@ export const AdminLoginForm = () => {
                         type="email"
                         name="email"
                         value={formData.email}
-                        placeholder="Email"
+                        placeholder="Email" required
                         className="border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                         onChange={handleInputChange}
                     />
@@ -51,7 +51,7 @@ export const AdminLoginForm = () => {
                         type="password"
                         name="password"
                         value={formData.password}
-                        placeholder="Password"
+                        placeholder="Password" required
                         className="border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                         onChange={handleInputChange}
                     />

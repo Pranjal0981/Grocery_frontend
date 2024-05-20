@@ -318,7 +318,7 @@ const Nav = () => {
                                     <ListItemText primary="Contact Us" />
                                 </ListItem>
                             </Link>
-
+                            
                             <Link to="/contact" style={{ textDecoration: 'none', color: 'inherit' }}>
                                 <ListItem button>
                                     <ListItemText primary="Contact Us" />
@@ -523,6 +523,12 @@ const Nav = () => {
                                     <Link to={`/store/allOrders/${user?.store}`} className="" style={{ textDecoration: 'none' }}>
                                         <ListItem button>
                                             <ListItemText primary="All Orders" />
+                                        </ListItem>
+                                    </Link>
+
+                                    <Link to={`/store/allproducts/${user?.store}`} className="" style={{ textDecoration: 'none' }}>
+                                        <ListItem button>
+                                            <ListItemText primary="All Products" />
                                         </ListItem>
                                     </Link>
                                     <Link to="" className="" style={{ textDecoration: 'none' }} onClick={handleLogout}>

@@ -7,7 +7,7 @@ import { useSelector } from 'react-redux'
 import NotFound from '../components/NotFound'
 import ProductStore from '../Admin/ProductStore'
 import Unauthorized from '../Unauthorized'
-import AllProducts from '../Admin/AllProducts'
+import AllProducts from '../StoreManager/AllProducts'
 import AddProductForm from '../Admin/UploadProducts'
 import ExploreProductById from '../components/ExploreProductById'
 import Wishlist from '../Profile/WIshlist'
@@ -40,6 +40,7 @@ import { SuperAdminLogin, SuperAdminRegistrationForm } from '../SuperAdmin/Auth'
 import { StoreManagerLogin, StoreManagerRegister } from '../StoreManager/Auth'
 import PrivacyPolicy from '../components/PrivacyPolicy'
 import UserQuery from '../SuperAdmin/UserQuery'
+import AllProductsBystore from '../StoreManager/AllProducts'
 const Routing = () => {
     const { user, isAuth } = useSelector((state) => state.user)
     const isAdmin = isAuth && user.userType === 'Admin';
@@ -75,6 +76,8 @@ const Routing = () => {
             <Route path='/store/:store' element={<Storeproduct/>}/>
             <Route path='/forget-password' element={<ForgetPassword />} />
             <Route path='/storemanager/login' element={<StoreManagerLogin/>}/>
+            <Route path='/store/allproducts/:store' element={<AllProductsBystore />} />
+
             <Route path='/storemanager/register' element={<StoreManagerRegister/>}/>
             <Route path='/storemanager/forget-password' element={<ForgetStoreManagerPassword />} />
             <Route path="/storemanager/forget-link/:id" element={<ResetStoreManagerPassword />} />

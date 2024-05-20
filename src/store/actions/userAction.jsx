@@ -13,7 +13,7 @@ export const asyncCurrentUser = (token) => async (dispatch, getState) => {
             headers: { Authorization: `Bearer ${token}` }
         });
         console.log(response);
-      await dispatch(saveUser(response.data.user));
+       dispatch(saveUser(response.data.user));
     } catch (error) {
         console.error(error);
     }
@@ -46,7 +46,7 @@ export const asyncSignIn=(data)=>async(dispatch,getState)=>{
         localStorage.setItem('tokenExpiration', expirationTime);
 
         // Dispatch action to save token expiration in Redux store
-        dispatch(saveTokenExpiration(expirationTime));
+        await dispatch(saveTokenExpiration(expirationTime));
         toast.success("LoggedIn Successfully !")
 
     } catch (error) {

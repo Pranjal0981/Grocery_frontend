@@ -209,9 +209,9 @@ console.log(item)
 
         console.log(checkOutCart)
         console.log(amount)
-        const products = checkOutCart?.data?.map((item) => item?.productId?.ProductName).join(', ');
-        // dispatch(asyncPayment(user?._id, {amount, products }));
-        alert("Please try another method")
+        const products = checkOutCart?.products?.map((item) => item?.productId?.productName).join(', ').trim();
+        dispatch(asyncPayment(user?._id, {amount, products }));
+        // alert("Please try another method")
     }
 
     const handleDeleteItem = (itemId) => {

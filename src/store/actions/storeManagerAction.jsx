@@ -81,3 +81,21 @@ export const asyncSendForgetLinkStoremanager = (email)=>async(dispatch,getState)
     }
 }
 
+
+export const asyncFetchAllProducts = (store, page = 1, searchQuery = '') => async (dispatch, getState) => {
+    try {
+        const response = await axios.get(`/storemanager/getAllProducts/${store}`, {
+            params: {
+                page,
+                search: searchQuery
+            }
+        });
+        console.log(response);
+        const { products, totalPages } = response.data; // Destructure products and totalPages from response.data
+        dispatch(saveStoreProducts({ products, totalPages }));    
+    
+    }
+         catch (error) {
+        console.log(error);
+    }
+};
