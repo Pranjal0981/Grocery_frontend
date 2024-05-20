@@ -19,10 +19,11 @@ const ProductStore = () => {
         setSearchQuery(event.target.value);
     };
 
-    const handleDelete = async (id) => {
-        await dispatch(asyncDelProduct(id, store));
+    const handleDelete = async (id,currentPage,searchQuery) => {
+        console.log(currentPage)
+        await dispatch(asyncDelProduct(id, store, currentPage, searchQuery));
         // Refresh the product list after deletion
-        dispatch(fetchProductsByStore(store, currentPage, searchQuery));
+        // dispatch(fetchProductsByStore(store, currentPage, searchQuery));
     };
 
     const handleSearch = () => {
@@ -66,7 +67,7 @@ const ProductStore = () => {
                             <p className="text-gray-800 font-bold mt-2">Stock: {product?.stock}</p>
                             <p className="text-gray-800 font-bold mt-2">Product Code: {product?.productId?.productCode}</p>
                             <div className="flex gap-[30px]">
-                                <button onClick={() => handleDelete(product?.productId?._id)} className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded mt-2">Delete</button>
+                                <button onClick={() => handleDelete(product?.productId?._id, currentPage, searchQuery)} className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded mt-2">Delete</button>
                                 <button onClick={() => handleUpdateProduct(product?.productId._id)} className="bg-sky-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded mt-2">Update</button>
                             </div>
                         </div>

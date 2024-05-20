@@ -59,7 +59,6 @@ const Order = () => {
                             <th className="px-4 py-2">User Email</th>
                             <th className="px-4 py-2">Request Cancellation</th>
                             <th className="px-4 py-2">Product Details</th>
-                            <th className="px-4 py-2">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -85,15 +84,7 @@ const Order = () => {
                                         ))}
                                     </ul>
                                 </td>
-                                <td className="border px-4 py-2">
-                                    <button
-                                        onClick={() => handleReturnRequest(order._id)}
-                                        className={`bg-blue-500 text-white px-4 py-2 rounded-md ${disableReturnButton ? 'cursor-not-allowed opacity-50' : ''}`}
-                                        disabled={disableReturnButton}
-                                    >
-                                        Return Request
-                                    </button>
-                                </td>
+                               
                             </tr>
                         ))}
                     </tbody>

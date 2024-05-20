@@ -157,11 +157,12 @@ export const asyncFetchOutOfStock = (page = 1) => async (dispatch, getState) => 
     }
 }
 
-export const asyncDelProduct = (productId,store) => async (dispatch, getState) => {
+export const asyncDelProduct = (productId,store,currentPage,searchQuery) => async (dispatch, getState) => {
     try {
+        console.log(currentPage)
         const response = await axios.delete(`/admin/deleteProducts/${store}/${productId}`);
         toast.warn('Product Deleted')
-        dispatch(fetchProductsByStore(store))
+        dispatch(fetchProductsByStore(store,currentPage,searchQuery))
     } catch (error) {
         toast.error(error)
     }

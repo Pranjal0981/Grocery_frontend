@@ -95,12 +95,7 @@ const Pagination = ({ currentPage, onPageChange }) => {
         return () => clearTimeout(timer);
     }, []);
 
-    const loadMoreProducts = async () => {
-        setShowSpinner(true);
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        setShowSpinner(false);
-    };
-
+  
     useEffect(() => {
         const handleScroll = () => {
             const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
