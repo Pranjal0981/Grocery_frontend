@@ -99,7 +99,8 @@ export const asyncAddToCart = (userId, data) => async (dispatch, getState) => {
         toast.success("Added to cart")
        await dispatch(saveCheckOutCart(response.data))
     } catch (error) {
-        toast.error("Login to Continue")
+        console.log(error)
+        toast.error(error.response.data.message)
 
     }
 }
