@@ -55,7 +55,7 @@ const UpdateProduct = () => {
         formData.append("productName", updatedProduct.productName);
         formData.append("description", updatedProduct.description);
         formData.append("sellingPrice", updatedProduct.sellingPrice);
-        formData.append("PurchasePrice", updatedProduct.purchasePrice);
+        formData.append("purchasePrice", updatedProduct.purchasePrice);
         formData.append("MRP", updatedProduct.MRP);
         formData.append("size", updatedProduct.size);
         formData.append("category", updatedProduct.category);
