@@ -209,8 +209,10 @@ console.log(item)
 
         console.log(checkOutCart)
         console.log(amount)
-        const products = checkOutCart?.products?.map((item) => item?.productId?.productName).join(', ').trim();
-        dispatch(asyncPayment(user?._id, {amount, products }));
+
+        const products = checkOutCart?.products?.map((item) => item?.productId?.productName?.trim()).join(', ');
+        console.log("🚀 ~ handleOnlinePayment ~ products:", products)
+        dispatch(asyncPayment(user?._id, { amount, products }));
         // alert("Please try another method")
     }
 

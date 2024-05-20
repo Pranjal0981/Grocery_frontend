@@ -294,7 +294,6 @@ export const asyncPayment = (userId, data) => async (dispatch, getState) => {
         console.log(userId); // Log the userId to the console
         const response = await axios.post(`/user/${userId}/paymentInitialisation/`, data);
      console.log(response)
-        window.location.href = "https://pay.easebuzz.in/"
     } catch (error) {
         console.log(error); // Log any errors that occur during the POST request
     }
