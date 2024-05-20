@@ -7,6 +7,7 @@ import { CiFilter } from "react-icons/ci";
 import { asyncFilterAll, asyncFetchStorebyPID } from '../store/actions/productAction'
 import { asyncAddToCart, } from '../store/actions/userAction';
 
+
 const Pagination = ({ currentPage, onPageChange }) => {
     const { user } = useSelector((state) => state.user);
     const { product, loading, store } = useSelector(state => state.product);
@@ -42,14 +43,7 @@ const Pagination = ({ currentPage, onPageChange }) => {
         };
     }, []);
 
-    useEffect(() => {
-        if (product && product.length > 0) {
-            product.forEach(prod => {
-                dispatch(asyncFetchStorebyPID(prod._id));
-            });
-        }
-    }, [product, dispatch]);
-
+  
     const handleExploreProduct = (id) => {
         navigate(`/products/${id}`);
     };
@@ -163,11 +157,7 @@ const Pagination = ({ currentPage, onPageChange }) => {
                             className="block relative translate-x-[40vw] z-[11] md:hidden text-blue-500  font-bold py-2 px-4 rounded "
                             onClick={toggleMobileFilter}
                         >
-                            {isMobileFilterOpen ? (
-                                <CiFilter className="h-6 w-6" />
-                            ) : (
-                                <CiFilter className="h-6 w-6" />
-                            )}
+                            <CiFilter className="h-6 w-6" />
                         </button>
 
                         {isMobileFilterOpen && (
@@ -264,13 +254,13 @@ const Pagination = ({ currentPage, onPageChange }) => {
                                 <select
                                     id={`storeSelect-${product._id}`}
                                     value={selectedStore[product._id] || ''}
-                                    onChange={(e) => handleStoreChange(product._id, e.target.value)}
+                                    onChange={(e) => setSelectedStore(prevState => ({ ...prevState, [product._id]: e.target.value }))}
                                     className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                                 >
                                     <option value="">Select Store</option>
-                                    {store?.map((store) => (
-                                        <option key={store.storeName} value={store.storeName}>
-                                            {store.storeName}
+                                    {product.stores?.map((storeItem, index) => (
+                                        <option key={index} value={storeItem?.storeName}>
+                                            {storeItem?.storeName} (Stock: {storeItem?.stock})
                                         </option>
                                     ))}
                                 </select>
@@ -288,11 +278,12 @@ const Pagination = ({ currentPage, onPageChange }) => {
                                         Add to Cart
                                     </span>
                                 </button>
-                                {product.stock === 0 && (
+                                {product.stores?.some(store => store.stock === 0) && (
                                     <div className="absolute inset-0 flex items-center justify-center opacity-0 hover:opacity-100 transition duration-300 ease-in-out bg-gray-800 bg-opacity-75 rounded-lg">
                                         <span className="text-white text-sm">Out of Stock</span>
                                     </div>
                                 )}
+
                             </div>
                         </div>
                     ))}
@@ -315,7 +306,10 @@ const Pagination = ({ currentPage, onPageChange }) => {
             </div>
         </div>
     );
+
 };
+
+export default Pagination;
 
 const MobileFilter = ({ filters, handleFilterChange, handleFilterSubmit }) => {
     return (
@@ -383,4 +377,3 @@ const MobileFilter = ({ filters, handleFilterChange, handleFilterSubmit }) => {
 
 
 
-export default Pagination;

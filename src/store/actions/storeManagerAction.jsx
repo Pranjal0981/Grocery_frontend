@@ -38,7 +38,7 @@ export const asyncStoreLogin=(data,navigate)=>async(dispatch,getState)=>{
 
     } catch (error) {
         console.log(error)
-        toast.success("Login Error")
+        toast.error("Login Error")
 
     }
 }

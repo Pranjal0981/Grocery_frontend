@@ -6,7 +6,7 @@ const Order = () => {
     const dispatch = useDispatch();
     const { user } = useSelector((state) => state.user);
     const { products } = useSelector((state) => state.admin);
-
+    console.log(products)
     const [disableReturnButton, setDisableReturnButton] = useState(false);
 
     useEffect(() => {
