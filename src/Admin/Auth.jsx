@@ -8,7 +8,8 @@ import { Link, useNavigate } from 'react-router-dom';
 export const AdminLoginForm = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
-
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState('');
     const [formData, setFormData] = useState({
         email: "",
         password: "",
@@ -20,8 +21,17 @@ export const AdminLoginForm = () => {
     };
 
     const handleSubmit = (e) => {
-        e.preventDefault();
+        e.preventDefault()
+        setError('');
+        setLoading(true)
+        try{
         dispatch(asyncAdminLogin(formData, navigate));
+        }
+        catch (err) {
+            setError('Error sending reset link. Please try again.');
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -57,11 +67,14 @@ export const AdminLoginForm = () => {
                     />
                 </div>
              
+
                 <button
                     type="submit"
-                    className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 focus:outline-none focus:shadow-outline"
+                    className={`w-full bg-blue-500 text-white px-4 py-2 rounded focus:outline-none ${loading ? 'opacity-75 cursor-not-allowed' : 'hover:bg-blue-600'
+                        } transition duration-200`}
+                    disabled={loading}
                 >
-                    Login
+                    {loading ? 'Loggin...' : 'Login'}
                 </button>
                 <Link
                     to="/admin/register"

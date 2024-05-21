@@ -36,7 +36,7 @@ export const asyncSignupUser = (data) => async (dispatch) => {
 export const asyncSignIn=(data)=>async(dispatch,getState)=>{
     try {
         const response=await axios.post('/user/login',data)
-        await dispatch(asyncCurrentUser(response.data.token));
+         dispatch(asyncCurrentUser(response.data.token));
         const expiresInMilliseconds = response.data.expiresIn;
 
         // Calculate the token expiration time in milliseconds from the current time
