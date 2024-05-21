@@ -43,6 +43,8 @@ const Nav = () => {
     const [searchResults, setSearchResults] = useState([]);
     const [searchTerm,setSearchTerm]=useState([])
     const [stores, setStores] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState('');
     const handleChangeSearchTerm = (event) => {
         setSearchTerm(event.target.value);
     };
@@ -127,16 +129,31 @@ const Nav = () => {
 
 
     const handleCustomerSubmit = async(e) => {
-        
-        e.preventDefault()
+        e.preventDefault();
+        setError('');
+        setLoading(true)
+        try{
         await dispatch(asyncSignupUser({ formData }))
+        }
+         catch (err) {
+            setError('Error sending reset link. Please try again.');
+        } finally {
+            setLoading(false);
+        }
 
     }
     const handleLogin = async(e) => {
         e.preventDefault()
-   
+        setError('');
+        setLoading(true)
+        try{
             await dispatch(asyncSignIn({ formData }))
-
+        }
+catch (err) {
+            setError('Error sending reset link. Please try again.');
+        } finally {
+            setLoading(false);
+        }
 
     }
     const handleLogout = async (e) => {
@@ -567,12 +584,14 @@ const Nav = () => {
                                                     onChange={handleInputChange}
                                                 />
 
-                                                <button
-                                                    type="submit"
-                                                    className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition duration-200 focus:outline-none"
-                                                >
-                                                    Sign In
-                                                </button>
+                                                    <button
+                                                        type="submit"
+                                                        className={`w-full bg-blue-500 text-white px-4 py-2 rounded focus:outline-none ${loading ? 'opacity-75 cursor-not-allowed' : 'hover:bg-blue-600'
+                                                            } transition duration-200`}
+                                                        disabled={loading}
+                                                    >
+                                                        {loading ? 'Signin...' : 'Signin'}
+                                                    </button>
                                             </form>
                                             <a href="/forget-password">Forget Password</a>
                                         </div>
@@ -597,12 +616,14 @@ const Nav = () => {
                                                     onChange={handleInputChange}
                                                 />
 
-                                                <button
-                                                    type="submit"
-                                                    className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition duration-200 focus:outline-none"
-                                                >
-                                                    Sign Up
-                                                </button>
+                                                    <button
+                                                        type="submit"
+                                                        className={`w-full bg-blue-500 text-white px-4 py-2 rounded focus:outline-none ${loading ? 'opacity-75 cursor-not-allowed' : 'hover:bg-blue-600'
+                                                            } transition duration-200`}
+                                                        disabled={loading}
+                                                    >
+                                                        {loading ? 'Signup...' : 'Signup'}
+                                                    </button>
                                             </form>
                             </div>)}
                     </div>
