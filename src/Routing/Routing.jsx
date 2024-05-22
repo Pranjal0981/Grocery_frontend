@@ -77,6 +77,7 @@ const Routing = () => {
             <Route path='/forget-password' element={<ForgetPassword />} />
             <Route path='/storemanager/login' element={<StoreManagerLogin/>}/>
             <Route path='/store/allproducts/:store' element={<AllProductsBystore />} />
+            <Route path='/superadmin/stores/:store' element={<AllProductsBystore />} />
 
             <Route path='/storemanager/register' element={<StoreManagerRegister/>}/>
             <Route path='/storemanager/forget-password' element={<ForgetStoreManagerPassword />} />

@@ -507,6 +507,7 @@ catch (err) {
                                     <ListItemText primary="InActive Users" />
                                 </ListItem>
                             </Link>
+                            
                                     <Link to="/superadmin/getUserQuery" className="" style={{ textDecoration: 'none' }}>
                                         <ListItem button>
                                             <ListItemText primary="User Query" />
