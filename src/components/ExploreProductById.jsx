@@ -31,12 +31,9 @@ const ExploreProductById = () => {
     };
 
     const handleAddToBag = async () => {
-        if (!selectedStore) {
-            toast.error('Please select a store');
-            return;
-        }
+    
 
-        await dispatch(asyncAddToCart(userId, { productId: product._id, quantity, store: selectedStore }));
+        await dispatch(asyncAddToCart(userId, { productId: product._id, quantity }));
     };
 
     if (loading) {
@@ -58,15 +55,7 @@ const ExploreProductById = () => {
                         <p className="mb-4 text-lg font-medium text-gray-900"> Rs {product?.sellingPrice}</p>
                         <p className="mb-4 text-lg font-medium text-gray-900">Product Code: {product?.productCode}</p>
                         <p className="mb-4 text-lg font-medium text-gray-900">{product?.category}</p>
-                        <div className="mb-4">
-                            <label htmlFor="store" className="block text-gray-700">Select Store:</label>
-                            <select id="store" name="store" value={selectedStore} onChange={(e) => setSelectedStore(e.target.value)} className="block w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none">
-                                <option value="">Select Store</option>
-                                {store?.map((store, index) => (
-                                    <option key={index} value={store.storeName}>{store.storeName}</option>
-                                ))}
-                            </select>
-                        </div>
+                        
                         <div className="mb-4">
                             <select className="block w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none" value={quantity} onChange={(e) => setQuantity(parseInt(e.target.value))}>
                                 <option value="">Select Quantity</option>

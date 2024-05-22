@@ -84,7 +84,7 @@ const Pagination = ({ currentPage, onPageChange }) => {
     const userId = user?._id;
 
     const handleAddToCart = (productId, store) => {
-        dispatch(asyncAddToCart(userId, { productId, quantity: 1, store }));
+        dispatch(asyncAddToCart(userId, { productId, quantity: 1 }));
     };
 
     useEffect(() => {
@@ -244,26 +244,11 @@ const Pagination = ({ currentPage, onPageChange }) => {
                                 <p className="text-sm mb-2 text-gray-700">MRP: Rs {product?.MRP}</p>
                                 <p className="text-sm font-semibold text-blue-600">Selling Price: Rs {product?.sellingPrice}</p>
                             </div>
-                            <div className="px-4 pb-4">
-                                <label htmlFor={`storeSelect-${product._id}`} className="block text-sm font-medium text-gray-700">Select Store:</label>
-                                <select
-                                    id={`storeSelect-${product._id}`}
-                                    value={selectedStore[product._id] || ''}
-                                    onChange={(e) => setSelectedStore(prevState => ({ ...prevState, [product._id]: e.target.value }))}
-                                    className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                                >
-                                    <option value="">Select Store</option>
-                                    {product.stores?.map((storeItem, index) => (
-                                        <option key={index} value={storeItem?.storeName}>
-                                            {storeItem?.storeName} (Stock: {storeItem?.stock})
-                                        </option>
-                                    ))}
-                                </select>
-                            </div>
+                          
                             <div className="px-4 pb-4">
                                 <button
-                                    onClick={() => handleAddToCart(product._id, selectedStore[product._id])}
-                                    disabled={product.stock === 0}
+                                    onClick={() => handleAddToCart(product._id)}
+                                    
                                     className={`block w-full py-2 text-white font-bold rounded-md shadow-md transition duration-300 ease-in-out transform hover:scale-105 ${product.stock === 0 ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-500 hover:bg-blue-600 focus:outline-none focus:bg-blue-600'}`}
                                 >
                                     <span className="flex items-center justify-center">

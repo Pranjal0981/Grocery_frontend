@@ -105,6 +105,19 @@ export const asyncAddToCart = (userId, data) => async (dispatch, getState) => {
     }
 }
 
+export const asyncUpdateCart = (userId, store, productIds) => async (dispatch, getState) => {
+    try {
+        const response = await axios.post('/user/updateCart/', {
+            userId,
+            store,
+            productIds
+        });
+        // Handle response if needed
+        console.log('Cart updated successfully:', response.data);
+    } catch (error) {
+        console.error('Error updating cart:', error);
+    }
+};
 
 export const asyncDeleteFromWishlist = (userId, productId) => async (dispatch, getState) => {
     try {
