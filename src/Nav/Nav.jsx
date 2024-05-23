@@ -150,7 +150,7 @@ const Nav = () => {
             await dispatch(asyncSignIn({ formData }))
         }
 catch (err) {
-            setError('Error sending reset link. Please try again.');
+            setError('Failed.');
         } finally {
             setLoading(false);
         }

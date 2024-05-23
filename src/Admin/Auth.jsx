@@ -20,15 +20,14 @@ export const AdminLoginForm = () => {
         setFormData({ ...formData, [name]: value });
     };
 
-    const handleSubmit = (e) => {
-        e.preventDefault()
+    const handleSubmit = async (e) => {
+        e.preventDefault();
         setError('');
-        setLoading(true)
-        try{
-        dispatch(asyncAdminLogin(formData, navigate));
-        }
-        catch (err) {
-            setError('Error sending reset link. Please try again.');
+        setLoading(true);
+        try {
+            await dispatch(asyncAdminLogin(formData, navigate));
+        } catch (err) {
+            setError('Failed.');
         } finally {
             setLoading(false);
         }
@@ -38,6 +37,7 @@ export const AdminLoginForm = () => {
         <div className="max-w-md mx-auto">
             <form onSubmit={handleSubmit} className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
                 <h2 className="text-2xl font-bold mb-4">Admin Login</h2>
+                {error && <p className="text-red-500 text-xs italic mb-4">{error}</p>}
                 <div className="mb-4">
                     <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">
                         Email
@@ -66,15 +66,12 @@ export const AdminLoginForm = () => {
                         onChange={handleInputChange}
                     />
                 </div>
-             
-
                 <button
                     type="submit"
-                    className={`w-full bg-blue-500 text-white px-4 py-2 rounded focus:outline-none ${loading ? 'opacity-75 cursor-not-allowed' : 'hover:bg-blue-600'
-                        } transition duration-200`}
+                    className={`w-full bg-blue-500 text-white px-4 py-2 rounded focus:outline-none ${loading ? 'opacity-75 cursor-not-allowed' : 'hover:bg-blue-600'} transition duration-200`}
                     disabled={loading}
                 >
-                    {loading ? 'Loggin...' : 'Login'}
+                    {loading ? 'Signin...' : 'Signin'}
                 </button>
                 <Link
                     to="/admin/register"

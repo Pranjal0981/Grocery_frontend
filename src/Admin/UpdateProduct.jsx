@@ -20,6 +20,7 @@ const UpdateProduct = () => {
             .then((data) => setStoreOptions(data))
             .catch((error) => console.error('Error fetching stores:', error));
     }, []);
+    console.log(storeOptions)
 
     useEffect(() => {
         if (product) {

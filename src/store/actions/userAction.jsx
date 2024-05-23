@@ -224,18 +224,19 @@ export const asyncDeleteAccount = (userId) => async (dispatch, getState) => {
 
 export const asyncCustomerOrder = (data, userId,userEmail, pdfBlob) => async (dispatch, getState) => {
     try {
-        // Create FormData and append data
         const formData = new FormData();
-        console.log(data)
+        console.log(data,userId,userEmail,pdfBlob)
         formData.append('checkOutCart', JSON.stringify(data.checkOutCart)); // Assuming data.checkOutCart is the JSON object you want to send
         formData.append('pdfFile', pdfBlob, 'checkout_bill.pdf');
         formData.append('email', userEmail)
         // Send POST request with FormData
+        console.log(formData)
         const response = await axios.post(`/user/order/${userId}`, formData, {
             headers: {
                 'Content-Type': 'multipart/form-data',
             },
         });
+        console.log(response)
     } catch (error) {
         toast.error('Error!')
     }
@@ -304,7 +305,7 @@ export const asyncSelectAddressIndex=(id,index)=>async(dispatch,getState)=>{
 
 export const asyncPayment = (userId, data) => async (dispatch, getState) => {
     try {
-        console.log(userId); // Log the userId to the console
+        console.log(data); // Log the userId to the console
         const response = await axios.post(`/user/${userId}/paymentInitialisation/`, data);
      console.log(response)
     } catch (error) {

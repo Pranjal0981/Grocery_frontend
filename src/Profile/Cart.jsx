@@ -186,16 +186,19 @@ const Cart = () => {
 
     const handleCashOnDelivery = async () => {
         try {
+            const pdfBlob = await generatePDF(checkOutCart, user);
+
             if (!selectedStore) {
                 toast.error('Please select a store before proceeding with payment.');
                 return;
             }
-            await dispatch(asyncCustomerOrder({ cart: checkOutCart, paymentType: 'Cash on delivery' }, user._id, user.email));
-            checkOutCart.products.forEach(async item => {
-                console.log(item)
-                const newStock = item.stock - item.quantity;
-                await dispatch(asyncUpdateStock(item.productId._id, newStock, selectedStore, user._id));
-            });
+            console.log(checkOutCart)
+             dispatch(asyncCustomerOrder({checkOutCart, paymentType: 'Cash on delivery' }, user._id, user.email,pdfBlob));
+            // checkOutCart.products.forEach(async item => {
+            //     console.log(item)
+            //     const newStock = 2
+            //     await dispatch(asyncUpdateStock(item.productId._id, newStock, selectedStore, user._id));
+            // });
             setShowModal(false);
             Swal.fire({
                 icon: 'success',
@@ -212,13 +215,13 @@ const Cart = () => {
         }
     };
 
-    const handleOnlinePayment = () => {
-        if (!selectedStore) {
-            toast.error('Please select a store before proceeding with payment.');
-            return;
-        }
-        dispatch(asyncPayment(user._id, { amount: checkOutCart?.totalGrandPrice, products: checkOutCart?.products }));
-    };
+    // const handleOnlinePayment = () => {
+    //     if (!selectedStore) {
+    //         toast.error('Please select a store before proceeding with payment.');
+    //         return;
+    //     }
+    //     dispatch(asyncPayment(user._id, { amount: checkOutCart?.totalGrandPrice, products: checkOutCart?.products }));
+    // };
 
     const handleDeleteItem = itemId => {
         dispatch(asyncDeleteCheckoutCart(user?._id, itemId));
@@ -240,22 +243,22 @@ const Cart = () => {
                         <ul>
                             {checkOutCart.products.map((item, index) => (
                                 <li key={index} className="bg-white shadow-md rounded-lg overflow-hidden mb-4">
-                                    <img src={item.productId.image.url} alt={item.productId.productName} className="h-48 w-full object-cover rounded-t-lg" />
+                                    <img src={item?.productId?.image?.url} alt={item?.productId?.productName} className="h-48 w-full object-cover rounded-t-lg" />
                                     <div className="p-4">
-                                        <h2 className="text-xl font-bold mb-2 text-indigo-800">{item.productId.productName}</h2>
-                                        <p className="text-gray-700 mb-2">{item.productId.description}</p>
+                                        <h2 className="text-xl font-bold mb-2 text-indigo-800">{item?.productId?.productName}</h2>
+                                        <p className="text-gray-700 mb-2">{item?.productId?.description}</p>
                                         <div className="flex justify-between items-center mb-2">
-                                            <p className="text-gray-800 font-bold">Stock: {item.stock}</p>
-                                            <p className="text-gray-800 font-bold">Product Code: {item.productId.productCode}</p>
+                                            <p className="text-gray-800 font-bold">Stock: {item?.stock}</p>
+                                            <p className="text-gray-800 font-bold">Product Code: {item?.productId?.productCode}</p>
                                         </div>
                                         <div className="flex justify-between items-center">
-                                            <p>Total Price: Rs {item.totalPrice}</p>
+                                            <p>Total Price: Rs {item?.totalPrice}</p>
                                         </div>
                                         <div className="flex justify-between items-center">
-                                            <h2 className="text-xl font-bold mb-2 text-indigo-800">Quantity: {item.quantity}</h2>
-                                            <p>Chosen Store: {item.store}</p>
+                                            <h2 className="text-xl font-bold mb-2 text-indigo-800">Quantity: {item?.quantity}</h2>
+                                            <p>Chosen Store: {item?.store}</p>
                                         </div>
-                                        <button onClick={() => handleDeleteItem(item._id)} className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mt-2">
+                                        <button onClick={() => handleDeleteItem(item?._id)} className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mt-2">
                                             Delete
                                         </button>
                                     </div>
@@ -306,13 +309,13 @@ const Cart = () => {
                         >
                             Cash on Delivery
                         </button>
-                        <button
-                            onClick={handleOnlinePayment}
+                        {/* <button
+                            onClick={handleOnlinePayment(checkOutCart?.totalGrandPrice, checkOutCart)}
                             className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ${!selectedStore && "opacity-50 cursor-not-allowed"}`}
                             disabled={!selectedStore}
                         >
                             Online Payment
-                        </button>
+                        </button> */}
                         <button onClick={handleCloseModal} className="absolute top-0 right-0 p-2 text-gray-500 hover:text-gray-700">
                             <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />

@@ -4,7 +4,9 @@ import { asyncSuperAdminSignUp,asyncSuperAdminSignIn } from '../store/actions/su
 import { Link, useNavigate } from 'react-router-dom';
 export const SuperAdminLogin = () => {
     const dispatch = useDispatch();
-    const navigate=useNavigate()
+    const navigate = useNavigate();
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState('');
     const [formData, setFormData] = useState({
         email: '',
         password: ''
@@ -15,15 +17,24 @@ export const SuperAdminLogin = () => {
         setFormData({ ...formData, [name]: value });
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        dispatch(asyncSuperAdminSignIn(formData, navigate)); 
+        setError('');
+        setLoading(true);
+        try {
+            await dispatch(asyncSuperAdminSignIn(formData, navigate));
+        } catch (err) {
+            setError('Failed to login.');
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
         <div className="max-w-md mx-auto">
             <form onSubmit={handleSubmit} className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
                 <h2 className="text-2xl font-bold mb-4">Super Admin Login</h2>
+                {error && <p className="text-red-500 text-xs italic mb-4">{error}</p>}
                 <div className="mb-4">
                     <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">
                         Email
@@ -36,6 +47,7 @@ export const SuperAdminLogin = () => {
                         placeholder="Email"
                         className="border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                         onChange={handleInputChange}
+                        required
                     />
                 </div>
                 <div className="mb-4">
@@ -50,6 +62,7 @@ export const SuperAdminLogin = () => {
                         placeholder="Password"
                         className="border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                         onChange={handleInputChange}
+                        required
                     />
                 </div>
                 <div className="mb-4 text-right">
@@ -57,16 +70,16 @@ export const SuperAdminLogin = () => {
                 </div>
                 <button
                     type="submit"
-                    className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 focus:outline-none focus:shadow-outline"
+                    className={`bg-blue-500 text-white py-2 px-4 rounded focus:outline-none focus:shadow-outline ${loading ? 'opacity-75 cursor-not-allowed' : 'hover:bg-blue-600'}`}
+                    disabled={loading}
                 >
-                    Login
+                    {loading ? 'Login...' : 'Login'}
                 </button>
             </form>
             <div className="text-center">
                 <p className="text-gray-700">Don't have an account?</p>
                 <Link to="/superadmin/register" className="text-blue-500 hover:underline">Register here</Link>
             </div>
-        
         </div>
     );
 }
