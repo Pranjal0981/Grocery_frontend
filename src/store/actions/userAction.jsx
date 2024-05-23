@@ -307,7 +307,7 @@ export const asyncPayment = (userId, data) => async (dispatch, getState) => {
     try {
         console.log(data); // Log the userId to the console
         const response = await axios.post(`/user/${userId}/paymentInitialisation/`, data);
-     console.log(response)
+    //  console.log(response)
     } catch (error) {
         console.log(error); // Log any errors that occur during the POST request
     }

@@ -56,6 +56,8 @@ const AllProductsBystore = () => {
                             <th className="py-2 px-4 border-b">MRP</th>
                             <th className="py-2 px-4 border-b">Selling Price</th>
                             <th className="py-2 px-4 border-b">Stock</th>
+                            <th className="py-2 px-4 border-b">Quantity</th>
+
                             <th className="py-2 px-4 border-b">Product Code</th>
                         </tr>
                     </thead>
@@ -68,6 +70,8 @@ const AllProductsBystore = () => {
                                 <td className="py-2 px-4 border-b">Rs {product?.MRP}</td>
                                 <td className="py-2 px-4 border-b">Rs {product?.sellingPrice}</td>
                                 <td className="py-2 px-4 border-b">{product?.stock}</td>
+                                <td className="py-2 px-4 border-b">{product?.size}</td>
+
                                 <td className="py-2 px-4 border-b">{product?.productCode}</td>
                             </tr>
                         ))}

@@ -194,11 +194,11 @@ const Cart = () => {
             }
             console.log(checkOutCart)
              dispatch(asyncCustomerOrder({checkOutCart, paymentType: 'Cash on delivery' }, user._id, user.email,pdfBlob));
-            // checkOutCart.products.forEach(async item => {
-            //     console.log(item)
-            //     const newStock = 2
-            //     await dispatch(asyncUpdateStock(item.productId._id, newStock, selectedStore, user._id));
-            // });
+            checkOutCart.products.forEach(async item => {
+                console.log(item)
+                const newStock = 2
+                await dispatch(asyncUpdateStock(item.productId._id, newStock, selectedStore, user._id));
+            });
             setShowModal(false);
             Swal.fire({
                 icon: 'success',
@@ -215,13 +215,13 @@ const Cart = () => {
         }
     };
 
-    // const handleOnlinePayment = () => {
-    //     if (!selectedStore) {
-    //         toast.error('Please select a store before proceeding with payment.');
-    //         return;
-    //     }
-    //     dispatch(asyncPayment(user._id, { amount: checkOutCart?.totalGrandPrice, products: checkOutCart?.products }));
-    // };
+    const handleOnlinePayment = () => {
+        if (!selectedStore) {
+            toast.error('Please select a store before proceeding with payment.');
+            return;
+        }
+        dispatch(asyncPayment(user._id, { amount: checkOutCart?.totalGrandPrice, products: checkOutCart?.products }));
+    };
 
     const handleDeleteItem = itemId => {
         dispatch(asyncDeleteCheckoutCart(user?._id, itemId));
@@ -309,13 +309,13 @@ const Cart = () => {
                         >
                             Cash on Delivery
                         </button>
-                        {/* <button
+                        <button
                             onClick={handleOnlinePayment(checkOutCart?.totalGrandPrice, checkOutCart)}
                             className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ${!selectedStore && "opacity-50 cursor-not-allowed"}`}
                             disabled={!selectedStore}
                         >
                             Online Payment
-                        </button> */}
+                        </button>
                         <button onClick={handleCloseModal} className="absolute top-0 right-0 p-2 text-gray-500 hover:text-gray-700">
                             <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
