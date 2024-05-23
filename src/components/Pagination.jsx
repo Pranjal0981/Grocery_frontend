@@ -258,11 +258,7 @@ const Pagination = ({ currentPage, onPageChange }) => {
                                         Add to Cart
                                     </span>
                                 </button>
-                                {product.stores?.some(store => store.stock === 0) && (
-                                    <div className="absolute inset-0 flex items-center justify-center opacity-0 hover:opacity-100 transition duration-300 ease-in-out bg-gray-800 bg-opacity-75 rounded-lg">
-                                        <span className="text-white text-sm">Out of Stock</span>
-                                    </div>
-                                )}
+                                
 
                             </div>
                         </div>
