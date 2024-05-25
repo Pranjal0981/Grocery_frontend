@@ -11,7 +11,7 @@ const ExchangePolicy = () => {
                 </p>
                 <ul className="list-disc pl-6">
                     <li className="mb-2">
-                        Items must be returned within 7 days of delivery.
+                        Items must be returned within 24 hrs of delivery.
                     </li>
                     <li className="mb-2">
                         Products must be unused, unopened, and in their original packaging.

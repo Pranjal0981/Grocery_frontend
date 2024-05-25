@@ -8,7 +8,7 @@ const FAQs = () => {
         },
         {
             question: "What is the timeframe for returns?",
-            answer: "Items must be returned within 2 days of delivery."
+            answer: "Items must be returned within 24 hrs of delivery."
         },
         {
             question: "Can I return perishable items?",
@@ -16,7 +16,7 @@ const FAQs = () => {
         },
         {
             question: "How long does it take to process a refund?",
-            answer: "Once your return is approved, we will process your refund within 7-10 business days."
+            answer: "Once your return is approved, we will process your refund within 3-5 business days."
         },
         {
             question: "Do I need to pay for return shipping?",

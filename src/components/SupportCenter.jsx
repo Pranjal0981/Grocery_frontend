@@ -12,13 +12,13 @@ const SupportCenter = () => {
                 </p>
                 <ul className="list-disc pl-6">
                     <li className="mb-2">
-                        <strong>Phone:</strong> 1-800-123-4567
+                        <strong>Phone:</strong> 9302914406
                     </li>
                     <li className="mb-2">
-                        <strong>Email:</strong> support@rgsgrocery.com
+                        <strong>Email:</strong> information@rgsgrocery.com
                     </li>
                     <li className="mb-2">
-                        <strong>Address:</strong> 123 Main Street, City, Country
+                        <strong>Address:</strong> IT Park, Bhopal(Madhya Pradesh)
                     </li>
                 </ul>
             </div>

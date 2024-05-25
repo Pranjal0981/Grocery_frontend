@@ -112,13 +112,26 @@ export const asyncUpdateCart = (userId, store, productIds) => async (dispatch, g
             store,
             productIds
         });
-        // Handle response if needed
-        console.log('Cart updated successfully:', response.data);
+
+        const { data } = response;
+
+        if (data.success) {
+            toast.success('Cart updated successfully');
+            // You can dispatch a success action here if needed
+        } else {
+            if (data.unavailableProducts) {
+                const unavailableProductNames = data.unavailableProducts.map(product => product.name).join(', ');
+                toast.error(`The following products are not available in the selected store: ${unavailableProductNames}`);
+            } else {
+                toast.error('Failed to update the cart');
+            }
+        }
     } catch (error) {
         console.error('Error updating cart:', error);
+        toast.error('Error updating cart');
+        dispatch(updateCartError('Error updating cart'));
     }
 };
-
 export const asyncDeleteFromWishlist = (userId, productId) => async (dispatch, getState) => {
     try {
         const response = await axios.delete(`/user/deleteFromWishlist/${userId}/${productId}`)
@@ -306,8 +319,8 @@ export const asyncSelectAddressIndex=(id,index)=>async(dispatch,getState)=>{
 export const asyncPayment = (userId, data) => async (dispatch, getState) => {
     try {
         console.log(data); // Log the userId to the console
-        const response = await axios.post(`/user/${userId}/paymentInitialisation/`, data);
-    //  console.log(response)
+        const response = await axios.post(`/user/${userId}/paymentInitialisation`, data);
+        console.log(response)
     } catch (error) {
         console.log(error); // Log any errors that occur during the POST request
     }

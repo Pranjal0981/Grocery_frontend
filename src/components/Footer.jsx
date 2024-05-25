@@ -33,17 +33,17 @@ function Footer() {
 
         <FooterItem
           title="NEED HELP"
-          items={["FAQs", "Customer Care", "Become A Seller", "Support Center"]}
+          items={["FAQs", "Customer Care", "Support Center"]}
         />
 
         <FooterItem
           title="COMPANY"
-          items={["About Us", "Delivery Information", "Your Careers"]}
+          items={["About Us", "Delivery Information"]}
         />
 
         <FooterItem
           title="CORPORATE"
-          items={["Affiliate Program", "Accessibility", "Promotions", "XStore Business"]}
+          items={[ "Accessibility", "RGS Store Business"]}
         />
 
         <FooterItem

@@ -7,6 +7,7 @@ import CustomSpinner from "../Spinner"; // Import your spinner component here
 const AllProductsBystore = () => {
     const { products, totalPages } = useSelector((state) => state.admin); // Assuming your reducer provides totalPages
     const { store } = useParams();
+    console.log(products)
     const dispatch = useDispatch();
     const [currentPage, setCurrentPage] = useState(1);
     const [searchQuery, setSearchQuery] = useState('');
@@ -57,7 +58,6 @@ const AllProductsBystore = () => {
                             <th className="py-2 px-4 border-b">Selling Price</th>
                             <th className="py-2 px-4 border-b">Stock</th>
                             <th className="py-2 px-4 border-b">Quantity</th>
-
                             <th className="py-2 px-4 border-b">Product Code</th>
                         </tr>
                     </thead>
@@ -71,7 +71,6 @@ const AllProductsBystore = () => {
                                 <td className="py-2 px-4 border-b">Rs {product?.sellingPrice}</td>
                                 <td className="py-2 px-4 border-b">{product?.stock}</td>
                                 <td className="py-2 px-4 border-b">{product?.size}</td>
-
                                 <td className="py-2 px-4 border-b">{product?.productCode}</td>
                             </tr>
                         ))}

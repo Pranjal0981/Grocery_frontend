@@ -41,6 +41,7 @@ import { StoreManagerLogin, StoreManagerRegister } from '../StoreManager/Auth'
 import PrivacyPolicy from '../components/PrivacyPolicy'
 import UserQuery from '../SuperAdmin/UserQuery'
 import AllProductsBystore from '../StoreManager/AllProducts'
+import InitiatePaymentForm from '../Profile/PaymentForm'
 const Routing = () => {
     const { user, isAuth } = useSelector((state) => state.user)
     const isAdmin = isAuth && user.userType === 'Admin';
@@ -78,7 +79,7 @@ const Routing = () => {
             <Route path='/storemanager/login' element={<StoreManagerLogin/>}/>
             <Route path='/store/allproducts/:store' element={<AllProductsBystore />} />
             <Route path='/superadmin/stores/:store' element={<AllProductsBystore />} />
-
+            <Route path='/payment/form' element={<InitiatePaymentForm/>}/>
             <Route path='/storemanager/register' element={<StoreManagerRegister/>}/>
             <Route path='/storemanager/forget-password' element={<ForgetStoreManagerPassword />} />
             <Route path="/storemanager/forget-link/:id" element={<ResetStoreManagerPassword />} />
@@ -99,6 +100,7 @@ const Routing = () => {
             <Route path='/admin/register' element={<AdminRegistrationForm/>}/>
             <Route path='/admin/login' element={<AdminLoginForm/>}/>
             <Route path='/contact' element={<ContactUs/>}/>
+            <Route path='/RGS Store Business' element={<Business/>}/>
             <Route path='/Customer Care' element={<CustomerCare/>}/>
             <Route path='/Exchange Policy' element={<ExchangePolicy/>}/>
             <Route path='/Privacy Policy' element={<PrivacyPolicy/>}/>
