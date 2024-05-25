@@ -12,7 +12,7 @@ const SupportCenter = () => {
                 </p>
                 <ul className="list-disc pl-6">
                     <li className="mb-2">
-                        <strong>Phone:</strong> 9302914406
+                        <strong>Phone:</strong> 9244321195
                     </li>
                     <li className="mb-2">
                         <strong>Email:</strong> information@rgsgrocery.com

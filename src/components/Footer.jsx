@@ -43,13 +43,10 @@ function Footer() {
 
         <FooterItem
           title="CORPORATE"
-          items={[ "Accessibility", "RGS Store Business"]}
+          items={[ "RGS Store Business"]}
         />
 
-        <FooterItem
-          title="STAY CONNECTED"
-          items={["+91-9244321195", "+91-8982255900", "information@rgsgrocery.com"]}
-        />
+        
       </div>
       {/* middle part */}
       <div className="grid grid-cols-1 md:grid-cols-3">
