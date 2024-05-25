@@ -43,6 +43,7 @@ import UserQuery from '../SuperAdmin/UserQuery'
 import AllProductsBystore from '../StoreManager/AllProducts'
 import InitiatePaymentForm from '../Profile/PaymentForm'
 import { Business } from '@mui/icons-material'
+import DeliveryInformation from '../components/DeliveryInfo'
 const Routing = () => {
     const { user, isAuth } = useSelector((state) => state.user)
     const isAdmin = isAuth && user.userType === 'Admin';
@@ -104,12 +105,14 @@ const Routing = () => {
             <Route path='/RGS Store Business' element={<Business/>}/>
             <Route path='/Customer Care' element={<CustomerCare/>}/>
             <Route path='/Exchange Policy' element={<ExchangePolicy/>}/>
+            <Route path='/Delivery Information' element={<DeliveryInformation/>}/>
             <Route path='/Privacy Policy' element={<PrivacyPolicy/>}/>
             {categories.map((category, index) => (
                 <Route key={index} path={`/category/:category`} element={<CategoryProduct />} />
             ))}
             <Route path='*' element={<NotFound />} />
             <Route path="/search-results" element={<SearchResult />} />
+            
             <Route path='/cart' element={isUser ? <Cart /> : <Unauthorized />} />
             <Route path='/edit-address' element={<AddressForm />} />
             <Route path='/address' element={<Address />} />
