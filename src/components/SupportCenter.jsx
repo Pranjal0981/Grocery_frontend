@@ -15,10 +15,10 @@ const SupportCenter = () => {
                         <strong>Phone:</strong> 9244321195
                     </li>
                     <li className="mb-2">
-                        <strong>Email:</strong> information@rgsgrocery.com
+                        <strong>Email:</strong> inforgsgrocery@gmail.com
                     </li>
                     <li className="mb-2">
-                        <strong>Address:</strong> IT Park, Bhopal(Madhya Pradesh)
+                        <strong>Address:</strong> IT Park, Bhopal(Madhya Pradesh), 462033
                     </li>
                 </ul>
             </div>

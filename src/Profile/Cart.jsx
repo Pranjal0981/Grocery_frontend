@@ -216,10 +216,86 @@ const Cart = () => {
         }
     };
 
-    const handleOnlinePayment = async(amount,checkOutCart) => {
-        const products = checkOutCart?.products?.map((item) => item?.productId?.productName?.trim()).join(', ');
-        console.log("🚀 ~ handleOnlinePayment ~ products:", products)
-       await dispatch(asyncPayment(user?._id, { amount, products }));
+    const handleOnlinePayment = async(amount) => {
+        // const products = checkOutCart?.products?.map((item) => item?.productId?.productName?.trim()).join(', ');
+        // if (!checkOutCart) {
+        //     dispatch(asyncFetchCartProduct(user?._id));
+        //     return; // Wait for bag to be fetched before proceeding
+        // }
+        try {
+            const { data: { key } } = await axios.get("/api/getkey");
+
+            // Create order on backend
+            const { data: { order } } = await axios.post("/user/api/checkout", {
+                amount
+            });
+
+            // Prepare options for Razorpay payment
+            const options = {
+                key,
+                amount: order.amount,
+                currency: "INR",
+                name: "Ecommerce",
+                description: "razorpay",
+                image: "https://avatars.githubusercontent.com/u/25058652?v=4",
+                order_id: order.id,
+                prefill: {
+                    name: "Pranjal Shukla",
+                    email: "pranjalshukla245@gmail.com",
+                    contact: "9302931857"
+                },
+                notes: {
+                    "address": "Razorpay Corporate Office"
+                },
+                theme: {
+                    "color": "#121212"
+                },
+                handler: async function (response) {
+                    try {
+                        console.log("Payment successful:", response);
+                        const paymentVerificationData = {
+                            razorpay_order_id: response.razorpay_order_id,
+                            razorpay_payment_id: response.razorpay_payment_id,
+                            razorpay_signature: response.razorpay_signature,
+                            checkoutCart: checkOutCart
+                        };
+
+                        const verificationResponse = await axios.post("/api/paymentverification", paymentVerificationData);
+                        console.log("Payment verification response:", verificationResponse.data.reference_id);
+                        // for (const category in checkOutCart) {
+                        //     if (checkOutCart.hasOwnProperty(category) && Array.isArray(checkOutCart[category])) {
+                        //         checkOutCart[category].forEach(async (item) => {
+                        //             const updatedStock = item.product.stock - item.quantity;
+                        //             dispatch(asyncUpdateProductStock({
+                        //                 ProductModel: item?.product?.ProductModel,
+                        //                 productId: item.product._id,
+                        //                 stock: updatedStock
+                        //             }));
+                        //         });
+                        //     }
+                        // }
+                        const pdfBlob = await generatePDF(checkOutCart, user);
+
+                        alert("Payment successful! Your order ID is: " + verificationResponse.data.reference_id);
+                        dispatch(asyncCustomerOrder({ checkOutCart, PaymentType: "Online" }, pdfBlob));
+
+                        // Redirect to callback URL after all operation
+                    } catch (error) {
+                        console.error("Error processing payment:", error);
+                    }
+                }
+            };
+
+            // Initialize Razorpay payment
+            const razor = new window.Razorpay(options);
+            console.log(razor)
+            razor.open();
+        } catch (error) {
+            console.error("Error in checkout:", error);
+            // Handle error if any
+        }
+
+    
     };
 
     const handleDeleteItem = itemId => {

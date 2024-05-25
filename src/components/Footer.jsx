@@ -38,7 +38,7 @@ function Footer() {
 
         <FooterItem
           title="COMPANY"
-          items={["About Us", "Delivery Information"]}
+          items={["About Us", "Delivery Information","Terms & Conditions"]}
         />
 
         <FooterItem

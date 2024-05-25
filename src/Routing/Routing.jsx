@@ -44,6 +44,7 @@ import AllProductsBystore from '../StoreManager/AllProducts'
 import InitiatePaymentForm from '../Profile/PaymentForm'
 import { Business } from '@mui/icons-material'
 import DeliveryInformation from '../components/DeliveryInfo'
+import TermsAndConditions from '../components/TermsandCondition'
 const Routing = () => {
     const { user, isAuth } = useSelector((state) => state.user)
     const isAdmin = isAuth && user.userType === 'Admin';
@@ -98,6 +99,7 @@ const Routing = () => {
             <Route path='/wishlist' element={isUser ? <Wishlist /> : <Unauthorized />} />
             <Route path='/products/:id' element={<ExploreProductById />} />
             <Route path='/Return Policy' element={<ReturnPolicy/>}/>
+            <Route path='/Terms & Conditions' element={<TermsAndConditions/>}/>
             <Route path='/FAQs' element={<FAQs/>}/>
             <Route path='/admin/register' element={<AdminRegistrationForm/>}/>
             <Route path='/admin/login' element={<AdminLoginForm/>}/>
