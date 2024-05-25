@@ -70,7 +70,7 @@ const TermsAndConditions = () => {
             <section className="mb-8">
                 <h2 className="text-2xl font-semibold text-indigo-700 mb-4">11. Contact Us</h2>
                 <p className="text-gray-700">If you have any questions or concerns about these Terms and Conditions, please contact us at:</p>
-                <p className="text-gray-700">Email: <a href="mailto:inforgsgrocery@gmail.com" className="text-blue-600 hover:underline">support@rgsgrocery.com</a></p>
+                <p className="text-gray-700">Email: <a href="mailto:inforgsgrocery@gmail.com" className="text-blue-600 hover:underline">inforgsgrocery@gmail.com</a></p>
                 <p className="text-gray-700">Phone: 9244321195</p>
             </section>
         </div>
