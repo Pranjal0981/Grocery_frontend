@@ -38,6 +38,8 @@ const ManageOrder = () => {
                         <table className="w-full table-auto divide-y divide-gray-200">
                             <thead className="bg-gray-50">
                                 <tr>
+                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Time</th>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Grand Price</th>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Products</th>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Order Status</th>
@@ -46,12 +48,13 @@ const ManageOrder = () => {
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User Contact</th>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User Details</th>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User Invoice</th>
-
                                 </tr>
                             </thead>
                             <tbody className="bg-white divide-y divide-gray-200">
                                 {products?.map((product, index) => (
-                                    <tr key={index}>
+                                    <tr key={index} className={index % 2 === 0 ? "bg-gray-50" : "bg-white"}>
+                                        <td className="px-6 py-4 whitespace-nowrap">{new Date(product.createdAt).toLocaleDateString()}</td>
+                                        <td className="px-6 py-4 whitespace-nowrap">{new Date(product.createdAt).toLocaleTimeString()}</td>
                                         <td className="px-6 py-4 whitespace-nowrap">{product?.totalGrandPrice}</td>
                                         <td className="px-6 py-4 whitespace-nowrap">
                                             <ul>
@@ -81,7 +84,6 @@ const ManageOrder = () => {
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap">{product?.reqCancellation}</td>
                                         <td className="px-6 py-4 whitespace-nowrap">{product?.PaymentType}</td>
-                                        
                                         <td className="px-6 py-4 whitespace-nowrap">
                                             {product?.userId?.address?.map((address, idx) => (
                                                 idx === product.userId.selectedAddressIndex && (
@@ -97,7 +99,6 @@ const ManageOrder = () => {
                                                 )
                                             ))}
                                         </td>
-
                                         <td className="px-6 py-4 whitespace-nowrap">
                                             <div>
                                                 <strong>Phone:</strong> {product?.userId?.phone}<br />
@@ -106,7 +107,7 @@ const ManageOrder = () => {
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap">
                                             <div>
-                                                <strong>Invoice URL:</strong> 
+                                                <strong>Invoice URL:</strong>
                                                 <button
                                                     className="text-blue-500 underline"
                                                     onClick={() => window.open(product?.pdfUrl, '_blank')}
@@ -115,7 +116,6 @@ const ManageOrder = () => {
                                                 </button>
                                             </div>
                                         </td>
-
                                     </tr>
                                 ))}
                             </tbody>
@@ -123,7 +123,8 @@ const ManageOrder = () => {
                     </div>
                     <div className="flex justify-center mt-4">
                         <button className="px-4 py-2 mr-2 bg-blue-500 text-white rounded" disabled={currentPage === 1} onClick={() => setCurrentPage(currentPage - 1)}>Previous</button>
-                        <button className="px-4 py-2 bg-blue-500 text-white rounded" disabled={currentPage === totalPages} onClick={() => setCurrentPage(currentPage + 1)}>Next</button>
+                        <button className="px-4 py-2 bg-blue-500
+text-white rounded" disabled={currentPage === totalPages} onClick={() => setCurrentPage(currentPage + 1)}>Next</button>
                         <p className="ml-2">{currentPage}/{totalPages}</p>
                     </div>
                 </>
@@ -133,3 +134,4 @@ const ManageOrder = () => {
 };
 
 export default ManageOrder;
+

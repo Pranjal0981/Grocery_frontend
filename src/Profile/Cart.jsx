@@ -5,6 +5,7 @@ import axios from '../config/axios';
 import { jsPDF } from 'jspdf'
 import 'jspdf-autotable'
 import QRCode from 'qrcode';
+// import { v4 as uuidv4 } from 'uuid4';
 import Swal from 'sweetalert2';
 import { asyncFetchCartProduct, asyncDeleteCheckoutCart } from "../store/actions/userAction";
 import rgsLogo from '/rgslogo.jpeg';
@@ -186,6 +187,8 @@ const Cart = () => {
 
     const handleCashOnDelivery = async () => {
         try {
+            const orderId =2;
+
             console.log(checkOutCart)
             const pdfBlob = await generatePDF(checkOutCart, user);
             if (!selectedStore) {
@@ -194,7 +197,7 @@ const Cart = () => {
             }
             const productIds = checkOutCart?.products?.map(item => item.productId._id);
 
-            await dispatch(asyncCustomerOrder({ cart: productIds, paymentType: 'Cash on delivery' }, user._id, user.email, pdfBlob));
+            await dispatch(asyncCustomerOrder({orderId, cart: productIds, paymentType: 'Cash on delivery' }, user._id, user.email, pdfBlob));
             checkOutCart.products.forEach(async item => {
                 console.log(item)
                 const newStock = item.stock - item.quantity;
@@ -275,9 +278,9 @@ const Cart = () => {
                         //     }
                         // }
                         const pdfBlob = await generatePDF(checkOutCart, user);
-
+const orderId=3
                         alert("Payment successful! Your order ID is: " + verificationResponse.data.reference_id);
-                        dispatch(asyncCustomerOrder({ checkOutCart, PaymentType: "Online" }, pdfBlob));
+                        dispatch(asyncCustomerOrder({ orderId,checkOutCart, PaymentType: "Online" }, pdfBlob));
 
                         // Redirect to callback URL after all operation
                     } catch (error) {

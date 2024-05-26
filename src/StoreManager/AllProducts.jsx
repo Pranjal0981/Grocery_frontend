@@ -7,7 +7,7 @@ import CustomSpinner from "../Spinner"; // Import your spinner component here
 const AllProductsBystore = () => {
     const { products, totalPages } = useSelector((state) => state.admin); // Assuming your reducer provides totalPages
     const { store } = useParams();
-    console.log(products)
+    
     const dispatch = useDispatch();
     const [currentPage, setCurrentPage] = useState(1);
     const [searchQuery, setSearchQuery] = useState('');
