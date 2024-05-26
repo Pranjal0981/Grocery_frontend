@@ -92,7 +92,7 @@ export const asyncFetchAllProducts = (store, page = 1, searchQuery = '') => asyn
         });
         console.log(response);
         const { products, totalPages } = response.data; // Destructure products and totalPages from response.data
-        dispatch(saveStoreProducts({ products, totalPages }));    
+        await dispatch(saveStoreProducts({ products, totalPages }));    
     
     }
          catch (error) {
