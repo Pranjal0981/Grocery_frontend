@@ -17,11 +17,11 @@ const DeliveryInformation = () => {
                
             </div>
 
-
             <div className="mb-8">
                 <h3 className="text-2xl font-bold mb-4 text-indigo-800">Delivery Times</h3>
-                <p className="text-gray-700">Deliveries are made between 9 AM and 9 PM, Monday to Saturday. No deliveries are made on Sundays and public holidays.</p>
+                <p className="text-gray-700">Deliveries are made within 24 hours, Monday to Saturday. No deliveries are made on Sundays and public holidays.</p>
             </div>
+
 
             <div className="mb-8">
                 <h3 className="text-2xl font-bold mb-4 text-indigo-800">Order Tracking</h3>
@@ -52,7 +52,7 @@ const DeliveryInformation = () => {
                 <h3 className="text-2xl font-bold mb-4 text-indigo-800">Customer Support</h3>
                 <p className="text-gray-700">For any delivery-related queries or issues, you can reach our customer support team at:</p>
                 <p className="text-gray-700">Phone: 9244321195</p>
-                <p className="text-gray-700">Email: information@rgsgrocery.com</p>
+                <p className="text-gray-700">Email: inforgsgrocery@gmail.com</p>
                 <p className="text-gray-700">Live Chat: Available on our website from 9 AM to 6 PM, Monday to Saturday.</p>
             </div>
 
