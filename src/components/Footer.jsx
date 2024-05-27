@@ -38,15 +38,13 @@ function Footer() {
 
         <FooterItem
           title="COMPANY"
-          items={["About Us", "Delivery Information","Terms & Conditions"]}
+          items={["About Us", "Delivery Information", "Terms & Conditions"]}
         />
 
         <FooterItem
           title="CORPORATE"
-          items={[ "RGS Store Business"]}
+          items={["RGS Store Business"]}
         />
-
-        
       </div>
       {/* middle part */}
       <div className="grid grid-cols-1 md:grid-cols-3">
@@ -78,6 +76,19 @@ function Footer() {
             </a>
           </div>
         </div>
+      </div>
+      {/* address part */}
+      <div className="border-t mt-4 pt-4">
+        <h1 className="text-xl font-bold text-center mb-2">ADDRESS</h1>
+        <p className="text-center text-gray-700">
+        HEAD OFFICE NO.-1, MPESEDC IT COMPLEX BUILDING, IT Park, BADWAI Bhopal, Pincode - 462033
+        </p>
+        <p className="text-center text-gray-700">
+          Phone: 9244321195
+        </p>
+        <p className="text-center text-gray-700">
+          Email: inforgsgrocery@gmail.com
+        </p>
       </div>
       <div className="text-center m-2">
         <p>

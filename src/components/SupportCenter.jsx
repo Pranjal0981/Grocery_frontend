@@ -18,7 +18,8 @@ const SupportCenter = () => {
                         <strong>Email:</strong> inforgsgrocery@gmail.com
                     </li>
                     <li className="mb-2">
-                        <strong>Address:</strong> IT Park, Bhopal(Madhya Pradesh), 462033
+                        <strong>Address:</strong> HEAD OFFICE NO.-1, MPESEDC IT COMPLEX BUILDING, IT Park, BADWAI Bhopal, Pincode - 462033
+
                     </li>
                 </ul>
             </div>

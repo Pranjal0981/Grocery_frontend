@@ -1,4 +1,4 @@
-import { saveUser, removeUser, saveWishlist, saveCheckOutCart, saveTokenExpiration } from "../reducers/userSlice";
+import { saveUser, removeUser, saveWishlist, saveCheckOutCart, saveTokenExpiration, saveUnavailableProduct } from "../reducers/userSlice";
 import axios from '../../config/axios'
 import { saveProduct } from "../reducers/productSlice";
 import { saveOrders } from "../reducers/adminSlice";
@@ -105,7 +105,7 @@ export const asyncAddToCart = (userId, data) => async (dispatch, getState) => {
     }
 }
 
-export const asyncUpdateCart = (userId, store, productIds) => async (dispatch, getState) => {
+export const asyncUpdateCart = (userId, store, productIds) => async (dispatch) => {
     try {
         const response = await axios.post('/user/updateCart/', {
             userId,
@@ -113,25 +113,45 @@ export const asyncUpdateCart = (userId, store, productIds) => async (dispatch, g
             productIds
         });
 
-        const { data } = response;
-
-        if (data.success) {
-            toast.success('Cart updated successfully');
-            // You can dispatch a success action here if needed
-        } else {
-            if (data.unavailableProducts) {
-                const unavailableProductNames = data.unavailableProducts.map(product => product.name).join(', ');
-                toast.error(`The following products are not available in the selected store: ${unavailableProductNames}`);
+        if (response.status === 200) {
+            const { data } = response;
+            if (data.success) {
+                toast.success('Cart updated successfully');
+                dispatch(saveUnavailableProduct([])); // Clear unavailable products if the cart is updated successfully
             } else {
-                toast.error('Failed to update the cart');
+                if (data.unavailableProducts) {
+                    const unavailableProductNames = data.unavailableProducts.map(product => product.name).join(', ');
+                    toast.error(`The following products are not available in the selected store: ${unavailableProductNames}`);
+                } else {
+                    toast.error(data.message || 'Failed to update the cart');
+                }
+            }
+
+            // Dispatch action to save unavailable products to Redux store
+            if (data.unavailableProducts) {
+                dispatch(saveUnavailableProduct(data.unavailableProducts));
             }
         }
     } catch (error) {
         console.error('Error updating cart:', error);
-        toast.error('Error updating cart');
-        dispatch(updateCartError('Error updating cart'));
+
+        if (error.response) {
+            const { data } = error.response;
+            if (data.unavailableProducts) {
+                const unavailableProductNames = data.unavailableProducts.map(product => product.name).join(', ');
+                toast.error(`The following products are not available in the selected store: ${unavailableProductNames}`);
+                // Dispatch action to save unavailable products to Redux store
+                dispatch(saveUnavailableProduct(data.unavailableProducts));
+            } else {
+                toast.error(data.message || 'Error updating cart');
+            }
+        } else {
+            toast.error('Error updating cart');
+        }
     }
-};
+}
+
+
 export const asyncDeleteFromWishlist = (userId, productId) => async (dispatch, getState) => {
     try {
         const response = await axios.delete(`/user/deleteFromWishlist/${userId}/${productId}`)
@@ -235,25 +255,45 @@ export const asyncDeleteAccount = (userId) => async (dispatch, getState) => {
     }
 }
 
-export const asyncCustomerOrder = (data, userId,userEmail, pdfBlob) => async (dispatch, getState) => {
+export const asyncCustomerOrder = (data, userId, pdfBlob) => async (dispatch, getState) => {
     try {
+        // Create FormData to handle file uploads and JSON data
         const formData = new FormData();
-        console.log(data,userId,userEmail,pdfBlob)
-        formData.append('checkOutCart', JSON.stringify(data.checkOutCart)); // Assuming data.checkOutCart is the JSON object you want to send
+        console.log(data);
+
+        // Append data to FormData
+        formData.append('checkOutCart', JSON.stringify(data.checkOutCart));
+        formData.append('totalGrandPrice', data.totalGrandPrice);
+        formData.append('paymentType', data.paymentType);
         formData.append('pdfFile', pdfBlob, 'checkout_bill.pdf');
-        formData.append('email', userEmail)
+        formData.append('email', data.email);
+
+        console.log(formData);
+
         // Send POST request with FormData
-        console.log(formData)
         const response = await axios.post(`/user/order/${userId}`, formData, {
             headers: {
                 'Content-Type': 'multipart/form-data',
             },
         });
-        console.log(response)
+
+        console.log(response);
+
+        if (response.status === 200) {
+            dispatch({
+                type: 'ORDER_SUCCESS',
+                payload: response.data,
+            });
+            toast.success('Order placed successfully');
+        } else {
+            toast.error(response.data.message || 'Failed to place order');
+        }
     } catch (error) {
-        toast.error('Error!')
+        console.error('Error placing order:', error);
+        toast.error('Failed to place order. Please try again.');
     }
 };
+
 
 export const asyncFetchCustomerOrder=(userId)=>async(dispatch,getState)=>{
     try {

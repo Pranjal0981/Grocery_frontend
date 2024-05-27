@@ -13,11 +13,9 @@ const ExploreProductById = () => {
     const { id } = useParams();
     const dispatch = useDispatch();
     const { product, loading } = useSelector((state) => state.product);
-    const { store } = useSelector((state) => state.product);
     const { user } = useSelector((state) => state.user);
     const userId = user?._id;
     const [quantity, setQuantity] = useState(1);
-    const [selectedStore, setSelectedStore] = useState('');
 
     useEffect(() => {
         dispatch(asyncExploreById(id));
@@ -26,14 +24,18 @@ const ExploreProductById = () => {
     const handleWishlist = async () => {
         if (product) {
             console.log('Product added to wishlist with ID:', product._id, 'by user with ID:', userId);
-            await dispatch(asyncAddToWishlist(userId, { productId: product._id }));
+            await dispatch(asyncAddToWishlist(userId, { productId:
+                product._id
+            }));
         }
     };
 
     const handleAddToBag = async () => {
-    
-
-        await dispatch(asyncAddToCart(userId, { productId: product._id, quantity }));
+        try {
+            await dispatch(asyncAddToCart(userId, { productId: product._id, quantity }));
+        } catch (error) {
+            console.error('Error adding product to cart:', error);
+        }
     };
 
     if (loading) {
@@ -52,10 +54,10 @@ const ExploreProductById = () => {
                         <p className="mb-4 text-gray-700">{product.description}</p>
                         <p className="mb-4 text-lg font-medium text-gray-900">MRP: <s>Rs{product?.MRP}</s></p>
                         <p className="mb-4 text-lg font-medium text-gray-900">Quantity {product?.size}</p>
-                        <p className="mb-4 text-lg font-medium text-gray-900"> Rs {product?.sellingPrice}</p>
+                        <p className="mb-4 text-lg font-medium text-gray-900">Rs {product?.sellingPrice}</p>
                         <p className="mb-4 text-lg font-medium text-gray-900">Product Code: {product?.productCode}</p>
                         <p className="mb-4 text-lg font-medium text-gray-900">{product?.category}</p>
-                        
+
                         <div className="mb-4">
                             <select className="block w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none" value={quantity} onChange={(e) => setQuantity(parseInt(e.target.value))}>
                                 <option value="">Select Quantity</option>

@@ -147,11 +147,13 @@ const generatePDF = async (checkOutCart, user) => {
     }
 }
 
+
 const Cart = () => {
     const [showModal, setShowModal] = useState(false);
     const [selectedStore, setSelectedStore] = useState('');
+
     const dispatch = useDispatch();
-    const { checkOutCart, user } = useSelector(state => state.user);
+    const { checkOutCart, user, unavailableProduct = [] } = useSelector(state => state.user); // Ensure unavailableProduct is an array
     const navigate = useNavigate();
     const [stores, setStores] = useState([]);
 
@@ -167,6 +169,7 @@ const Cart = () => {
             .then(data => setStores(data))
             .catch(error => console.error('Error fetching stores:', error));
     }, []);
+    const [reference_id, setreferenceId] = useState(null);
 
     const handlePlaceOrder = () => {
         if (!user.address || user.address.length === 0) {
@@ -178,6 +181,10 @@ const Cart = () => {
             toast.success('Checkout cart is empty');
             return;
         }
+        if (unavailableProduct?.length > 0) {
+            toast.error('Some products are unavailable in the selected store. Please remove them before placing the order.');
+            return;
+        }
         setShowModal(true);
     };
 
@@ -185,55 +192,84 @@ const Cart = () => {
         setShowModal(false);
     };
 
-    const handleCashOnDelivery = async () => {
-        try {
-            const orderId =2;
+  const handleCashOnDelivery = async () => {
+    try {
+        const pdfBlob = await generatePDF(checkOutCart, user);
+        console.log(checkOutCart)
+        if (!selectedStore) {
+            toast.error('Please select a store before proceeding with payment.');
+            return;
+        }
+        const availableProducts = checkOutCart.products
+            .filter(item => !unavailableProduct.find(up => up.productId === item.productId._id))
+            .map(item => ({
+                productId: item.productId._id,
+                quantity: item.quantity,
+                totalPrice: item.totalPrice,
+                store: item.store
+            }));
 
-            console.log(checkOutCart)
+        if (availableProducts.length === 0) {
+            toast.error('No available products to place an order.');
+            return;
+        }
+
+        await dispatch(asyncCustomerOrder({
+            checkOutCart: JSON.stringify(availableProducts),
+            totalGrandPrice: checkOutCart?.totalGrandPrice,
+            paymentType: 'Cash on delivery',
+            email: user.email
+        }, user._id, pdfBlob));
+        
+        for (const item of checkOutCart.products) {
+            if (!unavailableProduct.find(up => up.productId === item.productId._id)) {
+                const newStock = item.stock - item.quantity;
+                await dispatch(asyncUpdateStock(item.productId._id, newStock, selectedStore, user._id));
+            }
+        }
+        setShowModal(false);
+        Swal.fire({
+            icon: 'success',
+            title: 'Order Placed!',
+            text: 'Your order has been successfully placed.',
+        });
+    } catch (error) {
+        console.error('Error placing order:', error);
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'There was an error placing your order. Please try again later.',
+        });
+    }
+};
+    const handleOnlinePayment = async (amount) => {
+        try {
             const pdfBlob = await generatePDF(checkOutCart, user);
+
             if (!selectedStore) {
                 toast.error('Please select a store before proceeding with payment.');
                 return;
             }
-            const productIds = checkOutCart?.products?.map(item => item.productId._id);
 
-            await dispatch(asyncCustomerOrder({orderId, cart: productIds, paymentType: 'Cash on delivery' }, user._id, user.email, pdfBlob));
-            checkOutCart.products.forEach(async item => {
-                console.log(item)
-                const newStock = item.stock - item.quantity;
-                await dispatch(asyncUpdateStock(item.productId._id, newStock, selectedStore, user._id));
-            });
-            setShowModal(false);
-            Swal.fire({
-                icon: 'success',
-                title: 'Order Placed!',
-                text: 'Your order has been successfully placed.',
-            });
-        } catch (error) {
-            console.error('Error placing order:', error);
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: 'There was an error placing your order. Please try again later.',
-            });
-        }
-    };
+            const availableProducts = checkOutCart.products
+                .filter(item => !unavailableProduct.find(up => up.productId === item.productId._id))
+                .map(item => ({
+                    productId: item.productId._id,
+                    quantity: item.quantity,
+                    totalPrice: item.totalPrice,
+                    store: item.store
+                }));
 
-    const handleOnlinePayment = async(amount) => {
-        // const products = checkOutCart?.products?.map((item) => item?.productId?.productName?.trim()).join(', ');
-        // if (!checkOutCart) {
-        //     dispatch(asyncFetchCartProduct(user?._id));
-        //     return; // Wait for bag to be fetched before proceeding
-        // }
-        try {
-            const { data: { key } } = await axios.get("/api/getkey");
+            if (availableProducts.length === 0) {
+                toast.error('No available products to place an order.');
+                return;
+            }
 
-            // Create order on backend
-            const { data: { order } } = await axios.post("/user/api/checkout", {
-                amount
-            });
+            const { data } = await axios.get("/api/getkey");
+            const key = data.key;
 
-            // Prepare options for Razorpay payment
+            const { data: { order } } = await axios.post("/user/api/checkout", { amount });
+
             const options = {
                 key,
                 amount: order.amount,
@@ -243,19 +279,14 @@ const Cart = () => {
                 image: "https://avatars.githubusercontent.com/u/25058652?v=4",
                 order_id: order.id,
                 prefill: {
-                    name: "Pranjal Shukla",
-                    email: "pranjalshukla245@gmail.com",
-                    contact: "9302931857"
+                    name: user.name,
+                    email: user.email,
+                    contact: user.phone
                 },
-                notes: {
-                    "address": "Razorpay Corporate Office"
-                },
-                theme: {
-                    "color": "#121212"
-                },
+                notes: { "address": user.address },
+                theme: { "color": "#121212" },
                 handler: async function (response) {
                     try {
-                        console.log("Payment successful:", response);
                         const paymentVerificationData = {
                             razorpay_order_id: response.razorpay_order_id,
                             razorpay_payment_id: response.razorpay_payment_id,
@@ -263,43 +294,52 @@ const Cart = () => {
                             checkoutCart: checkOutCart
                         };
 
-                        const verificationResponse = await axios.post("/api/paymentverification", paymentVerificationData);
-                        console.log("Payment verification response:", verificationResponse.data.reference_id);
-                        // for (const category in checkOutCart) {
-                        //     if (checkOutCart.hasOwnProperty(category) && Array.isArray(checkOutCart[category])) {
-                        //         checkOutCart[category].forEach(async (item) => {
-                        //             const updatedStock = item.product.stock - item.quantity;
-                        //             dispatch(asyncUpdateProductStock({
-                        //                 ProductModel: item?.product?.ProductModel,
-                        //                 productId: item.product._id,
-                        //                 stock: updatedStock
-                        //             }));
-                        //         });
-                        //     }
-                        // }
-                        const pdfBlob = await generatePDF(checkOutCart, user);
-const orderId=3
-                        alert("Payment successful! Your order ID is: " + verificationResponse.data.reference_id);
-                        dispatch(asyncCustomerOrder({ orderId,checkOutCart, PaymentType: "Online" }, pdfBlob));
+                        const verificationResponse = await axios.post("/user/api/paymentverification", paymentVerificationData);
+                        const { reference_id } = verificationResponse.data;
+                        alert('Payment success, reference_id',reference_id)
+                        await dispatch(asyncCustomerOrder({
+                            checkOutCart: JSON.stringify(availableProducts),
+                            totalGrandPrice: checkOutCart?.totalGrandPrice,
+                            paymentType: 'Online Payment',
+                            email: user.email
+                        }, user._id, pdfBlob));
+                        for (const item of checkOutCart.products) {
+                            if (!unavailableProduct.find(up => up.productId === item.productId._id)) {
+                                const newStock = item.stock - item.quantity;
+                                await dispatch(asyncUpdateStock(item.productId._id, newStock, selectedStore, user._id));
+                            }
+                        }
+                        setShowModal(false);
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Order Placed!',
+                            text: 'Your order has been successfully placed.',
+                        });
+                    
+                        // Navigate to payment success page
+                        navigate('/payment/success', { state: { reference_id: reference_id } });
 
-                        // Redirect to callback URL after all operation
                     } catch (error) {
                         console.error("Error processing payment:", error);
+                        console.error('Error placing order:', error);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'There was an error placing your order. Please try again later.',
+                        });
                     }
                 }
             };
 
-            // Initialize Razorpay payment
             const razor = new window.Razorpay(options);
-            console.log(razor)
             razor.open();
         } catch (error) {
             console.error("Error in checkout:", error);
-            // Handle error if any
         }
-
-    
     };
+
+
+
 
     const handleDeleteItem = itemId => {
         dispatch(asyncDeleteCheckoutCart(user?._id, itemId));
@@ -377,23 +417,26 @@ const orderId=3
                 </div>
             </div>
             {showModal && (
-                <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
-                    <div className="bg-white rounded-lg p-6 relative">
-                        <h2 className="text-xl font-bold mb-4">Select Payment Method</h2>
+                <div className="fixed z-50 inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                    <div className="bg-white p-8 rounded shadow-md w-full max-w-md">
+                        <h2 className="text-xl font-bold mb-4 text-indigo-800">Choose Payment Method</h2>
                         <button
                             onClick={handleCashOnDelivery}
-                            className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-4 ${!selectedStore && "opacity-50 cursor-not-allowed"}`}
-                            disabled={!selectedStore}
+                            className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mb-4 w-full"
                         >
                             Cash on Delivery
                         </button>
-                        <button onClick={() => handleOnlinePayment(checkOutCart?.totalGrandPrice, checkOutCart)} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-4" id="ebz-checkout-btn">
+                        <button
+                            onClick={() => handleOnlinePayment(checkOutCart?.totalGrandPrice)}
+                            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-full"
+                        >
                             Online Payment
                         </button>
-                        <button onClick={handleCloseModal} className="absolute top-0 right-0 p-2 text-gray-500 hover:text-gray-700">
-                            <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                            </svg>
+                        <button
+                            onClick={handleCloseModal}
+                            className="mt-4 text-gray-600 underline w-full text-center"
+                        >
+                            Cancel
                         </button>
                     </div>
                 </div>
@@ -401,6 +444,9 @@ const orderId=3
         </div>
     );
 };
+
+
+
 
 
 

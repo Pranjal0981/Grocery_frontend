@@ -6,7 +6,8 @@ const initialState = {
     isAuth: savedUser ? true : false,
     wishlist: null,
     checkOutCart:null,
-    tokenExpiration:null
+    tokenExpiration:null,
+    unavailableProduct:null
 
 }
 
@@ -34,12 +35,15 @@ export const userSlice = createSlice({
         saveCheckOutCart:(state,action)=>{
             console.log(action.payload)
             state.checkOutCart=action.payload
+        },
+        saveUnavailableProduct:(state,action)=>{
+            state.unavailableProduct=action.payload
         }
     },
 });
 
 
-export const { saveUser, removeUser, saveWishlist, saveCheckOutCart, saveTokenExpiration
+export const { saveUser, removeUser, saveWishlist, saveCheckOutCart, saveTokenExpiration, saveUnavailableProduct
  } = userSlice.actions;
 
 export default userSlice.reducer;

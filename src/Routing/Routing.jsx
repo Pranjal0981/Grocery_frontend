@@ -41,10 +41,10 @@ import { StoreManagerLogin, StoreManagerRegister } from '../StoreManager/Auth'
 import PrivacyPolicy from '../components/PrivacyPolicy'
 import UserQuery from '../SuperAdmin/UserQuery'
 import AllProductsBystore from '../StoreManager/AllProducts'
-import InitiatePaymentForm from '../Profile/PaymentForm'
 import { Business } from '@mui/icons-material'
 import DeliveryInformation from '../components/DeliveryInfo'
 import TermsAndConditions from '../components/TermsandCondition'
+import PaymentSuccessPage from '../Profile/PaymentSuccess'
 const Routing = () => {
     const { user, isAuth } = useSelector((state) => state.user)
     const isAdmin = isAuth && user.userType === 'Admin';
@@ -82,7 +82,6 @@ const Routing = () => {
             <Route path='/storemanager/login' element={<StoreManagerLogin/>}/>
             <Route path='/store/allproducts/:store' element={<AllProductsBystore />} />
             <Route path='/superadmin/stores/:store' element={<AllProductsBystore />} />
-            <Route path='/payment/form' element={<InitiatePaymentForm/>}/>
             <Route path='/storemanager/register' element={<StoreManagerRegister/>}/>
             <Route path='/storemanager/forget-password' element={<ForgetStoreManagerPassword />} />
             <Route path="/storemanager/forget-link/:id" element={<ResetStoreManagerPassword />} />
@@ -133,6 +132,8 @@ const Routing = () => {
             <Route path='/shopbycategory/:category' element={<ShopByCategoryProduct/>}/>
             <Route path='/superAdmin/salesByStore' element={isSuperAdmin?<SalesByStore/>:<Unauthorized/>}/>
             <Route path='/orders' element={isUser?<Order/>:<Unauthorized/>}/>
+            <Route path="/payment/success" element={isUser?<PaymentSuccessPage/>:<Unauthorized/>}/>
+
         </Routes>
 
     </>
