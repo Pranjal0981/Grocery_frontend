@@ -1,6 +1,8 @@
 import * as React from 'react';
 import Drawer from '@mui/material/Drawer';
 import List from '@mui/material/List';
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
+
 import ListItem from '@mui/material/ListItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText'
@@ -45,6 +47,8 @@ const Nav = () => {
     const [stores, setStores] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
+
     const handleChangeSearchTerm = (event) => {
         setSearchTerm(event.target.value);
     };
@@ -77,7 +81,9 @@ const Nav = () => {
         store:''
     });
     // console.log(user.store)
-
+    const handleTogglePassword = () => {
+        setShowPassword(!showPassword);
+    };
     const toggleDrawer = (open) => (event) => {
         if (
             event.type === 'keydown' &&
@@ -576,14 +582,23 @@ catch (err) {
                                                     className="border border-gray-300 px-4 py-2 rounded focus:outline-none"
                                                     onChange={handleInputChange}
                                                 />
-                                                <input
-                                                    type="password"
-                                                    name="password"
-                                                    value={formData.password}
-                                                    placeholder="Password"
-                                                    className="border border-gray-300 px-4 py-2 rounded focus:outline-none"
-                                                    onChange={handleInputChange}
-                                                />
+                                                    <div className="relative">
+                                                        <input
+                                                            type={showPassword ? 'text' : 'password'}
+                                                            name="password"
+                                                            value={formData.password}
+                                                            placeholder="Minimum 8 Characters"
+                                                            className="border border-gray-300 px-4 py-2 rounded focus:outline-none"
+                                                            onChange={handleInputChange}
+                                                        />
+                                                        <button
+                                                            type="button"
+                                                            className="absolute inset-y-0 right-0 px-3 py-2"
+                                                            onClick={handleTogglePassword}
+                                                        >
+                                                            {showPassword ? <FaEyeSlash /> : <FaEye />}
+                                                        </button>
+                                                    </div>
 
                                                     <button
                                                         type="submit"
@@ -608,14 +623,23 @@ catch (err) {
                                                     className="border border-gray-300 px-4 py-2 rounded focus:outline-none"
                                                     onChange={handleInputChange}
                                                 />
-                                                <input
-                                                    type="password"
-                                                    name="password"
-                                                    value={formData.password}
-                                                    placeholder="Password"
-                                                    className="border border-gray-300 px-4 py-2 rounded focus:outline-none"
-                                                    onChange={handleInputChange}
-                                                />
+                                                    <div className="relative">
+                                                        <input
+                                                            type={showPassword ? 'text' : 'password'}
+                                                            name="password"
+                                                            value={formData.password}
+                                                            placeholder="Minimum 8 Characters"
+                                                            className="border border-gray-300 px-4 py-2 rounded focus:outline-none"
+                                                            onChange={handleInputChange}
+                                                        />
+                                                        <button
+                                                            type="button"
+                                                            className="absolute inset-y-0 right-0 px-3 py-2"
+                                                            onClick={handleTogglePassword}
+                                                        >
+                                                            {showPassword ? <FaEyeSlash /> : <FaEye />}
+                                                        </button>
+                                                    </div>
 
                                                     <button
                                                         type="submit"

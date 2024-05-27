@@ -274,9 +274,9 @@ const Cart = () => {
                 key,
                 amount: order.amount,
                 currency: "INR",
-                name: "Ecommerce",
+                name: "RGS GROCERY",
                 description: "razorpay",
-                image: "https://avatars.githubusercontent.com/u/25058652?v=4",
+                image: "/RGS-New-Logo.webp",
                 order_id: order.id,
                 prefill: {
                     name: user.name,

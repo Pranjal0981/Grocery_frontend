@@ -90,8 +90,6 @@ export const asyncAddToWishlist=(userId,data)=>async(dispatch,getState)=>{
     }
 }
 
-
-
 export const asyncAddToCart = (userId, data) => async (dispatch, getState) => {
 
     try {
@@ -100,7 +98,7 @@ export const asyncAddToCart = (userId, data) => async (dispatch, getState) => {
        await dispatch(saveCheckOutCart(response.data))
     } catch (error) {
         console.log(error)
-        toast.error(error.response.data.message)
+        toast.error("Login to continue")
 
     }
 }
