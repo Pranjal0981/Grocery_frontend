@@ -42,22 +42,25 @@ export const asyncSignupUser = (data) => async (dispatch) => {
 };
 
 
-export const asyncSignIn=(data)=>async(dispatch,getState)=>{
+export const asyncSignIn = (data) => async (dispatch, getState) => {
     try {
-        const response=await axios.post('/user/login',data)
-         dispatch(asyncCurrentUser(response.data.token));
+        const response = await axios.post('/user/login', data);
         const expiresInMilliseconds = response.data.expiresIn;
 
-        // Calculate the token expiration time in milliseconds from the current time
+        // Calculate token expiration time
         const expirationTime = Date.now() + expiresInMilliseconds;
 
+        // Save token and expiration time in localStorage
         localStorage.setItem('token', response.data.token);
         localStorage.setItem('tokenExpiration', expirationTime);
 
         // Dispatch action to save token expiration in Redux store
         await dispatch(saveTokenExpiration(expirationTime));
-        toast.success("LoggedIn Successfully !")
 
+        // Fetch current user after successful login
+        dispatch(asyncCurrentUser());
+
+        toast.success("LoggedIn Successfully !");
     } catch (error) {
         if (error.response && error.response.status === 401) {
             toast.error('Invalid email or password. Please try again.');
@@ -66,7 +69,7 @@ export const asyncSignIn=(data)=>async(dispatch,getState)=>{
             toast.error('An error occurred. Please try again later.');
         }
     }
-}
+};
 
 export const asyncSignOut=(navigate)=>async(dispacth,getState)=>{
     try {
