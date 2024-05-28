@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { asyncSendForgetLink } from '../store/actions/userAction';
 import {asyncAdminSendForgetLink} from '../store/actions/adminAction'
+import { asyncSuperAdminSendForgetLink } from '../store/actions/superAdminAction';
 import { asyncSendForgetLinkStoremanager } from '../store/actions/storeManagerAction'
 export const ForgetPassword = () => {
     const [email, setEmail] = useState('');
@@ -125,7 +126,7 @@ export const ForgetSuperAdminPassword=()=>{
         setLoading(true);
 
         try {
-            await dispatch(asyncForgetSuperAdminLink({ email }));
+            await dispatch(asyncSuperAdminSendForgetLink({ email }));
         } catch (err) {
             setError('Error sending reset link. Please try again.');
         } finally {

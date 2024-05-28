@@ -1,9 +1,8 @@
-// AdminLoginForm.jsx
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { asyncAdminLogin, asyncAdminRegister } from '../store/actions/adminAction';
+import { asyncAdminLogin } from '../store/actions/adminAction';
 import { Link, useNavigate } from 'react-router-dom';
-
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
 export const AdminLoginForm = () => {
     const dispatch = useDispatch();
@@ -14,10 +13,15 @@ export const AdminLoginForm = () => {
         email: "",
         password: "",
     });
+    const [showPassword, setShowPassword] = useState(false);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
+    };
+
+    const handleTogglePassword = () => {
+        setShowPassword(!showPassword);
     };
 
     const handleSubmit = async (e) => {
@@ -34,58 +38,67 @@ export const AdminLoginForm = () => {
     };
 
     return (
-        <div className="max-w-md mx-auto">
-            <form onSubmit={handleSubmit} className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-                <h2 className="text-2xl font-bold mb-4">Admin Login</h2>
+        <div className="flex items-center justify-center min-h-screen bg-gray-100">
+            <div className="max-w-md w-full bg-white shadow-md rounded-lg p-8">
+                <h2 className="text-3xl font-bold text-center mb-6">Admin Login</h2>
                 {error && <p className="text-red-500 text-xs italic mb-4">{error}</p>}
-                <div className="mb-4">
-                    <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">
-                        Email
-                    </label>
-                    <input
-                        id="email"
-                        type="email"
-                        name="email"
-                        value={formData.email}
-                        placeholder="Email" required
-                        className="border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        onChange={handleInputChange}
-                    />
+                <form onSubmit={handleSubmit}>
+                    <div className="mb-4">
+                        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">
+                            Email
+                        </label>
+                        <input
+                            id="email"
+                            type="email"
+                            name="email"
+                            value={formData.email}
+                            placeholder="Email"
+                            required
+                            className="border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring focus:ring-blue-500"
+                            onChange={handleInputChange}
+                        />
+                    </div>
+                    <div className="mb-6 relative">
+                        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="password">
+                            Password
+                        </label>
+                        <input
+                            id="password"
+                            type={showPassword ? 'text' : 'password'}
+                            name="password"
+                            value={formData.password}
+                            placeholder="Password"
+                            required
+                            className="border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring focus:ring-blue-500"
+                            onChange={handleInputChange}
+                        />
+                        <button
+                            type="button"
+                            className="absolute inset-y-2 right-0 px-3 py-7 text-gray-600"
+                            onClick={handleTogglePassword}
+                        >
+                            {showPassword ? < FaEye /> : <FaEyeSlash />}
+                        </button>
+                    </div>
+                    <button
+                        type="submit"
+                        className={`w-full bg-blue-500 text-white py-2 rounded focus:outline-none ${loading ? 'opacity-75 cursor-not-allowed' : 'hover:bg-blue-600'} transition duration-200`}
+                        disabled={loading}
+                    >
+                        {loading ? 'Signin...' : 'Signin'}
+                    </button>
+                </form>
+                <div className="mt-4 text-center">
+                    <Link to="/admin/register" className="text-blue-500 hover:underline">
+                        Don't have an account? Register here
+                    </Link>
                 </div>
-                <div className="mb-4">
-                    <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="password">
-                        Password
-                    </label>
-                    <input
-                        id="password"
-                        type="password"
-                        name="password"
-                        value={formData.password}
-                        placeholder="Password" required
-                        className="border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        onChange={handleInputChange}
-                    />
+                <div className="mt-2 text-center">
+                    <Link to="/admin/forget-password" className="text-blue-500 hover:underline">
+                        Forgot Password?
+                    </Link>
                 </div>
-                <button
-                    type="submit"
-                    className={`w-full bg-blue-500 text-white px-4 py-2 rounded focus:outline-none ${loading ? 'opacity-75 cursor-not-allowed' : 'hover:bg-blue-600'} transition duration-200`}
-                    disabled={loading}
-                >
-                    {loading ? 'Signin...' : 'Signin'}
-                </button>
-                <Link
-                    to="/admin/register"
-                    className="block text-center text-gray-700 text-sm mt-2 hover:underline"
-                >
-                    Don't have an account? Register here
-                </Link>
-                <Link
-                    to="/admin/forget-password"
-                    className="block text-center text-gray-700 text-sm mt-2 hover:underline"
-                >
-                    Forgot Password?
-                </Link>
-            </form>
+            </div>
         </div>
     );
 };
@@ -98,10 +111,15 @@ export const AdminRegistrationForm = () => {
         email: '',
         password: '',
     });
+    const [showPassword, setShowPassword] = useState(false);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
+    };
+
+    const handleTogglePassword = () => {
+        setShowPassword(!showPassword);
     };
 
     const handleSubmit = (e) => {
@@ -110,51 +128,58 @@ export const AdminRegistrationForm = () => {
     };
 
     return (
-        <div className="max-w-md mx-auto">
-            <form onSubmit={handleSubmit} className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-                <h2 className="text-2xl font-bold mb-4">Admin Registration</h2>
-
-                <div className="mb-4">
-                    <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">
-                        Email
-                    </label>
-                    <input
-                        id="email"
-                        type="email"
-                        name="email"
-                        value={formData.email}
-                        placeholder="Email"
-                        className="border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        onChange={handleInputChange}
-                    />
-                </div>
-                <div className="mb-4">
-                    <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="password">
-                        Password
-                    </label>
-                    <input
-                        id="password"
-                        type="password"
-                        name="password"
-                        value={formData.password}
-                        placeholder="Password"
-                        className="border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        onChange={handleInputChange}
-                    />
-                </div>
-
-               
-                <button
-                    type="submit"
-                    className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 focus:outline-none focus:shadow-outline"
-                >
-                    Register
-                </button>
-                {/* Add login link */}
-                <p className="mt-4 text-sm text-gray-600">
-                    Already have an account? <Link to="/admin/login" className="text-blue-500">Login here</Link>.
+        <div className="flex items-center justify-center min-h-screen bg-gray-100">
+            <div className="max-w-md w-full bg-white shadow-md rounded-lg p-8">
+                <h2 className="text-3xl font-bold text-center mb-6">Admin Registration</h2>
+                <form onSubmit={handleSubmit}>
+                    <div className="mb-4">
+                        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">
+                            Email
+                        </label>
+                        <input
+                            id="email"
+                            type="email"
+                            name="email"
+                            value={formData.email}
+                            placeholder="Email"
+                            required
+                            className="border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring focus:ring-blue-500"
+                            onChange={handleInputChange}
+                        />
+                    </div>
+                    <div className="mb-6 relative">
+                        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="password">
+                            Password
+                        </label>
+                        <input
+                            id="password"
+                            type={showPassword ? 'text' : 'password'}
+                            name="password"
+                            value={formData.password}
+                            placeholder="Password"
+                            required
+                            className="border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring focus:ring-blue-500"
+                            onChange={handleInputChange}
+                        />
+                        <button
+                            type="button"
+                            className="absolute  inset-y-2 right-0 px-3 py-7 text-gray-600"
+                            onClick={handleTogglePassword}
+                        >
+                            {showPassword ? <FaEye /> : <FaEyeSlash />}
+                        </button>
+                    </div>
+                    <button
+                        type="submit"
+                        className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 focus:outline-none focus:shadow-outline transition duration-200"
+                    >
+                        Register
+                    </button>
+                </form>
+                <p className="mt-4 text-sm text-gray-600 text-center">
+                    Already have an account? <Link to="/admin/login" className="text-blue-500 hover:underline">Login here</Link>.
                 </p>
-            </form>
+            </div>
         </div>
     );
-}
+};

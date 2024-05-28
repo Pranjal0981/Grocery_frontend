@@ -297,7 +297,7 @@ const Cart = () => {
                         const verificationResponse = await axios.post("/user/api/paymentverification", paymentVerificationData);
                         const { reference_id } = verificationResponse.data;
                         alert('Payment success, reference_id',reference_id)
-                        await dispatch(asyncCustomerOrder({
+                         dispatch(asyncCustomerOrder({
                             checkOutCart: JSON.stringify(availableProducts),
                             totalGrandPrice: checkOutCart?.totalGrandPrice,
                             paymentType: 'Online Payment',
@@ -306,7 +306,7 @@ const Cart = () => {
                         for (const item of checkOutCart.products) {
                             if (!unavailableProduct.find(up => up.productId === item.productId._id)) {
                                 const newStock = item.stock - item.quantity;
-                                await dispatch(asyncUpdateStock(item.productId._id, newStock, selectedStore, user._id));
+                                 dispatch(asyncUpdateStock(item.productId._id, newStock, selectedStore, user._id));
                             }
                         }
                         setShowModal(false);

@@ -36,7 +36,7 @@ import ExchangePolicy from '../components/ExchangePolicy'
 import SupportCenter from '../components/SupportCenter'
 import ContactUs from '../components/ContactUs'
 import { AdminLoginForm, AdminRegistrationForm } from '../Admin/Auth'
-import { SuperAdminLogin, SuperAdminRegistrationForm } from '../SuperAdmin/Auth'
+import  SuperAdminForm  from '../SuperAdmin/Auth'
 import { StoreManagerLogin, StoreManagerRegister } from '../StoreManager/Auth'
 import PrivacyPolicy from '../components/PrivacyPolicy'
 import UserQuery from '../SuperAdmin/UserQuery'
@@ -86,8 +86,8 @@ const Routing = () => {
             <Route path='/storemanager/forget-password' element={<ForgetStoreManagerPassword />} />
             <Route path="/storemanager/forget-link/:id" element={<ResetStoreManagerPassword />} />
             <Route path='/superadmin/forget-password' element={<ForgetSuperAdminPassword/>} />
-            <Route path='/superadmin/login' element={<SuperAdminLogin/>}/>
-            <Route path='/superadmin/register' element={<SuperAdminRegistrationForm/>}/>
+            <Route path='/superadmin/login' element={<SuperAdminForm isLogin={true}/>}/>
+            <Route path='/superadmin/register' element={<SuperAdminForm isLogin={false} />}/>
             <Route path="/forget-link/:id" element={<ResetPassword/>} />
             <Route path='/admin/forget-password' element={<ForgetAdminPassword />} />
             <Route path="/admin/forget-link/:id" element={<ResetAdminPassword />} />

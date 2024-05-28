@@ -34,7 +34,7 @@ export const ResetPassword = () => {
                         type="password"
                         id="password"
                         className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
-                        value={password}
+                        value={password} placeholder='Minimum 8 characters'
                         onChange={(e) => setPassword(e.target.value)}
                     />
                 </div>
@@ -82,7 +82,7 @@ export const ResetAdminPassword=()=>{
                         type="password"
                         id="password"
                         className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
-                        value={password}
+                        value={password} placeholder='Minimum 8 characters'
                         onChange={(e) => setPassword(e.target.value)}
                     />
                 </div>
@@ -130,7 +130,7 @@ export const ResetSuperAdminPassword = () => {
                         type="password"
                         id="password"
                         className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
-                        value={password}
+                        value={password} placeholder='Minimum 8 characters'
                         onChange={(e) => setPassword(e.target.value)}
                     />
                 </div>
