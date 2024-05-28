@@ -6,14 +6,23 @@ import { toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import { Navigate } from "react-router-dom";
 
-export const asyncCurrentUser = (token) => async (dispatch, getState) => {
+export const asyncCurrentUser = () => async (dispatch, getState) => {
     try {
-        console.log("token",token)
-        const response = await axios.post('/user/currentUser', {
+        // Retrieve token from localStorage
+        const token = localStorage.getItem('token');
+        if (!token) {
+            // If token is not found, dispatch an action to clear the current user
+            dispatch(saveUser(null));
+            return;
+        }
+
+        // Make a request to fetch the current user using the token
+        const response = await axios.post('/user/currentUser', null, {
             headers: { Authorization: `Bearer ${token}` }
         });
-        console.log(response);
-       dispatch(saveUser(response.data.user));
+
+        // Dispatch action to save the current user in the Redux store
+        dispatch(saveUser(response.data.user));
     } catch (error) {
         console.error(error);
     }
