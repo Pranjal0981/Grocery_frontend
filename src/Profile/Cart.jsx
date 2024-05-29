@@ -147,15 +147,15 @@ const generatePDF = async (checkOutCart, user) => {
     }
 }
 
-
 const Cart = () => {
     const [showModal, setShowModal] = useState(false);
     const [selectedStore, setSelectedStore] = useState('');
+    const [stores, setStores] = useState([]);
+    const [reference_id, setReferenceId] = useState(null);
 
     const dispatch = useDispatch();
-    const { checkOutCart, user, unavailableProduct = [] } = useSelector(state => state.user); // Ensure unavailableProduct is an array
     const navigate = useNavigate();
-    const [stores, setStores] = useState([]);
+    const { checkOutCart, user, unavailableProduct = [] } = useSelector(state => state.user); // Ensure unavailableProduct is an array
 
     useEffect(() => {
         if (user?._id) {
@@ -169,7 +169,6 @@ const Cart = () => {
             .then(data => setStores(data))
             .catch(error => console.error('Error fetching stores:', error));
     }, []);
-    const [reference_id, setreferenceId] = useState(null);
 
     const handlePlaceOrder = () => {
         if (!user.address || user.address.length === 0) {
@@ -192,56 +191,56 @@ const Cart = () => {
         setShowModal(false);
     };
 
-  const handleCashOnDelivery = async () => {
-    try {
-        const pdfBlob = await generatePDF(checkOutCart, user);
-        console.log(checkOutCart)
-        if (!selectedStore) {
-            toast.error('Please select a store before proceeding with payment.');
-            return;
-        }
-        const availableProducts = checkOutCart.products
-            .filter(item => !unavailableProduct.find(up => up.productId === item.productId._id))
-            .map(item => ({
-                productId: item.productId._id,
-                quantity: item.quantity,
-                totalPrice: item.totalPrice,
-                store: item.store
-            }));
-
-        if (availableProducts.length === 0) {
-            toast.error('No available products to place an order.');
-            return;
-        }
-
-        await dispatch(asyncCustomerOrder({
-            checkOutCart: JSON.stringify(availableProducts),
-            totalGrandPrice: checkOutCart?.totalGrandPrice,
-            paymentType: 'Cash on delivery',
-            email: user.email
-        }, user._id, pdfBlob));
-        
-        for (const item of checkOutCart.products) {
-            if (!unavailableProduct.find(up => up.productId === item.productId._id)) {
-                const newStock = item.stock - item.quantity;
-                await dispatch(asyncUpdateStock(item.productId._id, newStock, selectedStore, user._id));
+    const handleCashOnDelivery = async () => {
+        try {
+            const pdfBlob = await generatePDF(checkOutCart, user);
+            if (!selectedStore) {
+                toast.error('Please select a store before proceeding with payment.');
+                return;
             }
+            const availableProducts = checkOutCart.products
+                .filter(item => !unavailableProduct.find(up => up.productId === item.productId._id))
+                .map(item => ({
+                    productId: item.productId._id,
+                    quantity: item.quantity,
+                    totalPrice: item.totalPrice,
+                    store: item.store
+                }));
+
+            if (availableProducts.length === 0) {
+                toast.error('No available products to place an order.');
+                return;
+            }
+
+            await dispatch(asyncCustomerOrder({
+                checkOutCart: JSON.stringify(availableProducts),
+                totalGrandPrice: checkOutCart?.totalGrandPrice,
+                paymentType: 'Cash on delivery',
+                email: user.email
+            }, user._id, pdfBlob));
+
+            for (const item of checkOutCart.products) {
+                if (!unavailableProduct.find(up => up.productId === item.productId._id)) {
+                    const newStock = item.productId.stock - item.quantity;
+                    await dispatch(asyncUpdateStock(item.productId._id, newStock, selectedStore, user._id));
+                }
+            }
+            setShowModal(false);
+            Swal.fire({
+                icon: 'success',
+                title: 'Order Placed!',
+                text: 'Your order has been successfully placed.',
+            });
+        } catch (error) {
+            console.error('Error placing order:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'There was an error placing your order. Please try again later.',
+            });
         }
-        setShowModal(false);
-        Swal.fire({
-            icon: 'success',
-            title: 'Order Placed!',
-            text: 'Your order has been successfully placed.',
-        });
-    } catch (error) {
-        console.error('Error placing order:', error);
-        Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: 'There was an error placing your order. Please try again later.',
-        });
-    }
-};
+    };
+
     const handleOnlinePayment = async (amount) => {
         try {
             const pdfBlob = await generatePDF(checkOutCart, user);
@@ -265,10 +264,16 @@ const Cart = () => {
                 return;
             }
 
-            const { data } = await axios.get("/api/getkey");
-            const key = data.key;
+            const { data: { key } } = await axios.get("/api/getkey");
 
-            const { data: { order } } = await axios.post("/user/api/checkout", { amount });
+            const { data } = await axios.post("/user/api/checkout", { amount });
+
+            if (!data.success) {
+                toast.error('Failed to create order. Please try again later.');
+                return;
+            }
+
+            const { order } = data;
 
             const options = {
                 key,
@@ -291,41 +296,40 @@ const Cart = () => {
                             razorpay_order_id: response.razorpay_order_id,
                             razorpay_payment_id: response.razorpay_payment_id,
                             razorpay_signature: response.razorpay_signature,
-                            checkoutCart: checkOutCart
                         };
 
                         const verificationResponse = await axios.post("/user/api/paymentverification", paymentVerificationData);
-                        const { reference_id } = verificationResponse.data;
-                        alert('Payment success, reference_id',reference_id)
-                         dispatch(asyncCustomerOrder({
-                            checkOutCart: JSON.stringify(availableProducts),
-                            totalGrandPrice: checkOutCart?.totalGrandPrice,
-                            paymentType: 'Online Payment',
-                            email: user.email
-                        }, user._id, pdfBlob));
-                        for (const item of checkOutCart.products) {
-                            if (!unavailableProduct.find(up => up.productId === item.productId._id)) {
-                                const newStock = item.stock - item.quantity;
-                                 dispatch(asyncUpdateStock(item.productId._id, newStock, selectedStore, user._id));
-                            }
-                        }
-                        setShowModal(false);
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Order Placed!',
-                            text: 'Your order has been successfully placed.',
-                        });
-                    
-                        // Navigate to payment success page
-                        navigate('/payment/success', { state: { reference_id: reference_id } });
 
+                        if (verificationResponse.data.success) {
+                            for (const item of checkOutCart.products) {
+                                if (!unavailableProduct.find(up => up.productId === item.productId._id)) {
+                                    const newStock = item.productId.stock - item.quantity;
+                                    await dispatch(asyncUpdateStock(item.productId._id, newStock, selectedStore, user._id));
+                                }
+                            }
+
+                            await dispatch(asyncCustomerOrder({
+                                checkOutCart: JSON.stringify(availableProducts),
+                                totalGrandPrice: checkOutCart?.totalGrandPrice,
+                                paymentType: 'Online',
+                                email: user.email
+                            }, user._id, pdfBlob));
+
+                            setShowModal(false);
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Order Placed!',
+                                text: 'Your order has been successfully placed.',
+                            });
+                        } else {
+                            throw new Error("Payment verification failed");
+                        }
                     } catch (error) {
                         console.error("Error processing payment:", error);
-                        console.error('Error placing order:', error);
                         Swal.fire({
                             icon: 'error',
                             title: 'Error',
-                            text: 'There was an error placing your order. Please try again later.',
+                            text: 'There was an error processing your payment. Please try again later.',
                         });
                     }
                 }
@@ -335,10 +339,9 @@ const Cart = () => {
             razor.open();
         } catch (error) {
             console.error("Error in checkout:", error);
+            toast.error('An error occurred during the checkout process. Please try again later.');
         }
     };
-
-
 
 
     const handleDeleteItem = itemId => {
@@ -444,10 +447,5 @@ const Cart = () => {
         </div>
     );
 };
-
-
-
-
-
 
 export default Cart;
