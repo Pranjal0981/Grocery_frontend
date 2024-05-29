@@ -60,16 +60,15 @@ export const asyncStoreLogout = () => async (dispatch, getState) => {
 }
 
 
-export const asyncStoreManagerPassword=()=>async(dispatch,getState)=>{
-    try {
-        const response = await axios.post('/storemanager/send-mail', email)
-        toast.success("Reset mail sent")
-    } catch (error) {
-        toast.error("Error sending mail")
+export const asyncStoreManagerPassword=(id,password)=>async(dispatch,getState)=>{
+        try {
+            const response = await axios.post(`/storemanager/forget-link/${id}`, { password }); // Pass password as an object
+            toast.success("Password Reset Successfully")
+        } catch (error) {
+            toast.error("Error reseting password")
 
-
-    }
-}
+        }
+    };
 
 export const asyncSendForgetLinkStoremanager = (email)=>async(dispatch,getState)=>{
     try {
