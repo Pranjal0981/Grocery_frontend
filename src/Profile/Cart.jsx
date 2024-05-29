@@ -148,12 +148,14 @@ const generatePDF = async (checkOutCart, user) => {
 }
 
 
+
 const Cart = () => {
     const [showModal, setShowModal] = useState(false);
     const [selectedStore, setSelectedStore] = useState('');
+    const [isPaymentLoading, setIsPaymentLoading] = useState(false); // New loading state
 
     const dispatch = useDispatch();
-    const { checkOutCart, user, unavailableProduct = [] } = useSelector(state => state.user); // Ensure unavailableProduct is an array
+    const { checkOutCart, user, unavailableProduct = [] } = useSelector(state => state.user);
     const navigate = useNavigate();
     const [stores, setStores] = useState([]);
 
@@ -169,7 +171,6 @@ const Cart = () => {
             .then(data => setStores(data))
             .catch(error => console.error('Error fetching stores:', error));
     }, []);
-    const [reference_id, setreferenceId] = useState(null);
 
     const handlePlaceOrder = () => {
         if (!user.address || user.address.length === 0) {
@@ -195,7 +196,6 @@ const Cart = () => {
     const handleCashOnDelivery = async () => {
         try {
             const pdfBlob = await generatePDF(checkOutCart, user);
-            console.log(checkOutCart)
             if (!selectedStore) {
                 toast.error('Please select a store before proceeding with payment.');
                 return;
@@ -242,12 +242,15 @@ const Cart = () => {
             });
         }
     };
+
     const handleOnlinePayment = async (amount) => {
+        setIsPaymentLoading(true); // Set loading state to true
         try {
             const pdfBlob = await generatePDF(checkOutCart, user);
 
             if (!selectedStore) {
                 toast.error('Please select a store before proceeding with payment.');
+                setIsPaymentLoading(false); // Set loading state to false
                 return;
             }
 
@@ -262,6 +265,7 @@ const Cart = () => {
 
             if (availableProducts.length === 0) {
                 toast.error('No available products to place an order.');
+                setIsPaymentLoading(false); // Set loading state to false
                 return;
             }
 
@@ -296,7 +300,7 @@ const Cart = () => {
 
                         const verificationResponse = await axios.post("/user/api/paymentverification", paymentVerificationData);
                         const { reference_id } = verificationResponse.data;
-                        alert('Payment success, reference_id', reference_id)
+                        alert('Payment success, reference_id', reference_id);
                         dispatch(asyncCustomerOrder({
                             checkOutCart: JSON.stringify(availableProducts),
                             totalGrandPrice: checkOutCart?.totalGrandPrice,
@@ -321,12 +325,13 @@ const Cart = () => {
 
                     } catch (error) {
                         console.error("Error processing payment:", error);
-                        console.error('Error placing order:', error);
                         Swal.fire({
                             icon: 'error',
                             title: 'Error',
                             text: 'There was an error placing your order. Please try again later.',
                         });
+                    } finally {
+                        setIsPaymentLoading(false); // Set loading state to false
                     }
                 }
             };
@@ -335,11 +340,9 @@ const Cart = () => {
             razor.open();
         } catch (error) {
             console.error("Error in checkout:", error);
+            setIsPaymentLoading(false); // Set loading state to false
         }
     };
-
-
-
 
     const handleDeleteItem = itemId => {
         dispatch(asyncDeleteCheckoutCart(user?._id, itemId));
@@ -420,31 +423,39 @@ const Cart = () => {
                 <div className="fixed z-50 inset-0 flex items-center justify-center bg-black bg-opacity-50">
                     <div className="bg-white p-8 rounded shadow-md w-full max-w-md">
                         <h2 className="text-xl font-bold mb-4 text-indigo-800">Choose Payment Method</h2>
-                        <button
-                            onClick={handleCashOnDelivery}
-                            className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mb-4 w-full"
-                        >
-                            Cash on Delivery
-                        </button>
-                        <button
-                            onClick={() => handleOnlinePayment(checkOutCart?.totalGrandPrice)}
-                            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-full"
-                        >
-                            Online Payment
-                        </button>
-                        <button
-                            onClick={handleCloseModal}
-                            className="mt-4 text-gray-600 underline w-full text-center"
-                        >
-                            Cancel
-                        </button>
+                        {isPaymentLoading ? ( // Show loading spinner or message if payment is processing
+                            <div className="flex justify-center items-center">
+                                <div className="loader"></div> {/* You can replace this with a loading spinner component */}
+                                <p className="ml-2 text-indigo-800">Processing payment...</p>
+                            </div>
+                        ) : (
+                            <>
+                                <button
+                                    onClick={handleCashOnDelivery}
+                                    className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mb-4 w-full"
+                                >
+                                    Cash on Delivery
+                                </button>
+                                <button
+                                    onClick={() => handleOnlinePayment(checkOutCart?.totalGrandPrice)}
+                                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-full"
+                                >
+                                    Online Payment
+                                </button>
+                                <button
+                                    onClick={handleCloseModal}
+                                    className="mt-4 text-gray-600 underline w-full text-center"
+                                >
+                                    Cancel
+                                </button>
+                            </>
+                        )}
                     </div>
                 </div>
             )}
         </div>
     );
 };
-
 
 
 
