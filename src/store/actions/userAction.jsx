@@ -8,10 +8,13 @@ import { Navigate } from "react-router-dom";
 
 export const asyncCurrentUser = () => async (dispatch, getState) => {
     try {
-        // Retrieve token from localStorage
+        // Retrieve token and token expiration time from localStorage
         const token = localStorage.getItem('token');
-        if (!token) {
-            // If token is not found, dispatch an action to clear the current user
+        const tokenExpiration = localStorage.getItem('tokenExpiration');
+
+        // Check if token is expired or not available
+        if (!token || tokenExpiration < Date.now()) {
+            // If token is not found or expired, dispatch an action to clear the current user
             dispatch(saveUser(null));
             return;
         }
@@ -27,7 +30,6 @@ export const asyncCurrentUser = () => async (dispatch, getState) => {
         console.error(error);
     }
 };
-
 
 export const asyncSignupUser = (data) => async (dispatch) => {
     try {

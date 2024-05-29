@@ -587,7 +587,7 @@ catch (err) {
                                                             type={showPassword ? 'text' : 'password'}
                                                             name="password"
                                                             value={formData.password}
-                                                            placeholder="Minimum 8 Characters"
+                                                            placeholder="Minimum 4 Characters"
                                                             className="border border-gray-300 px-4 py-2 rounded focus:outline-none"
                                                             onChange={handleInputChange}
                                                         />
