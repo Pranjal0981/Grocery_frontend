@@ -60,7 +60,7 @@ const ManageOrder = () => {
                                             <ul>
                                                 {product?.products?.map((item, idx) => (
                                                     <li key={idx}>
-                                                        <strong>Product Name:</strong> {item?.productId?.ProductName}<br />
+                                                        <strong>Product Name:</strong> {item?.productId?.productName}<br />
                                                         <strong>Description:</strong> {item?.productId?.description}<br />
                                                         <strong>Selling Price:</strong> {item?.productId?.sellingPrice}<br />
                                                         <strong>Category:</strong> {item?.productId?.category}<br />
