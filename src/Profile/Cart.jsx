@@ -369,7 +369,6 @@ const Cart = () => {
                                         <h2 className="text-xl font-bold mb-2 text-indigo-800">{item.productId.productName}</h2>
                                         <p className="text-gray-700 mb-2">{item.productId.description}</p>
                                         <div className="flex justify-between items-center mb-2">
-                                            <p className="text-gray-800 font-bold">Stock: {item.stock}</p>
                                             <p className="text-gray-800 font-bold">Product Code: {item.productId.productCode}</p>
                                         </div>
                                         <div className="flex justify-between items-center">

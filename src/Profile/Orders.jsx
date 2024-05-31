@@ -57,7 +57,6 @@ const Order = () => {
                             <th className="px-4 py-2">Status</th>
                             <th className="px-4 py-2">Total Grand Price</th>
                             <th className="px-4 py-2">User Email</th>
-                            <th className="px-4 py-2">Request Cancellation</th>
                             <th className="px-4 py-2">Product Details</th>
                         </tr>
                     </thead>
@@ -67,8 +66,7 @@ const Order = () => {
                                 <td className="border px-4 py-2">{order?.status}</td>
                                 <td className="border px-4 py-2">{order?.totalGrandPrice}</td>
                                 <td className="border px-4 py-2">{order?.userId?.email}</td>
-                                <td className="border px-4 py-2">{order?.reqCancellation}</td>
-                                <td className="border px-4 py-2">
+1                                <td className="border px-4 py-2">
                                     <ul className="space-y-4">
                                         {order?.products?.map((product) => (
                                             <li key={product?._id}>

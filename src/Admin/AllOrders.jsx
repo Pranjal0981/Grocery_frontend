@@ -43,7 +43,6 @@ const ManageOrder = () => {
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Grand Price</th>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Products</th>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Order Status</th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cancellation Request</th>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Payment Method</th>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User Contact</th>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User Details</th>
@@ -82,7 +81,6 @@ const ManageOrder = () => {
                                                 <option value="Delivered">Delivered</option>
                                             </select>
                                         </td>
-                                        <td className="px-6 py-4 whitespace-nowrap">{product?.reqCancellation}</td>
                                         <td className="px-6 py-4 whitespace-nowrap">{product?.PaymentType}</td>
                                         <td className="px-6 py-4 whitespace-nowrap">
                                             {product?.userId?.address?.map((address, idx) => (

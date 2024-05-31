@@ -291,15 +291,7 @@ export const asyncCustomerOrder = (data, userId, pdfBlob) => async (dispatch, ge
 
         console.log(response);
 
-        if (response.status === 200) {
-            dispatch({
-                type: 'ORDER_SUCCESS',
-                payload: response.data,
-            });
-            toast.success('Order placed successfully');
-        } else {
-            toast.error(response.data.message || 'Failed to place order');
-        }
+        
     } catch (error) {
         console.error('Error placing order:', error);
         toast.error('Failed to place order. Please try again.');
