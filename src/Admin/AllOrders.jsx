@@ -16,7 +16,7 @@ const ManageOrder = () => {
     const [totalOrders, setTotalOrders] = useState(0);
     const ordersPerPage = 5; // Adjust number of orders per page
     const { store } = useParams();
-
+console.log(products)
     useEffect(() => {
         dispatch(asyncFetchOrders(currentPage, store));
     }, [dispatch, currentPage, store]);
@@ -116,6 +116,8 @@ const ManageOrder = () => {
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Payment Method</th>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">User Details</th>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Action</th>
+
+                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Invoice PDF</th>
                                 </tr>
                             </thead>
                             <tbody className="bg-white divide-y divide-gray-200">
@@ -179,6 +181,17 @@ const ManageOrder = () => {
                                                     Pay Now
                                                 </button>
                                             )}
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap">
+                                            <div>
+                                                <strong>Invoice URL:</strong>
+                                                <button
+                                                    className="text-blue-500 underline"
+                                                    onClick={() => window.open(product?.pdfUrl, '_blank')}
+                                                >
+                                                    Open PDF
+                                                </button>
+                                            </div>
                                         </td>
                                     </tr>
                                 ))}
