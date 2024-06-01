@@ -6,11 +6,12 @@ const Order = () => {
     const dispatch = useDispatch();
     const { user } = useSelector((state) => state.user);
     const { products } = useSelector((state) => state.admin);
-    console.log(products)
     const [disableReturnButton, setDisableReturnButton] = useState(false);
 
     useEffect(() => {
-        dispatch(asyncFetchCustomerOrder(user?._id));
+        if (user?._id) {
+            dispatch(asyncFetchCustomerOrder(user?._id));
+        }
     }, [dispatch, user?._id]);
 
     const calculateDaysDifference = (date1, date2) => {
@@ -51,13 +52,13 @@ const Order = () => {
         <div className="container mx-auto px-4 py-8">
             <h2 className="text-2xl font-bold mb-4">Your Order Details</h2>
             <div className="overflow-x-auto">
-                <table className="table-auto w-full border-collapse border border-gray-800">
+                <table className="table-auto w-full border-collapse border border-gray-200">
                     <thead>
-                        <tr className="bg-gray-200">
-                            <th className="px-4 py-2">Status</th>
-                            <th className="px-4 py-2">Total Grand Price</th>
-                            <th className="px-4 py-2">User Email</th>
-                            <th className="px-4 py-2">Product Details</th>
+                        <tr className="bg-gray-100">
+                            <th className="px-4 py-2 border">Status</th>
+                            <th className="px-4 py-2 border">Total Grand Price</th>
+                            <th className="px-4 py-2 border">User Email</th>
+                            <th className="px-4 py-2 border">Product Details</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -66,10 +67,10 @@ const Order = () => {
                                 <td className="border px-4 py-2">{order?.status}</td>
                                 <td className="border px-4 py-2">{order?.totalGrandPrice}</td>
                                 <td className="border px-4 py-2">{order?.userId?.email}</td>
-1                                <td className="border px-4 py-2">
+                                <td className="border px-4 py-2">
                                     <ul className="space-y-4">
                                         {order?.products?.map((product) => (
-                                            <li key={product?._id}>
+                                            <li key={product?._id} className="border-b py-2">
                                                 <div className="flex items-center space-x-4">
                                                     <div>
                                                         <h3 className="text-lg font-semibold">{product?.productId?.productName}</h3>
@@ -82,12 +83,12 @@ const Order = () => {
                                         ))}
                                     </ul>
                                 </td>
-                               
                             </tr>
                         ))}
                     </tbody>
                 </table>
             </div>
+        
         </div>
     );
 };
