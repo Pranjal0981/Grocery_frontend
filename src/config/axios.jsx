@@ -2,7 +2,7 @@ import axios from "axios";
 const instance = axios.create(
 
     {
-        baseURL: "https://grocery-backend-w10l.onrender.com",
+        baseURL: "https://grocery-backend-1.onrender.com",
         withCredentials: true,
 
     });
