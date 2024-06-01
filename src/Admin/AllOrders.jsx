@@ -10,6 +10,7 @@ import { asyncFetchOrders, updateOrderStatus } from '../store/actions/adminActio
 const ManageOrder = () => {
     const dispatch = useDispatch();
     const { products, loading } = useSelector((state) => state.admin);
+    console.log(products)
     const { user } = useSelector((state) => state.user);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalOrders, setTotalOrders] = useState(0);
@@ -150,10 +151,23 @@ const ManageOrder = () => {
                                         </td>
                                         <td className="px-6 py-4">{product?.PaymentType}</td>
                                         <td className="px-6 py-4">
-                                            <div className="text-sm text-gray-900">
-                                                <strong>Name:</strong> {product?.userId?.name}<br />
-                                                <strong>Phone:</strong> {product?.userId?.phone}<br />
-                                                <strong>Email:</strong> {product?.userId?.email}
+                                            {product?.userId?.address?.map((address, idx) => (
+                                                idx === product.userId.selectedAddressIndex && (
+                                                    <div key={idx}>
+                                                        <div><strong>Name:</strong> {address?.fullName}</div>
+                                                        <div><strong>Address Line 1:</strong> {address?.addressLine1}</div>
+                                                        <div><strong>Address Line 2:</strong> {address?.addressLine2}</div>
+                                                        <div><strong>City:</strong> {address?.city}</div>
+                                                        <div><strong>State:</strong> {address?.state}</div>
+                                                        <div><strong>Postal Code:</strong> {address?.postalCode}</div>
+                                                        <div><strong>Phone:</strong> {address?.phone}</div>
+                                                    </div>
+                                                )
+                                            ))}
+                                            <div>
+                                               <strong>
+                                                    Email : {product.userId.email}
+                                                </strong>
                                             </div>
                                         </td>
                                         <td className="px-6 py-4">
