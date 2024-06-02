@@ -130,7 +130,7 @@ console.log(products)
                                                 {product?.products?.map((item, idx) => (
                                                     <li key={idx} className="mb-2">
                                                         <strong>{item?.productId?.productName}</strong> - {item?.productId?.description}<br />
-                                                        <span className="text-sm text-gray-500">{item?.productId.size}</span><br />
+                                                        <span className="text-sm text-gray-500">{item?.productId?.size}</span><br />
                                                         <span className="text-sm text-gray-500">Rs.{item?.productId?.sellingPrice}</span><br />
                                                         <span className="text-sm text-gray-500">Quantity: {item?.quantity}</span>
                                                     </li>
