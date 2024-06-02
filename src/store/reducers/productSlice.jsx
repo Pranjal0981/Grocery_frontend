@@ -23,6 +23,7 @@ export const productSlice = createSlice({
 
         },
         saveStoreStocks:(state,action)=>{
+            
             state.store=action.payload
         }
 

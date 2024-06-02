@@ -1,5 +1,5 @@
 import axios from '../../config/axios'
-import { saveStoreProducts, saveAllUsers, saveOrders, saveDashBoardInfo, setLoading } from '../reducers/adminSlice';
+import { saveStoreProducts, saveAllUsers, saveOrders, saveDashBoardInfo, setLoading, saveOutOfstock } from '../reducers/adminSlice';
 import { saveProduct, saveStoreStocks } from '../reducers/productSlice';
 import { saveUser, removeUser, saveTokenExpiration } from '../reducers/userSlice'
 import { toast } from 'react-toastify';
@@ -147,10 +147,12 @@ export const asyncFetchInactiveUsers = (page = 1) => async (dispatch, getState) 
     }
 }
 
-export const asyncFetchOutOfStock = (page = 1) => async (dispatch, getState) => {
+export const asyncFetchOutOfStock = (page) => async (dispatch, getState) => {
     try {
         const response = await axios.get(`/admin/fetchOutOfStock?page=${page}`)
-        dispatch(saveStoreProducts(response.data.outOfStockProducts))
+        const {outOfStockProducts,totalPages}=response.data
+        dispatch(saveOutOfstock({outOfStockProducts,totalPages}))
+        console.log(response)
     } catch (error) {
         toast.error(error)
         console.log(error)

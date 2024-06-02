@@ -320,7 +320,7 @@ const UpdateProduct = () => {
                             type="number"
                             id="stock"
                             name="stock"
-                            value={updatedProduct.stock || ''}
+                            value={updatedProduct.stock }
                             onChange={handleChange}
                             className="form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
                         />

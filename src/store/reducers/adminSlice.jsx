@@ -34,11 +34,15 @@ export const adminSlice = createSlice({
         },
         saveAllProducts: (state, action) => {
             state.products = action.payload
+        },
+        saveOutOfstock:(state,action)=>{
+            state.products = action.payload.outOfStockProducts
+            state.totalPages=action.payload.totalPages
         }
     },
 });
 
 
-export const { saveStoreProducts, saveAllUsers, saveOrders, saveDashBoardInfo, setLoading, saveAllProducts } = adminSlice.actions;
+export const { saveStoreProducts, saveAllUsers, saveOrders, saveDashBoardInfo, setLoading, saveAllProducts, saveOutOfstock } = adminSlice.actions;
 
 export default adminSlice.reducer;
