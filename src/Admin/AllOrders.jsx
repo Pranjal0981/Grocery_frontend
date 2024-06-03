@@ -168,7 +168,7 @@ console.log(products)
                                             ))}
                                             <div>
                                                <strong>
-                                                    Email : {product.userId.email}
+                                                    Email : {product?.userId?.email}
                                                 </strong>
                                             </div>
                                         </td>

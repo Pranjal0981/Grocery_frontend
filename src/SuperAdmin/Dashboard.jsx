@@ -39,7 +39,7 @@ const AdminDashboard = () => {
                         <div className="bg-green-100 shadow-lg rounded-lg overflow-hidden">
                             <div className="p-6">
                                 <h2 className="text-xl font-semibold mb-2">Active Members</h2>
-                                <p className="text-3xl font-bold">{dashboardinfo?.activeUsersByDay}</p>
+                                    <p className="text-3xl font-bold">{dashboardinfo?.activeUsersByHour}</p>
                             </div>
                         </div>
 

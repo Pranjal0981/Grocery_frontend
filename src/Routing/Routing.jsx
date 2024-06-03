@@ -94,7 +94,7 @@ const Routing = () => {
             <Route path='/superadmin/getUserQuery' element={<UserQuery/>}/>
             <Route path="/superadmin/forget-link/:id" element={<ResetSuperAdminPassword />} />
             <Route path='/superadmin/allproducts' element={isSuperAdmin ? <AllProducts /> : <Unauthorized />} />
-            <Route path='/admin/upload-products' element={isAdmin ? <AddProductForm /> : <Unauthorized />} />
+            <Route path='/admin/upload-products' element={isAdmin || isSuperAdmin ? <AddProductForm /> : <Unauthorized />} />
             <Route path='/wishlist' element={isUser ? <Wishlist /> : <Unauthorized />} />
             <Route path='/products/:id' element={<ExploreProductById />} />
             <Route path='/Return Policy' element={<ReturnPolicy/>}/>
@@ -117,16 +117,16 @@ const Routing = () => {
             <Route path='/cart' element={isUser ? <Cart /> : <Unauthorized />} />
             <Route path='/edit-address' element={<AddressForm />} />
             <Route path='/address' element={<Address />} />
-            <Route path='/stores/fetchProducts/:store' element={isAdmin? <ProductStore />:<Unauthorized/>} />
+            <Route path='/stores/fetchProducts/:store' element={isAdmin || isSuperAdmin? <ProductStore />:<Unauthorized/>} />
             <Route path='/shop' element={<Product />} />
             <Route path='/account-details' element={<AccountDetails />} />
             <Route path='/superadmin/fetchallusers' element={isSuperAdmin ? <AllUser /> : <Unauthorized />} />
-            <Route path='/admin/fetchOutOfStockProducts' element={isAdmin ? <OutOfStock /> : <Unauthorized />} />
+            <Route path='/admin/fetchOutOfStockProducts' element={isAdmin || isSuperAdmin ? <OutOfStock /> : <Unauthorized />} />
             <Route path='/superadmin/activeMembers' element={isSuperAdmin ? <ActiveUser /> : <Unauthorized />} />
             <Route path='/superadmin/inactiveMembers' element={isSuperAdmin ? <InactiveUser /> : <Unauthorized />} />
-            <Route path='/admin/update-product/:id' element={isAdmin ? <UpdateProduct /> : <Unauthorized />} />
+            <Route path='/admin/update-product/:id' element={isAdmin || isSuperAdmin ? <UpdateProduct /> : <Unauthorized />} />
             <Route path='/superadmin/dashboard' element={isSuperAdmin ? <AdminDashboard /> : <Unauthorized />} />
-            <Route path='/admin/allOrders' element={isAdmin ?<ManageOrder/>:<Unauthorized/>}/>
+            <Route path='/admin/allOrders' element={isAdmin || isSuperAdmin ?<ManageOrder/>:<Unauthorized/>}/>
             <Route path='/store/allOrders/:store' element={isStoreManager ? <ManageOrder /> : <Unauthorized />} />
             <Route path='/all-departments' element={<Product/>}/>
             <Route path='/shopbycategory/:category' element={<ShopByCategoryProduct/>}/>

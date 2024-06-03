@@ -41,6 +41,8 @@ const Nav = () => {
     const [secondOpen, setSecondOpen] = React.useState(false)
     const dispatch = useDispatch()
     const [openStore, setOpenStore] = useState(false);
+    const [openSheet, setOpenSheet] = useState(false);
+
     const [selectedCategory, setSelectedCategory] = useState('All categories');
     const [searchResults, setSearchResults] = useState([]);
     const [searchTerm,setSearchTerm]=useState([])
@@ -73,6 +75,9 @@ const Nav = () => {
     const handleStoreClick = () => {
         setOpenStore(!openStore);
     };
+    const handleSheet=()=>{
+        setOpenSheet(!openSheet)
+    }
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -486,23 +491,41 @@ catch (err) {
                     <div className="admin-dashboard h-full w-[300px] p-[40px]">
                         <List className='flex flex-col w-full gap-[20px]'>
                             <h1 className='text-center'>SUPER ADMIN ACCOUNT</h1>
+                                    <Link to="/superadmin/dashboard" className="" style={{ textDecoration: 'none' }}>
+                                        <ListItem button>
+                                            <ListItemText primary="Super Admin Dashboard" />
+                                        </ListItem>
+                                    </Link>
+                                    <Link to="/admin/upload-products" className="" style={{ textDecoration: 'none' }}>
+                                        <ListItem button>
+                                            <ListItemText primary="Upload Products" />
+                                        </ListItem>
+                                    </Link>
 
-                            <Link to="/superadmin/dashboard" className="" style={{ textDecoration: 'none' }}>
-                                <ListItem button>
-                                    <ListItemText primary="Super Admin Dashboard" />
-                                </ListItem>
-                            </Link>
+                                    <ListItem button onClick={() => handleStoreClick()}>
+                                        <ListItemText primary="Stores" />
+                                        {openStore ? <ExpandLess /> : <ExpandMore />}
+                                    </ListItem>
+                                    <Collapse in={openStore} timeout="auto" unmountOnExit>
+                                        {stores.map((store, index) => (
+                                            <ListItemButton key={index} component={Link} to={`/stores/fetchProducts/${store}`}>
+                                                <ListItemText primary={store} />
+                                            </ListItemButton>
+                                        ))}
+                                    </Collapse>
+                                    <Link to="/admin/fetchOutOfStockProducts" className="" style={{ textDecoration: 'none' }}>
+                                        <ListItem button>
+                                            <ListItemText primary="Out Of Stock" />
+                                        </ListItem>
+                                    </Link>
+                         
                             <Link to="/superadmin/fetchAllUsers" className="" style={{ textDecoration: 'none' }}>
                                 <ListItem button>
                                     <ListItemText primary="All Users" />
                                 </ListItem>
                             </Link>
 
-                            <Link to="/superadmin/allproducts" className="" style={{ textDecoration: 'none' }}>
-                                <ListItem button>
-                                    <ListItemText primary="All Products" />
-                                </ListItem>
-                            </Link>
+                          
                             <Link to="/superadmin/activeMembers" className="" style={{ textDecoration: 'none' }}>
                                 <ListItem button>
                                     <ListItemText primary="Active Users" />
@@ -520,11 +543,11 @@ catch (err) {
                                         </ListItem>
                                     </Link>
                             {/* Store Section */}
-                            <ListItem button onClick={() => handleStoreClick()}>
-                                <ListItemText primary="Stores" />
-                                {openStore ? <ExpandLess /> : <ExpandMore />}
+                            <ListItem button onClick={() => handleSheet()}>
+                                <ListItemText primary="Stores Sheet" />
+                                {openSheet ? <ExpandLess /> : <ExpandMore />}
                             </ListItem>
-                            <Collapse in={openStore} timeout="auto" unmountOnExit>
+                                    <Collapse in={openSheet} timeout="auto" unmountOnExit>
                                 {stores.map((store, index) => (
                                     <ListItemButton key={index} component={Link} to={`/superadmin/stores/${store}`}>
                                         <ListItemText primary={store} />
