@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from 'react-redux';
 import { asyncFetchAllProducts } from "../store/actions/storeManagerAction";
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import CustomSpinner from "../Spinner"; // Import your spinner component here
 
 const AllProductsBystore = () => {
     const { products, totalPages } = useSelector((state) => state.admin); // Assuming your reducer provides totalPages
     const { store } = useParams();
-    
+
     const dispatch = useDispatch();
     const [currentPage, setCurrentPage] = useState(1);
     const [searchQuery, setSearchQuery] = useState('');
@@ -19,10 +19,8 @@ const AllProductsBystore = () => {
     const handleSearchInputChange = (event) => {
         setSearchQuery(event.target.value);
         dispatch(asyncFetchAllProducts(store, 1, searchQuery));
-
     };
 
-   
     const handlePreviousPage = () => {
         if (currentPage > 1) {
             setCurrentPage(currentPage - 1);
@@ -37,45 +35,47 @@ const AllProductsBystore = () => {
 
     return (
         <>
-            <div className="container mx-auto mt-4">
+            <div className="container mx-auto mt-4 px-4">
                 <h1 className="text-center text-2xl font-bold mb-4">{store} Store</h1>
-                <div className="mb-4">
+                <div className="mb-4 flex justify-center">
                     <input
                         type="text"
                         placeholder="Search products..."
                         value={searchQuery}
                         onChange={handleSearchInputChange}
-                        className="border rounded px-2 py-1"
+                        className="border rounded px-4 py-2 w-full sm:w-2/3 lg:w-1/2"
                     />
                 </div>
-                <table className="min-w-full bg-white border-collapse border border-gray-200">
-                    <thead>
-                        <tr>
-                            <th className="py-2 px-4 border-b">Product Name</th>
-                            <th className="py-2 px-4 border-b">Category</th>
-                            <th className="py-2 px-4 border-b">Description</th>
-                            <th className="py-2 px-4 border-b">MRP</th>
-                            <th className="py-2 px-4 border-b">Selling Price</th>
-                            <th className="py-2 px-4 border-b">Stock</th>
-                            <th className="py-2 px-4 border-b">Quantity</th>
-                            <th className="py-2 px-4 border-b">Product Code</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {products?.map((product) => (
-                            <tr key={product?._id}>
-                                <td className="py-2 px-4 border-b">{product?.productName}</td>
-                                <td className="py-2 px-4 border-b">{product?.category}</td>
-                                <td className="py-2 px-4 border-b">{product?.description}</td>
-                                <td className="py-2 px-4 border-b">Rs {product?.MRP}</td>
-                                <td className="py-2 px-4 border-b">Rs {product?.sellingPrice}</td>
-                                <td className="py-2 px-4 border-b">{product?.stock}</td>
-                                <td className="py-2 px-4 border-b">{product?.size}</td>
-                                <td className="py-2 px-4 border-b">{product?.productCode}</td>
+                <div className="overflow-x-auto">
+                    <table className="min-w-full bg-white border-collapse border border-gray-200">
+                        <thead>
+                            <tr>
+                                <th className="py-2 px-4 border-b">Product Name</th>
+                                <th className="py-2 px-4 border-b">Category</th>
+                                <th className="py-2 px-4 border-b">Description</th>
+                                <th className="py-2 px-4 border-b">MRP</th>
+                                <th className="py-2 px-4 border-b">Selling Price</th>
+                                <th className="py-2 px-4 border-b">Stock</th>
+                                <th className="py-2 px-4 border-b">Quantity</th>
+                                <th className="py-2 px-4 border-b">Product Code</th>
                             </tr>
-                        ))}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            {products?.map((product) => (
+                                <tr key={product?._id}>
+                                    <td className="py-2 px-4 border-b">{product?.productName}</td>
+                                    <td className="py-2 px-4 border-b">{product?.category}</td>
+                                    <td className="py-2 px-4 border-b">{product?.description}</td>
+                                    <td className="py-2 px-4 border-b">Rs {product?.MRP}</td>
+                                    <td className="py-2 px-4 border-b">Rs {product?.sellingPrice}</td>
+                                    <td className="py-2 px-4 border-b">{product?.stock}</td>
+                                    <td className="py-2 px-4 border-b">{product?.size}</td>
+                                    <td className="py-2 px-4 border-b">{product?.productCode}</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
 
                 {/* Pagination Controls */}
                 <div className="flex justify-center mt-4">
