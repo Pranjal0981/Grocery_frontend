@@ -7,6 +7,7 @@ const AccountDetails = () => {
     const dispatch = useDispatch();
     const [editing, setEditing] = useState(false);
     const [editedUser, setEditedUser] = useState({});
+    const [isSaving, setIsSaving] = useState(false);
 
     useEffect(() => {
         // Dispatch the action to fetch the current user details
@@ -15,16 +16,20 @@ const AccountDetails = () => {
 
     const handleEdit = () => {
         setEditing(true);
+        setEditedUser(user);
     };
 
     const handleSave = async () => {
-        // Dispatch action to save edited user details
-        await dispatch(asyncUpdateUser(editedUser, user?._id)); // Pass editedUser directly, not inside an object
+        setIsSaving(true);
+        await dispatch(asyncUpdateUser(editedUser, user?._id));
         setEditing(false);
+        setIsSaving(false);
     };
 
     const handleDelete = async () => {
-        await dispatch(asyncDeleteAccount(user?._id))
+        if (window.confirm("Are you sure you want to delete your account?")) {
+            await dispatch(asyncDeleteAccount(user?._id));
+        }
     };
 
     const handleChange = (e) => {
@@ -33,10 +38,10 @@ const AccountDetails = () => {
     };
 
     return (
-        <div className="container mx-auto py-8">
+        <div className="container mx-auto py-8 px-4">
             {isAuth ? (
-                <div className="max-w-lg mx-auto bg-white shadow-md p-8 rounded-md">
-                    <h1 className="text-2xl font-bold mb-4 text-center">Welcome, {user.email}</h1>
+                <div className="max-w-lg mx-auto bg-white shadow-lg rounded-lg p-6">
+                    <h1 className="text-3xl font-bold mb-4 text-center text-indigo-600">Welcome, {user.email}</h1>
                     <div className="border-b border-gray-300 mb-4"></div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
@@ -45,7 +50,7 @@ const AccountDetails = () => {
                                 <input
                                     type="text"
                                     name="firstName"
-                                    value={editedUser.firstName}
+                                    value={editedUser.firstName || ''}
                                     onChange={handleChange}
                                     className="border border-gray-300 rounded-md px-3 py-2 w-full"
                                 />
@@ -59,7 +64,7 @@ const AccountDetails = () => {
                                 <input
                                     type="text"
                                     name="lastName"
-                                    value={editedUser.lastName}
+                                    value={editedUser.lastName || ''}
                                     onChange={handleChange}
                                     className="border border-gray-300 rounded-md px-3 py-2 w-full"
                                 />
@@ -73,7 +78,7 @@ const AccountDetails = () => {
                                 <input
                                     type="text"
                                     name="phone"
-                                    value={editedUser.phone}
+                                    value={editedUser.phone || ''}
                                     onChange={handleChange}
                                     className="border border-gray-300 rounded-md px-3 py-2 w-full"
                                 />
@@ -87,7 +92,7 @@ const AccountDetails = () => {
                                 <input
                                     type="email"
                                     name="email"
-                                    value={editedUser.email}
+                                    value={editedUser.email || ''}
                                     onChange={handleChange}
                                     className="border border-gray-300 rounded-md px-3 py-2 w-full"
                                 />
@@ -97,39 +102,42 @@ const AccountDetails = () => {
                         </div>
                     </div>
                     {editing ? (
-                        <div className="mt-4">
+                        <div className="mt-4 flex flex-col md:flex-row gap-4">
                             <button
                                 onClick={handleSave}
-                                className="bg-blue-500 text-white px-4 py-2 rounded-md mr-4 w-full md:w-auto"
+                                className={`bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-2 rounded-md ${isSaving ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                disabled={isSaving}
                             >
-                                Save
+                                {isSaving ? 'Saving...' : 'Save'}
                             </button>
                             <button
                                 onClick={() => setEditing(false)}
-                                className="bg-gray-400 text-white px-4 py-2 rounded-md w-full md:w-auto mt-2 md:mt-0"
+                                className="bg-gray-400 hover:bg-gray-500 text-white px-4 py-2 rounded-md"
                             >
                                 Cancel
                             </button>
                         </div>
                     ) : (
-                        <div className="mt-4">
+                        <div className="mt-4 flex flex-col md:flex-row gap-4">
                             <button
                                 onClick={handleEdit}
-                                className="bg-blue-500 text-white px-4 py-2 rounded-md mr-4 w-full md:w-auto"
+                                className="bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-2 rounded-md"
                             >
                                 Edit
                             </button>
-                           
+                        
                         </div>
                     )}
                 </div>
             ) : (
                 <div className="text-center">
-                    <h1 className="text-2xl font-bold mb-4">Please log in to view your account details</h1>
+                    <h1 className="text-3xl font-bold mb-4 text-indigo-600">Please log in to view your account details</h1>
                 </div>
             )}
         </div>
     );
 };
+
+
 
 export default AccountDetails;

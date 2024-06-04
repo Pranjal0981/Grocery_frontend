@@ -206,156 +206,156 @@ const Cart = () => {
         }
     };
 
-    // const handleCashOnDelivery = async () => {
-    //     try {
-    //         const pdfBlob = await generatePDF(checkOutCart, user);
-    //         if (!selectedStore) {
-    //             toast.error('Please select a store before proceeding with payment.');
-    //             return;
-    //         }
-    //         const availableProducts = checkOutCart.products
-    //             .filter(item => !unavailableProduct.find(up => up.productId === item.productId._id))
-    //             .map(item => ({
-    //                 productId: item.productId._id,
-    //                 quantity: item.quantity,
-    //                 totalPrice: item.totalPrice,
-    //                 store: item.store
-    //             }));
+    const handleCashOnDelivery = async () => {
+        try {
+            const pdfBlob = await generatePDF(checkOutCart, user);
+            if (!selectedStore) {
+                toast.error('Please select a store before proceeding with payment.');
+                return;
+            }
+            const availableProducts = checkOutCart.products
+                .filter(item => !unavailableProduct.find(up => up.productId === item.productId._id))
+                .map(item => ({
+                    productId: item.productId._id,
+                    quantity: item.quantity,
+                    totalPrice: item.totalPrice,
+                    store: item.store
+                }));
 
-    //         if (availableProducts.length === 0) {
-    //             toast.error('No available products to place an order.');
-    //             return;
-    //         }
+            if (availableProducts.length === 0) {
+                toast.error('No available products to place an order.');
+                return;
+            }
 
-    //         await dispatch(asyncCustomerOrder({
-    //             checkOutCart: JSON.stringify(availableProducts),
-    //             totalGrandPrice: checkOutCart?.totalGrandPrice,
-    //             paymentType: 'Cash on delivery',
-    //             email: user.email
-    //         }, user._id, pdfBlob));
+            await dispatch(asyncCustomerOrder({
+                checkOutCart: JSON.stringify(availableProducts),
+                totalGrandPrice: checkOutCart?.totalGrandPrice,
+                paymentType: 'Cash on delivery',
+                email: user.email
+            }, user._id, pdfBlob));
 
-    //         for (const item of checkOutCart.products) {
-    //             if (!unavailableProduct.find(up => up.productId === item.productId._id)) {
-    //                 const newStock = item.stock - item.quantity;
-    //                 await dispatch(asyncUpdateStock(item.productId._id, newStock, selectedStore, user._id));
-    //             }
-    //         }
-    //         setShowModal(false);
-    //         Swal.fire({
-    //             icon: 'success',
-    //             title: 'Order Placed!',
-    //             text: 'Your order has been successfully placed.',
-    //         });
-    //     } catch (error) {
-    //         console.error('Error placing order:', error);
-    //         Swal.fire({
-    //             icon: 'error',
-    //             title: 'Error',
-    //             text: 'There was an error placing your order. Please try again later.',
-    //         });
-    //     }
-    // };
+            for (const item of checkOutCart.products) {
+                if (!unavailableProduct.find(up => up.productId === item.productId._id)) {
+                    const newStock = item.stock - item.quantity;
+                    await dispatch(asyncUpdateStock(item.productId._id, newStock, selectedStore, user._id));
+                }
+            }
+            setShowModal(false);
+            Swal.fire({
+                icon: 'success',
+                title: 'Order Placed!',
+                text: 'Your order has been successfully placed.',
+            });
+        } catch (error) {
+            console.error('Error placing order:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'There was an error placing your order. Please try again later.',
+            });
+        }
+    };
 
-    // const handleOnlinePayment = async (amount) => {
-    //     setIsPaymentLoading(true); // Set loading state to true
-    //     try {
-    //         const pdfBlob = await generatePDF(checkOutCart, user);
+    const handleOnlinePayment = async (amount) => {
+        setIsPaymentLoading(true); // Set loading state to true
+        try {
+            const pdfBlob = await generatePDF(checkOutCart, user);
 
-    //         if (!selectedStore) {
-    //             toast.error('Please select a store before proceeding with payment.');
-    //             setIsPaymentLoading(false); // Set loading state to false
-    //             return;
-    //         }
+            if (!selectedStore) {
+                toast.error('Please select a store before proceeding with payment.');
+                setIsPaymentLoading(false); // Set loading state to false
+                return;
+            }
 
-    //         const availableProducts = checkOutCart.products
-    //             .filter(item => !unavailableProduct.find(up => up.productId === item.productId._id))
-    //             .map(item => ({
-    //                 productId: item.productId._id,
-    //                 quantity: item.quantity,
-    //                 totalPrice: item.totalPrice,
-    //                 store: item.store
-    //             }));
+            const availableProducts = checkOutCart.products
+                .filter(item => !unavailableProduct.find(up => up.productId === item.productId._id))
+                .map(item => ({
+                    productId: item.productId._id,
+                    quantity: item.quantity,
+                    totalPrice: item.totalPrice,
+                    store: item.store
+                }));
 
-    //         if (availableProducts.length === 0) {
-    //             toast.error('No available products to place an order.');
-    //             setIsPaymentLoading(false); // Set loading state to false
-    //             return;
-    //         }
+            if (availableProducts.length === 0) {
+                toast.error('No available products to place an order.');
+                setIsPaymentLoading(false); // Set loading state to false
+                return;
+            }
 
-    //         const { data } = await axios.get("/api/getkey");
-    //         const key = data.key;
+            const { data } = await axios.get("/api/getkey");
+            const key = data.key;
 
-    //         const { data: { order } } = await axios.post("/user/api/checkout", { amount });
+            const { data: { order } } = await axios.post("/user/api/checkout", { amount });
 
-    //         const options = {
-    //             key,
-    //             amount: order.amount,
-    //             currency: "INR",
-    //             name: "RGS GROCERY",
-    //             description: "razorpay",
-    //             image: "/RGS-New-Logo.webp",
-    //             order_id: order.id,
-    //             prefill: {
-    //                 name: user.name,
-    //                 email: user.email,
-    //                 contact: user.phone
-    //             },
-    //             notes: { "address": user.address },
-    //             theme: { "color": "#121212" },
-    //             handler: async function (response) {
-    //                 try {
-    //                     const paymentVerificationData = {
-    //                         razorpay_order_id: response.razorpay_order_id,
-    //                         razorpay_payment_id: response.razorpay_payment_id,
-    //                         razorpay_signature: response.razorpay_signature,
-    //                         checkoutCart: checkOutCart
-    //                     };
+            const options = {
+                key,
+                amount: order.amount,
+                currency: "INR",
+                name: "RGS GROCERY",
+                description: "razorpay",
+                image: "/RGS-New-Logo.webp",
+                order_id: order.id,
+                prefill: {
+                    name: user.name,
+                    email: user.email,
+                    contact: user.phone
+                },
+                notes: { "address": user.address },
+                theme: { "color": "#121212" },
+                handler: async function (response) {
+                    try {
+                        const paymentVerificationData = {
+                            razorpay_order_id: response.razorpay_order_id,
+                            razorpay_payment_id: response.razorpay_payment_id,
+                            razorpay_signature: response.razorpay_signature,
+                            checkoutCart: checkOutCart
+                        };
 
-    //                     const verificationResponse = await axios.post("/user/api/paymentverification", paymentVerificationData);
-    //                     const { reference_id } = verificationResponse.data;
-    //                     alert('Payment success, reference_id', reference_id);
-    //                     dispatch(asyncCustomerOrder({
-    //                         checkOutCart: JSON.stringify(availableProducts),
-    //                         totalGrandPrice: checkOutCart?.totalGrandPrice,
-    //                         paymentType: 'Online Payment',
-    //                         email: user.email
-    //                     }, user._id, pdfBlob));
-    //                     for (const item of checkOutCart.products) {
-    //                         if (!unavailableProduct.find(up => up.productId === item.productId._id)) {
-    //                             const newStock = item.stock - item.quantity;
-    //                             dispatch(asyncUpdateStock(item.productId._id, newStock, selectedStore, user._id));
-    //                         }
-    //                     }
-    //                     setShowModal(false);
-    //                     Swal.fire({
-    //                         icon: 'success',
-    //                         title: 'Order Placed!',
-    //                         text: 'Your order has been successfully placed.',
-    //                     });
+                        const verificationResponse = await axios.post("/user/api/paymentverification", paymentVerificationData);
+                        const { reference_id } = verificationResponse.data;
+                        alert('Payment success, reference_id', reference_id);
+                        dispatch(asyncCustomerOrder({
+                            checkOutCart: JSON.stringify(availableProducts),
+                            totalGrandPrice: checkOutCart?.totalGrandPrice,
+                            paymentType: 'Online Payment',
+                            email: user.email
+                        }, user._id, pdfBlob));
+                        for (const item of checkOutCart.products) {
+                            if (!unavailableProduct.find(up => up.productId === item.productId._id)) {
+                                const newStock = item.stock - item.quantity;
+                                dispatch(asyncUpdateStock(item.productId._id, newStock, selectedStore, user._id));
+                            }
+                        }
+                        setShowModal(false);
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Order Placed!',
+                            text: 'Your order has been successfully placed.',
+                        });
 
-    //                     // Navigate to payment success page
-    //                     navigate('/payment/success', { state: { reference_id: reference_id } });
+                        // Navigate to payment success page
+                        navigate('/payment/success', { state: { reference_id: reference_id } });
 
-    //                 } catch (error) {
-    //                     console.error("Error processing payment:", error);
-    //                     Swal.fire({
-    //                         icon: 'error',
-    //                         title: 'Error',
-    //                         text: 'There was an error placing your order. Please try again later.',
-    //                     });
-    //                 } finally {
-    //                     setIsPaymentLoading(false); // Set loading state to false
-    //                 }
-    //             }
-    //         };
+                    } catch (error) {
+                        console.error("Error processing payment:", error);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'There was an error placing your order. Please try again later.',
+                        });
+                    } finally {
+                        setIsPaymentLoading(false); // Set loading state to false
+                    }
+                }
+            };
 
-    //         const razor = new window.Razorpay(options);
-    //         razor.open();
-    //     } catch (error) {
-    //         console.error("Error in checkout:", error);
-    //         setIsPaymentLoading(false); // Set loading state to false
-    //     }
-    // };
+            const razor = new window.Razorpay(options);
+            razor.open();
+        } catch (error) {
+            console.error("Error in checkout:", error);
+            setIsPaymentLoading(false); // Set loading state to false
+        }
+    };
 
     const handleDeleteItem = itemId => {
         dispatch(asyncDeleteCheckoutCart(user?._id, itemId));
