@@ -9,6 +9,8 @@ export const StoreManagerLogin = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const [stores, setStores] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState('');
 
     useEffect(() => {
         // Fetch the list of stores from the JSON file
@@ -31,8 +33,16 @@ export const StoreManagerLogin = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
         // console.log(store)
+        setError('');
+        setLoading(true);
+        try{
         dispatch(asyncStoreLogin(formData, navigate));
-
+        }
+catch (err) {
+                setError('Failed.');
+            } finally {
+                setLoading(false);
+            }
     };
 
     return (
@@ -90,9 +100,10 @@ export const StoreManagerLogin = () => {
                 </div>
                 <button
                     type="submit"
-                    className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 focus:outline-none focus:shadow-outline"
+                    className={`w-full bg-blue-500 text-white py-2 rounded focus:outline-none ${loading ? 'opacity-75 cursor-not-allowed' : 'hover:bg-blue-600'} transition duration-200`}
+                    disabled={loading}
                 >
-                    Login
+                    {loading ? 'Loggin...' : 'Login'}
                 </button>
                 <Link
                     to="/storemanager/register"
@@ -116,7 +127,8 @@ export const StoreManagerLogin = () => {
 export const StoreManagerRegister = () => {
     const dispatch = useDispatch();
     const [stores, setStores] = useState([]);
-
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState('');
     useEffect(() => {
         // Fetch the list of stores from the JSON file
         fetch('/stores.json')
@@ -138,7 +150,16 @@ export const StoreManagerRegister = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        dispatch(asyncStoreRegister(formData)); // Assuming asyncStoreRegister handles the registration logic
+        setError('');
+        setLoading(true);
+        try{
+        dispatch(asyncStoreRegister(formData));
+        }
+        catch (err) {
+            setError('Failed.');
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -196,9 +217,10 @@ export const StoreManagerRegister = () => {
                 </div>
                 <button
                     type="submit"
-                    className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 focus:outline-none focus:shadow-outline"
+                    className={`w-full bg-blue-500 text-white py-2 rounded focus:outline-none ${loading ? 'opacity-75 cursor-not-allowed' : 'hover:bg-blue-600'} transition duration-200`}
+                    disabled={loading}
                 >
-                    Register
+                    {loading ? 'Registering...' : 'Register'}
                 </button>
                 {/* Add login link */}
                 <p className="mt-4 text-sm text-gray-600">

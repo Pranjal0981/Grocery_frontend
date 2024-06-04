@@ -5,137 +5,179 @@ import axios from '../config/axios';
 import { jsPDF } from 'jspdf'
 import 'jspdf-autotable'
 import QRCode from 'qrcode';
-// import { v4 as uuidv4 } from 'uuid4';
+import { v4 as uuidv4 } from 'uuid';
 import Swal from 'sweetalert2';
-import { asyncFetchCartProduct, asyncDeleteCheckoutCart } from "../store/actions/userAction";
+import { asyncFetchCartProduct, asyncDeleteCheckoutCart, asyncClearCart } from "../store/actions/userAction";
 import rgsLogo from '/rgslogo.jpeg';
 import { asyncUpdateStock } from '../store/actions/userAction'
 import { asyncCustomerOrder, asyncPayment, asyncUpdateCart } from '../store/actions/userAction'
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-const generatePDF = async (checkOutCart, user) => {
+const generatePDF = async (checkOutCart, user,orderId) => {
     try {
-        const link = "https://reeplayerindia.com/"; // Replace this with your desired link
         const GSTNo = "23AAMCR9828E1Z3";
         const FoodLicenseNo = "21424010002578";
+        const PAN = "AAMCR9828E";
 
         const doc = new jsPDF();
         doc.setFont('helvetica');
         doc.setFontSize(12);
 
         // Add company logo
-        const logoWidth = 50;
-        const logoHeight = 20;
-        doc.addImage(rgsLogo, 'JPEG', 10, 10, logoWidth, logoHeight);
+        const companyLogo = '/rgslogo.jpeg';
+        const imgWidth = 60; // Adjust width as needed
+        const imgHeight = 20; // Adjust height as needed
+        doc.addImage(companyLogo, 'PNG', 10, 10, imgWidth, imgHeight);
+
+        // Add heading for RGS Grocery with GST and Food License No.
+        doc.setFontSize(16);
+        doc.text('RGS Grocery', 105, 10); // Adjust position as necessary
+        doc.setFontSize(12);
+        doc.text(`GST No: ${GSTNo}`, 105, 18); // Adjust position as necessary
+        doc.text(`Food License No: ${FoodLicenseNo}`, 105, 26); // Adjust position as necessary
 
         // Company details
-        const companyName = 'RGS Grocery';
-        const companyAddress = 'IT Park, Gandhinagar, Bhopal';
-        doc.setFontSize(16);
-        doc.setTextColor(0, 0, 255); // Blue color
-        doc.text(companyName, 70, 20);
-        doc.setTextColor(0, 0, 0); // Reset text color
-        doc.setFontSize(12);
-        doc.text(companyAddress, 70, 30);
-
-        // Add GST and Food License Numbers
-        doc.setFontSize(10);
-        doc.text(`GST No: ${GSTNo}`, 70, 40);
-        doc.text(`Food License No: ${FoodLicenseNo}`, 70, 45);
-
-        // Address details
-        const addressHeader = ['Name', 'Address Line 1', 'Address Line 2', 'City', 'State', 'Postal Code', 'Phone Number'];
-        const selectedAddressIndex = user?.selectedAddressIndex ?? 0; // Default to 0 if undefined
-        const addressData = user?.address?.[selectedAddressIndex] || user?.address?.[0]; // Fallback to the first address if the index is out of bounds
-
-        if (addressData) {
-            const addressRows = [
-                addressData.fullName || '',
-                addressData.addressLine1 || '',
-                addressData.addressLine2 || '',
-                addressData.city || '',
-                addressData.state || '',
-                addressData.postalCode || '',
-                user.phone || '' // Assuming phone is not part of the address object but of the user object
-            ];
-            const addressTable = [addressHeader, addressRows];
-
-            // Add address table
-            doc.autoTable({
-                startY: 50,
-                head: [addressTable[0]],
-                body: [addressTable[1]],
-                theme: 'plain',
-                styles: {
-                    font: 'helvetica',
-                    fontSize: 10,
-                    cellPadding: 3,
-                },
-            });
-        }
-
-        // Add customer details
-        const userDetails = [
-            `Customer: ${user?.firstName || ''} ${user?.lastName || ''}`,
-            `Email: ${user?.email || ''}`,
-            `Phone: ${user?.phone || ''}`,
+        const companyDetails = [
+            ['Address:', 'IT Park, Gandhinagar, Bhopal, Madhya Pradesh, India'],
+            ['Phone:', '+91 1234567890'],
+            ['Email:', 'contact@rgs-grocery.com'],
+            ['PAN:', PAN],
         ];
 
-        userDetails.forEach((detail, index) => {
-            doc.text(detail, 10, 110 + (index * 10));
-        });
+        // Order and customer details
+        const selectedAddressIndex = user?.selectedAddressIndex ?? 0;
+        const addressData = user?.address?.[selectedAddressIndex] || user?.address?.[0];
 
-        // Product table
-        const header = ['Brand Name', 'Quantity', 'Category', 'Product Name', 'MRP', 'GST', 'CGST', 'Selling Price', 'Total Price'];
-        const tableBody = [];
-        if (checkOutCart?.products && checkOutCart?.products?.length > 0) {
-            checkOutCart.products.forEach((item) => {
-                const product = item?.productId;
-                tableBody.push([
-                    product?.brand || '',
-                    item?.quantity || '',
-                    product?.category || '',
-                    product?.productName || '',
-                    `Rs ${product?.MRP || ''}`, // Assuming MRP is the MRP
-                    `${product?.gst || ''}%`, // Assuming gst is the GST
-                    `${product?.cgst || ''}%`, // Assuming cgst is the CGST
-                    `Rs ${product?.sellingPrice || ''}`, // Assuming sellingPrice is the Selling Price
-                    `Rs ${item?.totalPrice || ''}` // Assuming totalPrice is the Total Price
-                ]);
-            });
-        }
+        const customerDetails = [
+            ['Order ID:', orderId],
+            ['Customer:', addressData?.fullName || ''],
+            ['Address Line 1:', addressData?.addressLine1 || ''],
+            ['Address Line 2:', addressData?.addressLine2 || ''],
+            ['City:', addressData?.city || ''],
+            ['State:', addressData?.state || ''],
+            ['Postal Code:', addressData?.postalCode || ''],
+            ['Phone:', user?.phone || ''],
+            ['Email:', user?.email || ''],
+        ];
 
-        // Add product table
+        // Add company and customer details in a two-column format
         doc.autoTable({
-            startY: 150, // Adjust startY based on the space occupied by user details
-            head: [header],
-            body: tableBody,
+            startY: 50, // Adjust startY to leave space for the heading and logo
+            body: [
+                [
+                    { content: 'Company Details', colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } },
+                    { content: 'Customer Details', colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } },
+                ],
+                ...companyDetails.map((row, index) => [row[0], row[1], customerDetails[index][0], customerDetails[index][1]]),
+            ],
             theme: 'grid',
+            showGrid: 'always', // Show grid lines for table cells
             styles: {
                 font: 'helvetica',
                 fontSize: 10,
                 cellPadding: 3,
             },
+            columnStyles: {
+                0: { cellWidth: 'auto' },
+                1: { cellWidth: 'auto' },
+                2: { cellWidth: 'auto' },
+                3: { cellWidth: 'auto' },
+            },
+            headStyles: {
+                fillColor: [240, 229, 209], // Black header
+                textColor: [0, 0, 0], // White text
+                fontStyle: 'bold',
+            },
+            bodyStyles: {
+                fillColor: [255, 255, 255], // White background
+                textColor: [0, 0, 0], // Black text
+            },
+            alternateRowStyles: {
+                fillColor: [240, 240, 240] // Alternate row background color
+            },
         });
 
-        // Add total grand price
-        const totalGrandPriceY = 150 + (tableBody.length * 20) + (userDetails.length * 10);
-        doc.setFontSize(12);
-        doc.text(`Total Grand Price: Rs ${checkOutCart.totalGrandPrice.toFixed(2)}`, 10, totalGrandPriceY);
+        // Product table
+        const header = [
+            'Item No.', 'Item Description', 'Qty',
+            'MRP', 'Selling Price', 'GST', 'CGST', 'Total'
+        ];
+        const tableBody = [];
+        let totalMRP = 0;
+        let totalSellingPrice = 0;
 
-        // Add QR code
-        const qrDataUrl = await QRCode.toDataURL(link);
-        const qrImageHeight = 40;
-        const qrImageWidth = 40;
-        const qrX = doc.internal.pageSize.getWidth() / 2 - qrImageWidth / 2;
-        const qrY = 10;
-        doc.addImage(qrDataUrl, 'PNG', qrX, qrY, qrImageWidth, qrImageHeight);
+        if (checkOutCart?.products && checkOutCart?.products?.length > 0) {
+            checkOutCart.products.forEach((item, index) => {
+                const product = item?.productId;
+                const totalPrice = item?.totalPrice || 0;
+                const gst = product?.gst || 0;
+                const cgst = product?.cgst || 0;
+
+                // Calculate tax amounts
+                const taxAmount = (product?.sellingPrice * gst) / 100;
+                const cgstAmount = (product?.sellingPrice * cgst) / 100;
+
+                // Calculate total price including taxes
+                const totalPriceWithTax = product?.sellingPrice + taxAmount + cgstAmount;
+
+                tableBody.push([
+                    index + 1,
+                    product?.productName || '',
+                    item?.quantity || '',
+                    `Rs ${product?.MRP || ''}`,
+                    `Rs ${product?.sellingPrice || ''}`,
+                    `${gst}%`,
+                    `${cgst}%`,
+                    `Rs ${totalPriceWithTax.toFixed(2)}`
+                ]);
+
+                // Add to total MRP and selling price
+                totalMRP += product?.MRP || 0;
+                totalSellingPrice += product?.sellingPrice || 0;
+            });
+
+            // Insert a row for total MRP
+            const totalMRPRow = [
+                '', '', '', `Rs ${totalMRP.toFixed(2)}`, '', '', '',`Rs ${checkOutCart.totalGrandPrice.toFixed(2)}`
+            ];
+            tableBody.push(totalMRPRow);
+        }
+
+        // Add total grand price row
+      
+        // Add product table
+        doc.autoTable({
+            startY: doc.previousAutoTable.finalY + 10,
+            head: [header],
+            body: tableBody,
+            theme: 'grid',
+            showGrid: 'always', // Show grid lines for table cells
+            styles: {
+                font: 'helvetica',
+                fontSize: 10,
+                cellPadding: 2,
+                halign: 'left',
+            },
+            headStyles: {
+                fillColor: [240, 229, 209], // Black header
+                textColor: [0, 0, 0], // White text
+                fontStyle: 'bold',
+            },
+            bodyStyles: {
+                fillColor: [255, 255, 255], // White background
+                textColor: [0, 0, 0], // Black text
+            },
+            alternateRowStyles: {
+                fillColor: [240, 240, 240] // Alternate row background color
+            },
+        });
+
+        // Add total selling price
 
         // Add footer
         const footerText = 'Thank you for shopping with us!';
-        doc.setTextColor(0, 0, 255); // Blue color
+        doc.setFontSize(10);
         doc.text(footerText, 10, doc.internal.pageSize.getHeight() - 10);
-        doc.setTextColor(0, 0, 0); // Reset text color
 
         const pdfBlob = doc.output('blob');
         return pdfBlob;
@@ -143,15 +185,18 @@ const generatePDF = async (checkOutCart, user) => {
         console.error("Error generating PDF:", error);
         throw error;
     }
-}
+};
+
+
 
 
 const Cart = () => {
     const [showModal, setShowModal] = useState(false);
     const [selectedStore, setSelectedStore] = useState('');
-    const [isPaymentLoading, setIsPaymentLoading] = useState(false); // New loading state
+    const [isPaymentLoading, setIsPaymentLoading] = useState(false);
     const [pdfDataUrl, setPdfDataUrl] = useState('');
-
+    const isCashOnDeliveryProcessing = useSelector(state => state.user.isCashOnDeliveryProcessing);
+console.log(isCashOnDeliveryProcessing)
     const dispatch = useDispatch();
     const { checkOutCart, user, unavailableProduct = [] } = useSelector(state => state.user);
     const navigate = useNavigate();
@@ -170,6 +215,14 @@ const Cart = () => {
             .catch(error => console.error('Error fetching stores:', error));
     }, []);
 
+    useEffect(() => {
+        return () => {
+            setIsPaymentLoading(false);
+        };
+    }, []);
+    const generateOrderId = () => {
+        return Math.floor(100000 + Math.random() * 900000); // Generates a 6-digit number
+    };
     const handlePlaceOrder = () => {
         if (!user.address || user.address.length === 0) {
             toast.error('Please add your details and phone number before placing the order.');
@@ -193,8 +246,13 @@ const Cart = () => {
 
     const handleGeneratePDF = async () => {
         try {
-            const generatedPdfDataUrl = await generatePDF(checkOutCart, user);
-            setPdfDataUrl(generatedPdfDataUrl);
+           
+
+            const orderId = generateOrderId();
+
+            const pdfBlob = await generatePDF(checkOutCart, user,orderId);
+            const pdfUrl = URL.createObjectURL(pdfBlob);
+            setPdfDataUrl(pdfUrl);
         } catch (error) {
             console.error("Error generating PDF:", error);
         }
@@ -205,14 +263,16 @@ const Cart = () => {
             window.open(pdfDataUrl, '_blank');
         }
     };
-
     const handleCashOnDelivery = async () => {
         try {
-            const pdfBlob = await generatePDF(checkOutCart, user);
+            const orderId = generateOrderId();
+            const pdfBlob = await generatePDF(checkOutCart, user, orderId);
+
             if (!selectedStore) {
                 toast.error('Please select a store before proceeding with payment.');
                 return;
             }
+
             const availableProducts = checkOutCart.products
                 .filter(item => !unavailableProduct.find(up => up.productId === item.productId._id))
                 .map(item => ({
@@ -231,7 +291,8 @@ const Cart = () => {
                 checkOutCart: JSON.stringify(availableProducts),
                 totalGrandPrice: checkOutCart?.totalGrandPrice,
                 paymentType: 'Cash on delivery',
-                email: user.email
+                email: user.email,
+                orderId
             }, user._id, pdfBlob));
 
             for (const item of checkOutCart.products) {
@@ -240,12 +301,13 @@ const Cart = () => {
                     await dispatch(asyncUpdateStock(item.productId._id, newStock, selectedStore, user._id));
                 }
             }
-            setShowModal(false);
+           
             Swal.fire({
                 icon: 'success',
                 title: 'Order Placed!',
                 text: 'Your order has been successfully placed.',
             });
+
         } catch (error) {
             console.error('Error placing order:', error);
             Swal.fire({
@@ -256,14 +318,19 @@ const Cart = () => {
         }
     };
 
+
+
+
+
     const handleOnlinePayment = async (amount) => {
-        setIsPaymentLoading(true); // Set loading state to true
+        setIsPaymentLoading(true);
         try {
-            const pdfBlob = await generatePDF(checkOutCart, user);
+            const orderId = generateOrderId();
+            const pdfBlob = await generatePDF(checkOutCart, user, orderId);
 
             if (!selectedStore) {
                 toast.error('Please select a store before proceeding with payment.');
-                setIsPaymentLoading(false); // Set loading state to false
+                setIsPaymentLoading(false);
                 return;
             }
 
@@ -278,7 +345,7 @@ const Cart = () => {
 
             if (availableProducts.length === 0) {
                 toast.error('No available products to place an order.');
-                setIsPaymentLoading(false); // Set loading state to false
+                setIsPaymentLoading(false);
                 return;
             }
 
@@ -313,19 +380,22 @@ const Cart = () => {
 
                         const verificationResponse = await axios.post("/user/api/paymentverification", paymentVerificationData);
                         const { reference_id } = verificationResponse.data;
-                        alert('Payment success, reference_id', reference_id);
-                        dispatch(asyncCustomerOrder({
+                        toast.success('Payment successful! Reference ID: ' + reference_id);
+                        await dispatch(asyncCustomerOrder({
                             checkOutCart: JSON.stringify(availableProducts),
                             totalGrandPrice: checkOutCart?.totalGrandPrice,
                             paymentType: 'Online Payment',
-                            email: user.email
+                            email: user.email,
+                            orderId
                         }, user._id, pdfBlob));
+
                         for (const item of checkOutCart.products) {
                             if (!unavailableProduct.find(up => up.productId === item.productId._id)) {
                                 const newStock = item.stock - item.quantity;
-                                dispatch(asyncUpdateStock(item.productId._id, newStock, selectedStore, user._id));
+                                await dispatch(asyncUpdateStock(item.productId._id, newStock, selectedStore, user._id));
                             }
                         }
+
                         setShowModal(false);
                         Swal.fire({
                             icon: 'success',
@@ -333,7 +403,7 @@ const Cart = () => {
                             text: 'Your order has been successfully placed.',
                         });
 
-                        // Navigate to payment success page
+
                         navigate('/payment/success', { state: { reference_id: reference_id } });
 
                     } catch (error) {
@@ -344,7 +414,12 @@ const Cart = () => {
                             text: 'There was an error placing your order. Please try again later.',
                         });
                     } finally {
-                        setIsPaymentLoading(false); // Set loading state to false
+                        setIsPaymentLoading(false);
+                    }
+                },
+                modal: {
+                    ondismiss: () => {
+                        setIsPaymentLoading(false); // Reset the loading state when the payment window is closed
                     }
                 }
             };
@@ -353,9 +428,10 @@ const Cart = () => {
             razor.open();
         } catch (error) {
             console.error("Error in checkout:", error);
-            setIsPaymentLoading(false); // Set loading state to false
+            setIsPaymentLoading(false);
         }
     };
+
 
     const handleDeleteItem = itemId => {
         dispatch(asyncDeleteCheckoutCart(user?._id, itemId));
@@ -385,11 +461,11 @@ const Cart = () => {
                                             <p className="text-gray-800 font-bold">Product Code: {item.productId.productCode}</p>
                                         </div>
                                         <div className="flex justify-between items-center">
-                                            <p>Total Price: Rs {item.totalPrice}</p>
+                                            <p className="text-gray-800">Total Price: Rs {item.totalPrice}</p>
                                         </div>
                                         <div className="flex justify-between items-center">
                                             <h2 className="text-xl font-bold mb-2 text-indigo-800">Quantity: {item.quantity}</h2>
-                                            <p>Chosen Store: {item.store}</p>
+                                            <p className="text-gray-800">Chosen Store: {item.store}</p>
                                         </div>
                                         <button onClick={() => handleDeleteItem(item._id)} className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mt-2">
                                             Delete
@@ -402,7 +478,7 @@ const Cart = () => {
                         <p className="italic text-gray-500">No items in the cart</p>
                     )}
                 </div>
-                <div className="col-span-1 md:col-span-1 lg:col-span-1">
+                <div>
                     <h2 className="text-2xl font-bold mb-4 text-indigo-800">Store Selection</h2>
                     <div className="flex flex-col items-start">
                         <select
@@ -431,48 +507,55 @@ const Cart = () => {
                     </div>
                 </div>
             </div>
-            <button onClick={handleGeneratePDF}>Generate PDF</button>
-            <button onClick={handleOpenPDF}>Open PDF</button>
-
+            <div className="flex mt-4">
+                <button onClick={handleGeneratePDF} className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded mr-2">
+                    Generate PDF
+                </button>
+                <button onClick={handleOpenPDF} className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
+                    Open PDF
+                </button>
+            </div>
             {showModal && (
                 <div className="fixed z-50 inset-0 flex items-center justify-center bg-black bg-opacity-50">
                     <div className="bg-white p-8 rounded shadow-md w-full max-w-md">
                         <h2 className="text-xl font-bold mb-4 text-indigo-800">Choose Payment Method</h2>
-                        {isPaymentLoading ? ( // Show loading spinner or message if payment is processing
-                            <div className="flex justify-center items-center">
-                                <div className="loader"></div> {/* You can replace this with a loading spinner component */}
-                                <p className="ml-2 text-indigo-800">Processing payment...</p>
-                            </div>
-                        ) : (
-                            <>
+                        <>
+                            {isCashOnDeliveryProcessing ? (
+                                <button
+                                    className="bg-gray-500 text-white font-bold py-2 px-4 rounded mb-4 w-full"
+                                    disabled
+                                >
+                                    Loading...
+                                </button>
+                            ) : (
                                 <button
                                     onClick={handleCashOnDelivery}
                                     className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mb-4 w-full"
                                 >
                                     Cash on Delivery
                                 </button>
-                                <button
-                                    onClick={() => handleOnlinePayment(checkOutCart?.totalGrandPrice)}
-                                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-full"
-                                >
-                                    Online Payment
-                                </button>
-                                <button
-                                    onClick={handleCloseModal}
-                                    className="mt-4 text-gray-600 underline w-full text-center"
-                                >
-                                    Cancel
-                                </button>
-                            </>
-                        )}
+                            )}
+                            <button
+                                onClick={() => handleOnlinePayment(checkOutCart?.totalGrandPrice)}
+                                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-full"
+                            >
+                                Online Payment
+                            </button>
+                            <button
+                                onClick={handleCloseModal}
+                                className="mt-4 text-gray-600 underline w-full text-center"
+                            >
+                                Cancel
+                            </button>
+                        </>
                     </div>
                 </div>
             )}
+
+
         </div>
     );
 };
-
-
 
 
 

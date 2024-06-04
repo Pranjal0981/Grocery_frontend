@@ -1,4 +1,4 @@
-import { saveUser, removeUser, saveWishlist, saveCheckOutCart, saveTokenExpiration, saveUnavailableProduct } from "../reducers/userSlice";
+import { saveUser, removeUser, saveWishlist, saveCheckOutCart, saveTokenExpiration, saveUnavailableProduct, setCashOnDeliveryProcessing } from "../reducers/userSlice";
 import axios from '../../config/axios'
 import { saveProduct } from "../reducers/productSlice";
 import { saveOrders } from "../reducers/adminSlice";
@@ -269,18 +269,17 @@ export const asyncDeleteAccount = (userId) => async (dispatch, getState) => {
 
 export const asyncCustomerOrder = (data, userId, pdfBlob) => async (dispatch, getState) => {
     try {
-        // Create FormData to handle file uploads and JSON data
+        dispatch(setCashOnDeliveryProcessing(true)); // Set loading state to true for cash on delivery
+
         const formData = new FormData();
-        console.log(data);
 
         // Append data to FormData
         formData.append('checkOutCart', JSON.stringify(data.checkOutCart));
         formData.append('totalGrandPrice', data.totalGrandPrice);
         formData.append('paymentType', data.paymentType);
+        formData.append('orderId', data.orderId);
         formData.append('pdfFile', pdfBlob, 'checkout_bill.pdf');
         formData.append('email', data.email);
-
-        console.log(formData);
 
         // Send POST request with FormData
         const response = await axios.post(`/user/order/${userId}`, formData, {
@@ -289,15 +288,29 @@ export const asyncCustomerOrder = (data, userId, pdfBlob) => async (dispatch, ge
             },
         });
 
-        console.log(response);
+        await dispatch(asyncClearCart(userId)); // Clear the cart after successful order placement
 
-        
+        // console.log(response);
+
+        dispatch(setCashOnDeliveryProcessing(false));
+
     } catch (error) {
         console.error('Error placing order:', error);
         toast.error('Failed to place order. Please try again.');
+        dispatch(setCashOnDeliveryProcessing(false)); // Set loading state to false in case of error
     }
 };
 
+
+export const asyncClearCart=(userId)=>async(dispatch,getState)=>{
+try {
+    const response = await axios.post('/user/clear-cart', { userId });
+    dispatch(asyncFetchCartProduct(userId))
+} catch (error) {
+    console.log(error)
+    
+}
+}
 
 export const asyncFetchCustomerOrder=(userId)=>async(dispatch,getState)=>{
     try {

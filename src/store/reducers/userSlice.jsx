@@ -5,11 +5,11 @@ const initialState = {
     user: savedUser ? JSON.parse(savedUser) : null,
     isAuth: savedUser ? true : false,
     wishlist: null,
-    checkOutCart:null,
-    tokenExpiration:null,
-    unavailableProduct:null
-
-}
+    checkOutCart: null,
+    tokenExpiration: null,
+    unavailableProduct: null,
+    isCashOnDeliveryProcessing: false // New state to manage the loading state for cash on delivery
+};
 
 export const userSlice = createSlice({
     name: "user",
@@ -32,18 +32,26 @@ export const userSlice = createSlice({
         saveWishlist: (state, action) => {
             state.wishlist = action.payload
         },
-        saveCheckOutCart:(state,action)=>{
-            console.log(action.payload)
-            state.checkOutCart=action.payload
+        saveCheckOutCart: (state, action) => {
+            state.checkOutCart = action.payload
         },
-        saveUnavailableProduct:(state,action)=>{
-            state.unavailableProduct=action.payload
+        saveUnavailableProduct: (state, action) => {
+            state.unavailableProduct = action.payload
+        },
+        setCashOnDeliveryProcessing: (state, action) => {
+            state.isCashOnDeliveryProcessing = action.payload;
         }
     },
 });
 
-
-export const { saveUser, removeUser, saveWishlist, saveCheckOutCart, saveTokenExpiration, saveUnavailableProduct
- } = userSlice.actions;
+export const {
+    saveUser,
+    removeUser,
+    saveWishlist,
+    saveCheckOutCart,
+    saveTokenExpiration,
+    saveUnavailableProduct,
+    setCashOnDeliveryProcessing
+} = userSlice.actions;
 
 export default userSlice.reducer;
