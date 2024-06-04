@@ -507,14 +507,7 @@ console.log(isCashOnDeliveryProcessing)
                     </div>
                 </div>
             </div>
-            <div className="flex mt-4">
-                <button onClick={handleGeneratePDF} className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded mr-2">
-                    Generate PDF
-                </button>
-                <button onClick={handleOpenPDF} className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
-                    Open PDF
-                </button>
-            </div>
+          
             {showModal && (
                 <div className="fixed z-50 inset-0 flex items-center justify-center bg-black bg-opacity-50">
                     <div className="bg-white p-8 rounded shadow-md w-full max-w-md">

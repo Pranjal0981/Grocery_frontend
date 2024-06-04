@@ -43,7 +43,22 @@ const Pagination = ({ currentPage, onPageChange }) => {
         };
     }, []);
 
-  
+
+    const [productQuantities, setProductQuantities] = useState({});
+
+    const handleIncrementQuantity = (productId) => {
+        setProductQuantities(prevQuantities => ({
+            ...prevQuantities,
+            [productId]: (prevQuantities[productId] || 0) + 1
+        }));
+    };
+
+    const handleDecrementQuantity = (productId) => {
+        setProductQuantities(prevQuantities => ({
+            ...prevQuantities,
+            [productId]: Math.max((prevQuantities[productId] || 0) - 1, 0)
+        }));
+    };
     const handleExploreProduct = (id) => {
         navigate(`/products/${id}`);
     };
@@ -83,8 +98,10 @@ const Pagination = ({ currentPage, onPageChange }) => {
 
     const userId = user?._id;
 
+
     const handleAddToCart = (productId, store) => {
-        dispatch(asyncAddToCart(userId, { productId, quantity: 1 }));
+        const quantity = productQuantities[productId] || 1; // Default to 1 if quantity is not set
+        dispatch(asyncAddToCart(userId, { productId, quantity }));
     };
 
     useEffect(() => {
@@ -245,22 +262,25 @@ const Pagination = ({ currentPage, onPageChange }) => {
                                 <p className="text-sm font-semibold text-blue-600">Selling Price: Rs {product?.sellingPrice}</p>
                             </div>
                           
-                            <div className="px-4 pb-4">
-                                <button
-                                    onClick={() => handleAddToCart(product._id)}
-                                    
-                                    className={`block w-full py-2 text-white font-bold rounded-md shadow-md transition duration-300 ease-in-out transform hover:scale-105 ${product.stock === 0 ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-500 hover:bg-blue-600 focus:outline-none focus:bg-blue-600'}`}
-                                >
-                                    <span className="flex items-center justify-center">
-                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-                                            <path fillRule="evenodd" d="M9 5a1 1 0 0 1 2 0v3h3a1 1 0 1 1 0 2h-3v3a1 1 0 1 1-2 0v-3H6a1 1 0 1 1 0-2h3V5z" clipRule="evenodd" />
+                            <div className="px-4 pb-4 flex items-center flex-col gap-2 justify-between">
+                                <div className="flex items-center">
+                                    <button onClick={() => handleDecrementQuantity(product._id)} className="bg-gray-200 text-gray-700 font-bold rounded-md px-3 py-1 mr-2 focus:outline-none">
+                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                            <path fillRule="evenodd" d="M5 10a1 1 0 0 1 0-2h10a1 1 0 1 1 0 2H5z" />
                                         </svg>
-                                        Add to Cart
-                                    </span>
+                                    </button>
+                                    <span className="text-lg font-bold">{productQuantities[product._id] || 1}</span>
+                                    <button onClick={() => handleIncrementQuantity(product._id)} className="bg-gray-200 text-gray-700 font-bold rounded-md px-3 py-1 ml-2 focus:outline-none">
+                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                            <path fillRule="evenodd" d="M10 5a1 1 0 0 1 1 1v3h3a1 1 0 1 1 0 2h-3v3a1 1 0 1 1-2 0v-3H6a1 1 0 1 1 0-2h3V6a1 1 0 0 1 1-1z" />
+                                        </svg>
+                                    </button>
+                                </div>
+                                <button onClick={() => handleAddToCart(product._id)} className={`bg-blue-500 text-white font-bold rounded-md px-4 py-2 focus:outline-none hover:bg-blue-600 transition duration-300 ease-in-out ${product.stock === 0 ? 'cursor-not-allowed opacity-50' : 'hover:shadow-md'}`}>
+                                    Add to Cart
                                 </button>
-                                
-
                             </div>
+
                         </div>
                     ))}
                 </div>
