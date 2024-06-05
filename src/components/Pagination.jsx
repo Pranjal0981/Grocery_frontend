@@ -8,9 +8,10 @@ import { asyncFilterAll, asyncFetchStorebyPID } from '../store/actions/productAc
 import { asyncAddToCart, } from '../store/actions/userAction';
 
 
+
 const Pagination = ({ currentPage, onPageChange }) => {
     const { user } = useSelector((state) => state.user);
-    const { product, loading, store } = useSelector(state => state.product);
+    const { product, loading } = useSelector(state => state.product);
     const [selectedStore, setSelectedStore] = useState({});
     const [totalPages, setTotalPages] = useState(1); // Total pages
     const productsPerPage = 8; // Number of products per page
@@ -43,8 +44,9 @@ const Pagination = ({ currentPage, onPageChange }) => {
         };
     }, []);
 
-
     const [productQuantities, setProductQuantities] = useState({});
+    const [loadingProductIds, setLoadingProductIds] = useState(new Set());
+    const [addedProductIds, setAddedProductIds] = useState(new Set());
 
     const handleIncrementQuantity = (productId) => {
         setProductQuantities(prevQuantities => ({
@@ -59,6 +61,7 @@ const Pagination = ({ currentPage, onPageChange }) => {
             [productId]: Math.max((prevQuantities[productId] || 0) - 1, 0)
         }));
     };
+
     const handleExploreProduct = (id) => {
         navigate(`/products/${id}`);
     };
@@ -98,10 +101,23 @@ const Pagination = ({ currentPage, onPageChange }) => {
 
     const userId = user?._id;
 
-
-    const handleAddToCart = (productId, store) => {
+    const handleAddToCart = async (productId) => {
+        setLoadingProductIds(prevState => new Set(prevState).add(productId));
         const quantity = productQuantities[productId] || 1; // Default to 1 if quantity is not set
-        dispatch(asyncAddToCart(userId, { productId, quantity }));
+        await dispatch(asyncAddToCart(userId, { productId, quantity }));
+        setLoadingProductIds(prevState => {
+            const newState = new Set(prevState);
+            newState.delete(productId);
+            return newState;
+        });
+        setAddedProductIds(prevState => new Set(prevState).add(productId));
+        setTimeout(() => {
+            setAddedProductIds(prevState => {
+                const newState = new Set(prevState);
+                newState.delete(productId);
+                return newState;
+            });
+        }, 3000); // Reset after 3 seconds
     };
 
     useEffect(() => {
@@ -112,7 +128,6 @@ const Pagination = ({ currentPage, onPageChange }) => {
         return () => clearTimeout(timer);
     }, []);
 
-  
     useEffect(() => {
         const handleScroll = () => {
             const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
@@ -215,7 +230,8 @@ const Pagination = ({ currentPage, onPageChange }) => {
                                     name="maxPrice"
                                     value={filters.maxPrice}
                                     onChange={handleFilterChange}
-                                    className="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:border-blue-400"
+                                    className="border border-gray-300 rounded px
+                                    px-3 py-2 focus:outline-none focus:border-blue-400"
                                 />
                             </div>
 
@@ -261,7 +277,7 @@ const Pagination = ({ currentPage, onPageChange }) => {
                                 <p className="text-sm mb-2 text-gray-700">MRP: Rs {product?.MRP}</p>
                                 <p className="text-sm font-semibold text-blue-600">Selling Price: Rs {product?.sellingPrice}</p>
                             </div>
-                          
+
                             <div className="px-4 pb-4 flex items-center flex-col gap-2 justify-between">
                                 <div className="flex items-center">
                                     <button onClick={() => handleDecrementQuantity(product._id)} className="bg-gray-200 text-gray-700 font-bold rounded-md px-3 py-1 mr-2 focus:outline-none">
@@ -276,8 +292,20 @@ const Pagination = ({ currentPage, onPageChange }) => {
                                         </svg>
                                     </button>
                                 </div>
-                                <button onClick={() => handleAddToCart(product._id)} className={`bg-blue-500 text-white font-bold rounded-md px-4 py-2 focus:outline-none hover:bg-blue-600 transition duration-300 ease-in-out ${product.stock === 0 ? 'cursor-not-allowed opacity-50' : 'hover:shadow-md'}`}>
-                                    Add to Cart
+                                <button
+                                    onClick={() => handleAddToCart(product._id)}
+                                    className={`text-white font-bold rounded-md px-4 py-2 focus:outline-none transition duration-300 ease-in-out 
+                                    ${loadingProductIds.has(product._id) ? 'bg-gray-500 cursor-not-allowed' :
+                                            addedProductIds.has(product._id) ? 'bg-green-500' :
+                                                'bg-blue-500 hover:bg-blue-600 hover:shadow-md'}`}
+                                    disabled={loadingProductIds.has(product._id)}
+                                >
+                                    {loadingProductIds.has(product._id) ? (
+                                        <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+                                        </svg>
+                                    ) : addedProductIds.has(product._id) ? 'Added' : 'Add to Cart'}
                                 </button>
                             </div>
 
@@ -305,7 +333,12 @@ const Pagination = ({ currentPage, onPageChange }) => {
 
 };
 
+
+
+
+
 export default Pagination;
+
 
 const MobileFilter = ({ filters, handleFilterChange, handleFilterSubmit }) => {
     return (
