@@ -501,7 +501,6 @@ const Cart = () => {
                                                     </button>
                                                 </div>
 
-                                                <p className="text-gray-800">Chosen Store: {item.store}</p>
                                             </div>
                                             <button onClick={() => handleDeleteItem(item._id)} className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mt-2">
                                                 Delete
