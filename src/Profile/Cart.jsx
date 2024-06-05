@@ -10,7 +10,7 @@ import Swal from 'sweetalert2';
 import { asyncFetchCartProduct, asyncDeleteCheckoutCart, asyncClearCart } from "../store/actions/userAction";
 import rgsLogo from '/rgslogo.jpeg';
 import { asyncUpdateStock } from '../store/actions/userAction'
-import { asyncCustomerOrder, asyncPayment, asyncUpdateCart } from '../store/actions/userAction'
+import { asyncCustomerOrder, asyncPayment, asyncUpdateCart,asyncUpdateCartQuantity } from '../store/actions/userAction'
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { ClipLoader } from "react-spinners";
@@ -447,110 +447,144 @@ const Cart = () => {
         dispatch(asyncUpdateCart(user._id, e.target.value, productIds));
     };
 
-    return (
-        <div className="container mx-auto p-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div>
-                    <h2 className="text-2xl font-bold mb-4 text-indigo-800">Your Order Details</h2>
-                    {checkOutCart?.products?.length > 0 ? (
-                        <ul>
-                            {checkOutCart.products.map((item, index) => (
-                                <li key={index} className="bg-white shadow-md rounded-lg overflow-hidden mb-4">
-                                    <img src={item.productId.image.url} alt={item.productId.productName} className="h-48 w-full object-cover rounded-t-lg" />
-                                    <div className="p-4">
-                                        <h2 className="text-xl font-bold mb-2 text-indigo-800">{item.productId.productName}</h2>
-                                        <p className="text-gray-700 mb-2">{item.productId.description}</p>
-                                        <div className="flex justify-between items-center mb-2">
-                                            <p className="text-gray-800 font-bold">Product Code: {item.productId.productCode}</p>
-                                        </div>
-                                        <div className="flex justify-between items-center">
-                                            <p className="text-gray-800">Total Price: Rs {item.totalPrice}</p>
-                                        </div>
-                                        <div className="flex justify-between items-center">
-                                            <h2 className="text-xl font-bold mb-2 text-indigo-800">Quantity: {item.quantity}</h2>
-                                            <p className="text-gray-800">Chosen Store: {item.store}</p>
-                                        </div>
-                                        <button onClick={() => handleDeleteItem(item._id)} className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mt-2">
-                                            Delete
-                                        </button>
-                                    </div>
-                                </li>
-                            ))}
-                        </ul>
-                    ) : (
-                        <p className="italic text-gray-500">No items in the cart</p>
-                    )}
-                </div>
-                <div>
-                    <h2 className="text-2xl font-bold mb-4 text-indigo-800">Store Selection</h2>
-                    <div className="flex flex-col items-start">
-                        <select
-                            value={selectedStore}
-                            onChange={handleSelectStore}
-                            className="border border-gray-300 px-4 py-2 rounded focus:outline-none w-full"
-                        >
-                            <option value="">Select Store</option>
-                            {stores.map((store, index) => (
-                                <option key={index} value={store}>{store}</option>
-                            ))}
-                        </select>
-                    </div>
-                    <div className="mt-8">
-                        <h3 className="text-xl font-bold text-indigo-800">Order Summary</h3>
-                        <div className="bg-white shadow-md rounded-lg p-4 mt-4">
-                            <p className="text-gray-800 font-bold">Total Grand Price: Rs {checkOutCart?.totalGrandPrice}</p>
-                        </div>
-                        <button
-                            onClick={handlePlaceOrder}
-                            className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4 ${checkOutCart?.totalGrandPrice <= 1 && "opacity-50 cursor-not-allowed"}`}
-                            disabled={checkOutCart?.totalGrandPrice <= 1}
-                        >
-                            Place Order
-                        </button>
-                    </div>
-                </div>
-            </div>
-            {showModal && (
-                <div className="fixed z-50 inset-0 flex items-center justify-center bg-black bg-opacity-50">
-                    <div className="bg-white p-8 rounded shadow-md w-full max-w-md">
-                        <h2 className="text-xl font-bold mb-4 text-indigo-800">Choose Payment Method</h2>
-                        <>
-                            {isCashOnDeliveryProcessing ? (
-                                <button
-                                    className="bg-gray-500 text-white font-bold py-2 px-4 rounded mb-4 w-full"
-                                    disabled
-                                >
-                                    Loading...
-                                </button>
-                            ) : (
-                                <button
-                                    onClick={handleCashOnDelivery}
-                                    className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mb-4 w-full"
-                                >
-                                    Cash on Delivery
-                                </button>
-                            )}
-                            <button
-                                onClick={() => handleOnlinePayment(checkOutCart?.totalGrandPrice)}
-                                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-full"
-                                disabled={isPaymentLoading}
-                            >
-                                {isPaymentLoading ? <Loader /> : 'Online Payment'}
-                            </button>
-                            <button
-                                onClick={handleCloseModal}
-                                className="mt-4 text-gray-600 underline w-full text-center"
-                            >
-                                Cancel
-                            </button>
-                        </>
-                    </div>
-                </div>
-            )}
-        </div>
-    );
+    const handleIncrementQuantity = (productId) => {
+        console.log(productId)
+        const product = checkOutCart.products.find(item => item.productId._id === productId);
+        if (product) {
+            const newQuantity = product.quantity + 1;
+            dispatch(asyncUpdateCartQuantity(user._id, productId, newQuantity));
+        }
+    };
+    const handleDecrementQuantity = (productId) => {
+        const product = checkOutCart.products.find(item => item.productId._id === productId);
+        if (product && product.quantity > 1) {
+            const newQuantity = product.quantity - 1;
+            dispatch(asyncUpdateCartQuantity(user._id, productId, newQuantity));
+        }
+    };
 
-};
+
+        return (
+            <div className="container mx-auto p-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div>
+                        <h2 className="text-2xl font-bold mb-4 text-indigo-800">Your Order Details</h2>
+                        {checkOutCart?.products?.length > 0 ? (
+                            <ul>
+                                {checkOutCart.products.map((item, index) => (
+                                    <li key={index} className="bg-white shadow-md rounded-lg overflow-hidden mb-4">
+                                        <img src={item.productId.image.url} alt={item.productId.productName} className="h-48 w-full object-cover rounded-t-lg" />
+                                        <div className="p-4">
+                                            <h2 className="text-xl font-bold mb-2 text-indigo-800">{item.productId.productName}</h2>
+                                            <p className="text-gray-700 mb-2">{item.productId.description}</p>
+                                            <div className="flex justify-between items-center mb-2">
+                                                <p className="text-gray-800 font-bold">Product Code: {item.productId.productCode}</p>
+                                            </div>
+                                            <div className="flex justify-between items-center">
+                                                <p className="text-gray-800">Total Price: Rs {item.totalPrice}</p>
+                                            </div>
+                                            <div className="flex justify-between items-center">
+                                                <h2 className="text-xl font-bold mb-2 text-indigo-800">Quantity: {item.quantity}</h2>
+                                                <div className="flex items-center">
+                                                    <button
+                                                        onClick={() => handleDecrementQuantity(item.productId._id)}
+                                                        className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-l"
+                                                    >
+                                                        -
+                                                    </button>
+                                                    <span className="px-4">{item.quantity}</span>
+                                                    <button
+                                                        onClick={() => handleIncrementQuantity(item.productId._id)}
+                                                        className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-r"
+                                                    >
+                                                        +
+                                                    </button>
+                                                </div>
+
+                                                <p className="text-gray-800">Chosen Store: {item.store}</p>
+                                            </div>
+                                            <button onClick={() => handleDeleteItem(item._id)} className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mt-2">
+                                                Delete
+                                            </button>
+                                        </div>
+                                    </li>
+                                ))}
+                            </ul>
+                        ) : (
+                            <p className="italic text-gray-500">No items in the cart</p>
+                        )}
+                    </div>
+                    <div>
+                        <h2 className="text-2xl font-bold mb-4 text-indigo-800">Store Selection</h2>
+                        <div className="flex flex-col items-start">
+                            <select
+                                value={selectedStore}
+                                onChange={handleSelectStore}
+                                className="border border-gray-300 px-4 py-2 rounded focus:outline-none w-full"
+                            >
+                                <option value="">Select Store</option>
+                                {stores.map((store, index) => (
+                                    <option key={index} value={store}>{store}</option>
+                                ))}
+                            </select>
+                        </div>
+                        <div className="mt-8">
+                            <h3 className="text-xl font-bold text-indigo-800">Order Summary</h3>
+                            <div className="bg-white shadow-md rounded-lg p-4 mt-4">
+                                <p className="text-gray-800 font-bold">Total Grand Price: Rs {checkOutCart?.totalGrandPrice}</p>
+                            </div>
+                            <button
+                                onClick={handlePlaceOrder}
+                                className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4 ${checkOutCart?.totalGrandPrice <= 1 && "opacity-50 cursor-not-allowed"}`}
+                                disabled={checkOutCart?.totalGrandPrice <= 1}
+                            >
+                                Place Order
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                {showModal && (
+                    <div className="fixed z-50 inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                        <div className="bg-white p-8 rounded shadow-md w-full max-w-md">
+                            <h2 className="text-xl font-bold mb-4 text-indigo-800">Choose Payment Method</h2>
+                            <>
+                                {isCashOnDeliveryProcessing ? (
+                                    <button
+                                        className="bg-gray-500 text-white font-bold py-2 px-4 rounded mb-4 w-full"
+                                        disabled
+                                    >
+                                        Loading...
+                                    </button>
+                                ) : (
+                                    <button
+                                        onClick={handleCashOnDelivery}
+                                        className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mb-4 w-full"
+                                    >
+                                        Cash on Delivery
+                                    </button>
+                                )}
+                                <button
+                                    onClick={() => handleOnlinePayment(checkOutCart?.totalGrandPrice)}
+                                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-full"
+                                    disabled={isPaymentLoading}
+                                >
+                                    {isPaymentLoading ? <Loader /> : 'Online Payment'}
+                                </button>
+                                <button
+                                    onClick={handleCloseModal}
+                                    className="mt-4 text-gray-600 underline w-full text-center"
+                                >
+                                    Cancel
+                                </button>
+                            </>
+                        </div>
+                    </div>
+                )}
+            </div>
+        );
+    };
+
+
 
 export default Cart;
 

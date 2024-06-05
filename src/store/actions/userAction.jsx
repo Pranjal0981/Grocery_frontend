@@ -382,3 +382,14 @@ export const asyncPayment = (userId, data) => async (dispatch, getState) => {
         console.log(error); // Log any errors that occur during the POST request
     }
 };
+
+export const asyncUpdateCartQuantity=(userId,productId,quantity)=>async(dispatch,getState)=>{
+    try{
+        console.log(userId,productId,quantity)
+const response=await axios.post('/user/updateProductQuantity',{userId,productId,quantity})
+dispatch(asyncFetchCartProduct(userId))
+    }
+    catch(error){
+console.log(error)
+    }
+}
