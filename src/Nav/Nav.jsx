@@ -496,6 +496,11 @@ catch (err) {
                                             <ListItemText primary="Super Admin Dashboard" />
                                         </ListItem>
                                     </Link>
+                                    <Link to="/superadmin/allorders" className="" style={{ textDecoration: 'none' }}>
+                                        <ListItem button>
+                                            <ListItemText primary="All orders" />
+                                        </ListItem>
+                                    </Link>
                                     <Link to="/admin/upload-products" className="" style={{ textDecoration: 'none' }}>
                                         <ListItem button>
                                             <ListItemText primary="Upload Products" />

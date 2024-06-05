@@ -86,6 +86,8 @@ const Routing = () => {
             <Route path='/storemanager/forget-password' element={<ForgetStoreManagerPassword />} />
             <Route path="/storemanager/forget-link/:id" element={<ResetStoreManagerPassword />} />
             <Route path='/superadmin/forget-password' element={<ForgetSuperAdminPassword/>} />
+            <Route path='/superadmin/allorders' element={< ManageOrder/>} />
+
             <Route path='/superadmin/login' element={<SuperAdminForm isLogin={true}/>}/>
             <Route path='/superadmin/register' element={<SuperAdminForm isLogin={false} />}/>
             <Route path="/forget-link/:id" element={<ResetPassword/>} />

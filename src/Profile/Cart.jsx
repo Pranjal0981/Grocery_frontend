@@ -13,6 +13,16 @@ import { asyncUpdateStock } from '../store/actions/userAction'
 import { asyncCustomerOrder, asyncPayment, asyncUpdateCart } from '../store/actions/userAction'
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import { ClipLoader } from "react-spinners";
+
+const Loader = () => {
+    return (
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
+            <ClipLoader color="#123abc" loading={true} size={50} />
+        </div>
+    );
+};
+
 const generatePDF = async (checkOutCart, user,orderId) => {
     try {
         const GSTNo = "23AAMCR9828E1Z3";
@@ -190,13 +200,13 @@ const generatePDF = async (checkOutCart, user,orderId) => {
 
 
 
+
 const Cart = () => {
     const [showModal, setShowModal] = useState(false);
     const [selectedStore, setSelectedStore] = useState('');
     const [isPaymentLoading, setIsPaymentLoading] = useState(false);
     const [pdfDataUrl, setPdfDataUrl] = useState('');
     const isCashOnDeliveryProcessing = useSelector(state => state.user.isCashOnDeliveryProcessing);
-console.log(isCashOnDeliveryProcessing)
     const dispatch = useDispatch();
     const { checkOutCart, user, unavailableProduct = [] } = useSelector(state => state.user);
     const navigate = useNavigate();
@@ -220,9 +230,11 @@ console.log(isCashOnDeliveryProcessing)
             setIsPaymentLoading(false);
         };
     }, []);
+
     const generateOrderId = () => {
         return Math.floor(100000 + Math.random() * 900000); // Generates a 6-digit number
     };
+
     const handlePlaceOrder = () => {
         if (!user.address || user.address.length === 0) {
             toast.error('Please add your details and phone number before placing the order.');
@@ -246,11 +258,8 @@ console.log(isCashOnDeliveryProcessing)
 
     const handleGeneratePDF = async () => {
         try {
-           
-
             const orderId = generateOrderId();
-
-            const pdfBlob = await generatePDF(checkOutCart, user,orderId);
+            const pdfBlob = await generatePDF(checkOutCart, user, orderId);
             const pdfUrl = URL.createObjectURL(pdfBlob);
             setPdfDataUrl(pdfUrl);
         } catch (error) {
@@ -263,6 +272,7 @@ console.log(isCashOnDeliveryProcessing)
             window.open(pdfDataUrl, '_blank');
         }
     };
+
     const handleCashOnDelivery = async () => {
         try {
             const orderId = generateOrderId();
@@ -301,7 +311,7 @@ console.log(isCashOnDeliveryProcessing)
                     await dispatch(asyncUpdateStock(item.productId._id, newStock, selectedStore, user._id));
                 }
             }
-           
+
             Swal.fire({
                 icon: 'success',
                 title: 'Order Placed!',
@@ -317,10 +327,6 @@ console.log(isCashOnDeliveryProcessing)
             });
         }
     };
-
-
-
-
 
     const handleOnlinePayment = async (amount) => {
         setIsPaymentLoading(true);
@@ -403,7 +409,6 @@ console.log(isCashOnDeliveryProcessing)
                             text: 'Your order has been successfully placed.',
                         });
 
-
                         navigate('/payment/success', { state: { reference_id: reference_id } });
 
                     } catch (error) {
@@ -432,7 +437,6 @@ console.log(isCashOnDeliveryProcessing)
         }
     };
 
-
     const handleDeleteItem = itemId => {
         dispatch(asyncDeleteCheckoutCart(user?._id, itemId));
     };
@@ -444,8 +448,7 @@ console.log(isCashOnDeliveryProcessing)
     };
 
     return (
-        <div className="container mx-auto px-4 py-8">
-            <h2 className="text-3xl font-bold text-center mb-8 text-indigo-800">Checkout Cart</h2>
+        <div className="container mx-auto p-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div>
                     <h2 className="text-2xl font-bold mb-4 text-indigo-800">Your Order Details</h2>
@@ -507,7 +510,6 @@ console.log(isCashOnDeliveryProcessing)
                     </div>
                 </div>
             </div>
-          
             {showModal && (
                 <div className="fixed z-50 inset-0 flex items-center justify-center bg-black bg-opacity-50">
                     <div className="bg-white p-8 rounded shadow-md w-full max-w-md">
@@ -531,8 +533,9 @@ console.log(isCashOnDeliveryProcessing)
                             <button
                                 onClick={() => handleOnlinePayment(checkOutCart?.totalGrandPrice)}
                                 className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-full"
+                                disabled={isPaymentLoading}
                             >
-                                Online Payment
+                                {isPaymentLoading ? <Loader /> : 'Online Payment'}
                             </button>
                             <button
                                 onClick={handleCloseModal}
@@ -544,12 +547,12 @@ console.log(isCashOnDeliveryProcessing)
                     </div>
                 </div>
             )}
-
-
         </div>
     );
+
 };
 
-
-
 export default Cart;
+
+
+

@@ -5,18 +5,15 @@ import Swal from 'sweetalert2';
 import axios from '../config/axios';
 import { asyncFetchOrders, updateOrderStatus } from '../store/actions/adminAction'; // Update with your actual action import paths
 
-
-
 const ManageOrder = () => {
     const dispatch = useDispatch();
     const { products, loading } = useSelector((state) => state.admin);
-    console.log(products)
     const { user } = useSelector((state) => state.user);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalOrders, setTotalOrders] = useState(0);
     const ordersPerPage = 5; // Adjust number of orders per page
     const { store } = useParams();
-console.log(products)
+
     useEffect(() => {
         dispatch(asyncFetchOrders(currentPage, store));
     }, [dispatch, currentPage, store]);
@@ -42,7 +39,7 @@ console.log(products)
                 key,
                 amount: order.amount,
                 currency: "INR",
-                name: "RGS GARMENTS",
+                name: "RGS GROCERY",
                 description: "razorpay",
                 image: "/RGS-New-Logo.webp",
                 order_id: order.id,
@@ -116,8 +113,7 @@ console.log(products)
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Payment Method</th>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">User Details</th>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Action</th>
-
-                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Invoice PDF</th>
+                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Invoice PDF</th>
                                 </tr>
                             </thead>
                             <tbody className="bg-white divide-y divide-gray-200">
@@ -167,13 +163,13 @@ console.log(products)
                                                 )
                                             ))}
                                             <div>
-                                               <strong>
+                                                <strong>
                                                     Email : {product?.userId?.email}
                                                 </strong>
                                             </div>
                                         </td>
                                         <td className="px-6 py-4">
-                                            {product?.PaymentType === 'Cash on delivery' && product.status !== 'Paid' && (
+                                            {product?.PaymentType === 'Cash on delivery' && product.status !== 'Paid' && product.status !== 'Cancelled' && product.status !== 'Delivered' && (
                                                 <button
                                                     className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 focus:outline-none focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                                                     onClick={() => openRazorpay(product.totalGrandPrice)}
@@ -181,6 +177,7 @@ console.log(products)
                                                     Pay Now
                                                 </button>
                                             )}
+                                          
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap">
                                             <div>
@@ -225,5 +222,5 @@ console.log(products)
     );
 };
 
-
 export default ManageOrder;
+

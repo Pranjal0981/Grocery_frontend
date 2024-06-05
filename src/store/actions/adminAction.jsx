@@ -81,14 +81,20 @@ export const asyncLogoutAdmin = () => async (dispatch, getState) => {
     }
 }
 
-export const asyncFetchOrders = (page = 1,store) => async (dispatch, getState) => {
+export const asyncFetchOrders = (page, store) => async (dispatch, getState) => {
     try {
-        const response = await axios.get(`/admin/fetchOrders/${store}?page=${page}`);
+        let response;
+        if (store) {
+            response = await axios.get(`/admin/fetchOrders/${store}?page=${page}`);
+        } else {
+            response = await axios.get(`/admin/fetchOrders?page=${page}`);
+        }
         dispatch(saveOrders(response.data.data));
     } catch (error) {
         console.log(error);
     }
-}
+};
+
 
 export const fetchProductsByStore = (store, page, searchQuery = '') => async (dispatch, getState) => {
     try {
