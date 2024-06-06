@@ -24,7 +24,7 @@ const Loader = () => {
 };
 
 
-const generatePDF = async (checkOutCart, user, orderId,invoiceNumber) => {
+const generatePDF = async (checkOutCart, user, orderId, invoiceNumber) => {
     try {
         const GSTNo = "23AAMCR9828E1Z3";
         const FoodLicenseNo = "21424010002578";
@@ -35,62 +35,63 @@ const generatePDF = async (checkOutCart, user, orderId,invoiceNumber) => {
 
         // Add company logo
         const companyLogo = '/rgslogo.jpeg';
-        const imgWidth = 60; // Adjust width as needed
+        const imgWidth = 50; // Adjust width as needed
         const imgHeight = 20; // Adjust height as needed
         doc.addImage(companyLogo, 'PNG', 10, 10, imgWidth, imgHeight);
 
         // Add heading for RGS Grocery with GST and Food License No.
         doc.setFontSize(16);
-        doc.text('RGS Grocery', 105, 10); // Adjust position as necessary
+        doc.text('RGS Grocery', 80, 20, { align: 'left' }); // Adjust position as necessary
         doc.setFontSize(12);
-        doc.text(`GST No: ${GSTNo}`, 105, 18); // Adjust position as necessary
-        doc.text(`FSSAI: ${FoodLicenseNo}`, 105, 26); // Adjust position as necessary
-        doc.text(`Invoice Number: ${invoiceNumber}`, 105, 36); // Adjust position as necessary
+        doc.text(`GST No: ${GSTNo}`, 80, 28, { align: 'left' }); // Adjust position as necessary
+        doc.text(`Food License No: ${FoodLicenseNo}`, 80, 36, { align: 'left' }); // Adjust position as necessary
+        doc.text(`Invoice Number: ${invoiceNumber}`, 80, 44, { align: 'left' }); // Adjust position as necessary
 
         // Company details
         const companyDetails = [
             ['Address:', 'IT Park, Gandhinagar, Bhopal, Madhya Pradesh, India, 462033'],
-            ['Phone:', '+91 9244321195'],
+            ['Phone:', '+919244321195'],
             ['Email:', 'inforgsgrocery@gmail.com'],
-        ]; const selectedAddressIndex = user?.selectedAddressIndex ?? 0;
+        ];
+
+        const selectedAddressIndex = user?.selectedAddressIndex ?? 0;
         const addressData = user?.address?.[selectedAddressIndex] || user?.address?.[0];
+
+        const fullAddress = [
+            addressData?.addressLine1,
+            addressData?.addressLine2,
+            addressData?.city,
+            addressData?.state,
+            addressData?.postalCode
+        ].filter(Boolean).join(', ');
+
         const customerDetails = [
             ['Order ID:', orderId],
             ['Customer:', addressData?.fullName || ''],
-            ['Address Line 1:', addressData?.addressLine1 || ''],
-            ['Address Line 2:', addressData?.addressLine2 || ''],
-            ['City:', addressData?.city || ''],
-            ['State:', addressData?.state || ''],
-            ['Postal Code:', addressData?.postalCode || ''],
-            ['Phone:', user?.phone || ''],
-            ['Email:', user?.email || ''],
+            ['Address:', fullAddress || '']
         ];
 
         // Add company and customer details in a two-column format
         doc.autoTable({
             startY: 50, // Adjust startY to leave space for the heading and logo
-            body: [
+            head: [
                 [
                     { content: 'Company Details', colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } },
                     { content: 'Customer Details', colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } },
-                ],
-                ...companyDetails.map((row, index) => [row[0], row[1], customerDetails[index][0], customerDetails[index][1]]),
-            ], theme: 'grid',
-            showGrid: 'always', // Show grid lines for table cells
+                ]
+            ],
+            body: companyDetails.map((row, index) => [
+                row[0], row[1], customerDetails[index][0], customerDetails[index][1]
+            ]),
+            theme: 'grid',
             styles: {
                 font: 'helvetica',
                 fontSize: 10,
                 cellPadding: 3,
             },
-            columnStyles: {
-                0: { cellWidth: 'auto' },
-                1: { cellWidth: 'auto' },
-                2: { cellWidth: 'auto' },
-                3: { cellWidth: 'auto' },
-            },
             headStyles: {
-                fillColor: [240, 229, 209], // Black header
-                textColor: [0, 0, 0], // White text
+                fillColor: [240, 229, 209], // Light brown header
+                textColor: [0, 0, 0], // Black text
                 fontStyle: 'bold',
             },
             bodyStyles: {
@@ -100,7 +101,10 @@ const generatePDF = async (checkOutCart, user, orderId,invoiceNumber) => {
             alternateRowStyles: {
                 fillColor: [240, 240, 240] // Alternate row background color
             },
-        }); const header = [
+        });
+
+        // Product table
+        const header = [
             'Item No.', 'Item Description', 'Qty',
             'MRP', 'Selling Price', 'GST', 'CGST', 'Total'
         ];
@@ -116,8 +120,12 @@ const generatePDF = async (checkOutCart, user, orderId,invoiceNumber) => {
                 const cgst = product?.cgst || 0;
 
                 // Calculate tax amounts
+                const taxAmount = (product?.sellingPrice * gst) / 100;
+                const cgstAmount = (product?.sellingPrice * cgst) / 100;
 
                 // Calculate total price including taxes
+                const totalPriceWithTax = product?.sellingPrice + taxAmount + cgstAmount;
+
                 tableBody.push([
                     index + 1,
                     product?.productName || '',
@@ -126,26 +134,25 @@ const generatePDF = async (checkOutCart, user, orderId,invoiceNumber) => {
                     `Rs ${product?.sellingPrice || ''}`,
                     `${gst}%`,
                     `${cgst}%`,
-                    `Rs ${totalPrice?.toFixed(2)}`
+                    `Rs ${totalPriceWithTax.toFixed(2)}`
                 ]);
 
                 // Add to total MRP and selling price
                 totalMRP += product?.MRP || 0;
                 totalSellingPrice += product?.sellingPrice || 0;
             });
-
-            // Insert a row for total MRP
             const totalMRPRow = [
-                '', '', '', `Rs ${totalMRP.toFixed(2)}`, '', '', '', `Rs ${checkOutCart.totalGrandPrice.toFixed(2)}`
+                '', 'Total', '', `Rs ${totalMRP.toFixed(2)}`, '', '', '', `Rs ${checkOutCart.totalGrandPrice.toFixed(2)}`
             ];
             tableBody.push(totalMRPRow);
         }
+
+        // Add product table
         doc.autoTable({
             startY: doc.previousAutoTable.finalY + 10,
             head: [header],
             body: tableBody,
             theme: 'grid',
-            showGrid: 'always', // Show grid lines for table cells
             styles: {
                 font: 'helvetica',
                 fontSize: 10,
@@ -153,8 +160,8 @@ const generatePDF = async (checkOutCart, user, orderId,invoiceNumber) => {
                 halign: 'left',
             },
             headStyles: {
-                fillColor: [240, 229, 209], // Black header
-                textColor: [0, 0, 0], // White text
+                fillColor: [240, 229, 209], // Light brown header
+                textColor: [0, 0, 0], // Black text
                 fontStyle: 'bold',
             },
             bodyStyles: {
@@ -165,6 +172,8 @@ const generatePDF = async (checkOutCart, user, orderId,invoiceNumber) => {
                 fillColor: [240, 240, 240] // Alternate row background color
             },
         });
+
+        // Add footer
         const footerText = 'Thank you for shopping with us!';
         doc.setFontSize(10);
         doc.text(footerText, 10, doc.internal.pageSize.getHeight() - 10);
@@ -316,7 +325,8 @@ const Cart = () => {
                 totalGrandPrice: checkOutCart?.totalGrandPrice,
                 paymentType: 'Cash on delivery',
                 email: user.email,
-                orderId
+                orderId,
+                invoiceNumber
             }, user._id, pdfBlob));
 
             for (const item of checkOutCart.products) {
@@ -523,6 +533,7 @@ const Cart = () => {
                                                 Delete
                                             </button>
                                         </div>
+                                      
                                     </li>
                                 ))}
                             </ul>
