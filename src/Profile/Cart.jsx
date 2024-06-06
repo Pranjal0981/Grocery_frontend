@@ -296,6 +296,7 @@ const Cart = () => {
     const handleCashOnDelivery = async () => {
         try {
             const orderId = generateOrderId();
+            const invoiceNumber=generateInvoiceNumber()
             const pdfBlob = await generatePDF(checkOutCart, user, orderId, invoiceNumber);
 
             if (!selectedStore) {
