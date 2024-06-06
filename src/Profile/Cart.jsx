@@ -23,11 +23,11 @@ const Loader = () => {
     );
 };
 
-const generatePDF = async (checkOutCart, user,orderId) => {
+
+const generatePDF = async (checkOutCart, user, orderId, invoiceNumber) => {
     try {
         const GSTNo = "23AAMCR9828E1Z3";
         const FoodLicenseNo = "21424010002578";
-        const PAN = "AAMCR9828E";
 
         const doc = new jsPDF();
         doc.setFont('helvetica');
@@ -35,23 +35,23 @@ const generatePDF = async (checkOutCart, user,orderId) => {
 
         // Add company logo
         const companyLogo = '/rgslogo.jpeg';
-        const imgWidth = 60; // Adjust width as needed
+        const imgWidth = 50; // Adjust width as needed
         const imgHeight = 20; // Adjust height as needed
         doc.addImage(companyLogo, 'PNG', 10, 10, imgWidth, imgHeight);
 
         // Add heading for RGS Grocery with GST and Food License No.
         doc.setFontSize(16);
-        doc.text('RGS Grocery', 105, 10); // Adjust position as necessary
+        doc.text('RGS Grocery', 80, 20, { align: 'left' }); // Adjust position as necessary
         doc.setFontSize(12);
-        doc.text(`GST No: ${GSTNo}`, 105, 18); // Adjust position as necessary
-        doc.text(`Food License No: ${FoodLicenseNo}`, 105, 26); // Adjust position as necessary
+        doc.text(`GST No: ${GSTNo}`, 80, 28, { align: 'left' }); // Adjust position as necessary
+        doc.text(`Food License No: ${FoodLicenseNo}`, 80, 36, { align: 'left' }); // Adjust position as necessary
+        doc.text(`Invoice Number: ${invoiceNumber}`, 80, 44, { align: 'left' }); // Adjust position as necessary
 
         // Company details
         const companyDetails = [
-            ['Address:', 'IT Park, Gandhinagar, Bhopal, Madhya Pradesh, India'],
-            ['Phone:', '+91 1234567890'],
-            ['Email:', 'contact@rgs-grocery.com'],
-            ['PAN:', PAN],
+            ['Address:', 'IT Park, Gandhinagar, Bhopal, Madhya Pradesh, India, 462033'],
+            ['Phone:', '+919244321195'],
+            ['Email:', 'inforgsgrocery@gmail.com'],
         ];
 
         // Order and customer details
@@ -73,29 +73,24 @@ const generatePDF = async (checkOutCart, user,orderId) => {
         // Add company and customer details in a two-column format
         doc.autoTable({
             startY: 50, // Adjust startY to leave space for the heading and logo
-            body: [
+            head: [
                 [
                     { content: 'Company Details', colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } },
                     { content: 'Customer Details', colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } },
-                ],
-                ...companyDetails.map((row, index) => [row[0], row[1], customerDetails[index][0], customerDetails[index][1]]),
+                ]
             ],
+            body: companyDetails.map((row, index) => [
+                row[0], row[1], customerDetails[index][0], customerDetails[index][1]
+            ]),
             theme: 'grid',
-            showGrid: 'always', // Show grid lines for table cells
             styles: {
                 font: 'helvetica',
                 fontSize: 10,
                 cellPadding: 3,
             },
-            columnStyles: {
-                0: { cellWidth: 'auto' },
-                1: { cellWidth: 'auto' },
-                2: { cellWidth: 'auto' },
-                3: { cellWidth: 'auto' },
-            },
             headStyles: {
-                fillColor: [240, 229, 209], // Black header
-                textColor: [0, 0, 0], // White text
+                fillColor: [240, 229, 209], // Light brown header
+                textColor: [0, 0, 0], // Black text
                 fontStyle: 'bold',
             },
             bodyStyles: {
@@ -148,20 +143,17 @@ const generatePDF = async (checkOutCart, user,orderId) => {
 
             // Insert a row for total MRP
             const totalMRPRow = [
-                '', '', '', `Rs ${totalMRP.toFixed(2)}`, '', '', '',`Rs ${checkOutCart.totalGrandPrice.toFixed(2)}`
+                '', 'Total', '', `Rs ${totalMRP.toFixed(2)}`, '', '', '', `Rs ${checkOutCart.totalGrandPrice.toFixed(2)}`
             ];
             tableBody.push(totalMRPRow);
         }
 
-        // Add total grand price row
-      
         // Add product table
         doc.autoTable({
             startY: doc.previousAutoTable.finalY + 10,
             head: [header],
             body: tableBody,
             theme: 'grid',
-            showGrid: 'always', // Show grid lines for table cells
             styles: {
                 font: 'helvetica',
                 fontSize: 10,
@@ -169,8 +161,8 @@ const generatePDF = async (checkOutCart, user,orderId) => {
                 halign: 'left',
             },
             headStyles: {
-                fillColor: [240, 229, 209], // Black header
-                textColor: [0, 0, 0], // White text
+                fillColor: [240, 229, 209], // Light brown header
+                textColor: [0, 0, 0], // Black text
                 fontStyle: 'bold',
             },
             bodyStyles: {
@@ -181,8 +173,6 @@ const generatePDF = async (checkOutCart, user,orderId) => {
                 fillColor: [240, 240, 240] // Alternate row background color
             },
         });
-
-        // Add total selling price
 
         // Add footer
         const footerText = 'Thank you for shopping with us!';
@@ -235,6 +225,35 @@ const Cart = () => {
         return Math.floor(100000 + Math.random() * 900000); // Generates a 6-digit number
     };
 
+    const generateInvoiceNumber = (userId) => {
+        // Generate a UUID for the invoice number
+        const uuid = uuidv4();
+
+        // Concatenate userId and the UUID to create a unique identifier
+        const uniqueIdentifier = user._id?.toString() + uuid;
+
+        // Use a hash function to generate a unique number based on the identifier
+        const hash = uniqueIdentifier
+            .split('')
+            .reduce((acc, char) => {
+                acc = ((acc << 5) - acc) + char.charCodeAt(0);
+                return acc & acc;
+            }, 0);
+
+        // Generate a positive number from the hash
+        const positiveHash = Math.abs(hash);
+
+        // Generate an invoice number between 100000 (6 digits) and 99999999 (8 digits)
+        const minInvoiceNumber = 100000;
+        const maxInvoiceNumber = 99999999;
+        const range = maxInvoiceNumber - minInvoiceNumber + 1;
+
+        const invoiceNumber = minInvoiceNumber + (positiveHash % range);
+
+        return invoiceNumber;
+    };
+
+
     const handlePlaceOrder = () => {
         if (!user.address || user.address.length === 0) {
             toast.error('Please add your details and phone number before placing the order.');
@@ -259,7 +278,8 @@ const Cart = () => {
     const handleGeneratePDF = async () => {
         try {
             const orderId = generateOrderId();
-            const pdfBlob = await generatePDF(checkOutCart, user, orderId);
+
+            const pdfBlob = await generatePDF(checkOutCart, user, orderId,generateInvoiceNumber());
             const pdfUrl = URL.createObjectURL(pdfBlob);
             setPdfDataUrl(pdfUrl);
         } catch (error) {
@@ -276,7 +296,7 @@ const Cart = () => {
     const handleCashOnDelivery = async () => {
         try {
             const orderId = generateOrderId();
-            const pdfBlob = await generatePDF(checkOutCart, user, orderId);
+            const pdfBlob = await generatePDF(checkOutCart, user, orderId, invoiceNumber);
 
             if (!selectedStore) {
                 toast.error('Please select a store before proceeding with payment.');
@@ -332,7 +352,9 @@ const Cart = () => {
         setIsPaymentLoading(true);
         try {
             const orderId = generateOrderId();
-            const pdfBlob = await generatePDF(checkOutCart, user, orderId);
+            const invoiceNumber = generateInvoiceNumber();
+
+            const pdfBlob = await generatePDF(checkOutCart, user, orderId, invoiceNumber);
 
             if (!selectedStore) {
                 toast.error('Please select a store before proceeding with payment.');
@@ -392,7 +414,8 @@ const Cart = () => {
                             totalGrandPrice: checkOutCart?.totalGrandPrice,
                             paymentType: 'Online Payment',
                             email: user.email,
-                            orderId
+                            orderId,
+                            invoiceNumber
                         }, user._id, pdfBlob));
 
                         for (const item of checkOutCart.products) {
@@ -542,6 +565,9 @@ const Cart = () => {
                         </div>
                     </div>
                 </div>
+                <button onClick={handleGeneratePDF}>Generate pdf</button>
+                <button onClick={handleOpenPDF}>Open pdf</button>
+
                 {showModal && (
                     <div className="fixed z-50 inset-0 flex items-center justify-center bg-black bg-opacity-50">
                         <div className="bg-white p-8 rounded shadow-md w-full max-w-md">
@@ -575,6 +601,7 @@ const Cart = () => {
                                 >
                                     Cancel
                                 </button>
+                               
                             </>
                         </div>
                     </div>

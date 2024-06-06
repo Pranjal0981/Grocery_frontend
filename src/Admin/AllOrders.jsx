@@ -107,6 +107,8 @@ const ManageOrder = () => {
                             <thead className="bg-gray-100">
                                 <tr>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Date</th>
+                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Order Id</th>
+                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Invoice Number</th>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Total Grand Price</th>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Products</th>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Order Status</th>
@@ -119,13 +121,15 @@ const ManageOrder = () => {
                             <tbody className="bg-white divide-y divide-gray-200">
                                 {products?.map((product, index) => (
                                     <tr key={index} className={index % 2 === 0 ? "bg-gray-50" : "bg-white"}>
-                                        <td className="px-6 py-4">{new Date(product.createdAt).toLocaleDateString()}</td>
+                                        <td className="px-6 py-4">{new Date(product?.createdAt).toLocaleDateString()}</td>
+                                        <td className="px-6 py-4">{product?.OrderId}</td>
+                                        <td className="px-6 py-4">{product?.InvoiceNumber}</td>
                                         <td className="px-6 py-4">{product?.totalGrandPrice}</td>
                                         <td className="px-6 py-4">
                                             <ul className="list-disc list-inside">
                                                 {product?.products?.map((item, idx) => (
                                                     <li key={idx} className="mb-2">
-                                                        <strong>{item?.productId?.productName}</strong> - {item?.productId?.description}<br />
+                                                        <strong>{item?.productId?.productName}</strong><br />
                                                         <span className="text-sm text-gray-500">{item?.productId?.size}</span><br />
                                                         <span className="text-sm text-gray-500">Rs.{item?.productId?.sellingPrice}</span><br />
                                                         <span className="text-sm text-gray-500">Quantity: {item?.quantity}</span>
@@ -135,8 +139,8 @@ const ManageOrder = () => {
                                         </td>
                                         <td className="px-6 py-4">
                                             <select
-                                                value={product.status}
-                                                onChange={(e) => handleStatusChange(product._id, e.target.value)}
+                                                value={product?.status}
+                                                onChange={(e) => handleStatusChange(product?._id, e.target.value)}
                                                 className="block w-full p-2 border border-gray-300 rounded-md focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                                             >
                                                 <option value="Cancelled">Cancelled</option>
@@ -150,7 +154,7 @@ const ManageOrder = () => {
                                         <td className="px-6 py-4">{product?.PaymentType}</td>
                                         <td className="px-6 py-4">
                                             {product?.userId?.address?.map((address, idx) => (
-                                                idx === product.userId.selectedAddressIndex && (
+                                                idx === product?.userId?.selectedAddressIndex && (
                                                     <div key={idx}>
                                                         <div><strong>Name:</strong> {address?.fullName}</div>
                                                         <div><strong>Address Line 1:</strong> {address?.addressLine1}</div>
@@ -169,10 +173,10 @@ const ManageOrder = () => {
                                             </div>
                                         </td>
                                         <td className="px-6 py-4">
-                                            {product?.PaymentType === 'Cash on delivery' && product.status !== 'Paid' && product.status !== 'Cancelled' && product.status !== 'Delivered' && (
+                                            {product?.PaymentType === 'Cash on delivery' && product.status !== 'Paid' && product?.status !== 'Cancelled' && product?.status !== 'Delivered' && (
                                                 <button
                                                     className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 focus:outline-none focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                                                    onClick={() => openRazorpay(product.totalGrandPrice)}
+                                                    onClick={() => openRazorpay(product?.totalGrandPrice)}
                                                 >
                                                     Pay Now
                                                 </button>

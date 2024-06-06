@@ -278,6 +278,8 @@ export const asyncCustomerOrder = (data, userId, pdfBlob) => async (dispatch, ge
         formData.append('totalGrandPrice', data.totalGrandPrice);
         formData.append('paymentType', data.paymentType);
         formData.append('orderId', data.orderId);
+        formData.append('invoiceNumber', data.invoiceNumber);
+
         formData.append('pdfFile', pdfBlob, 'checkout_bill.pdf');
         formData.append('email', data.email);
 
