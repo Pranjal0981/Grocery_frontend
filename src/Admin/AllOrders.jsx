@@ -5,12 +5,15 @@ import Swal from 'sweetalert2';
 import axios from '../config/axios';
 import { asyncFetchOrders, updateOrderStatus } from '../store/actions/adminAction'; // Update with your actual action import paths
 
+
 const ManageOrder = () => {
     const dispatch = useDispatch();
     const { products, loading } = useSelector((state) => state.admin);
     const { user } = useSelector((state) => state.user);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalOrders, setTotalOrders] = useState(0);
+    const [searchTerm, setSearchTerm] = useState("");
+    const [selectedStatus, setSelectedStatus] = useState("");
     const ordersPerPage = 5; // Adjust number of orders per page
     const { store } = useParams();
 
@@ -89,6 +92,17 @@ const ManageOrder = () => {
         }
     };
 
+    // Filtering orders based on search term and selected status
+    const filteredOrders = products.filter(order => {
+        if (searchTerm && !order?.InvoiceNumber?.toLowerCase().includes(searchTerm?.toLowerCase()) && !order.OrderId?.toLowerCase().includes(searchTerm?.toLowerCase())) {
+            return false;
+        }
+        if (selectedStatus && order.status !== selectedStatus) {
+            return false;
+        }
+        return true;
+    });
+
     return (
         <div className="container mx-auto p-6 lg:p-12">
             <h1 className="text-4xl font-bold mb-8 text-gray-800">Manage Orders</h1>
@@ -101,14 +115,45 @@ const ManageOrder = () => {
                 </div>
             ) : (
                 <>
+                    <div className="flex justify-between items-center mb-6">
+                        <div className="relative w-1/3 mr-4">
+                            <input
+                                type="text"
+                                placeholder="Search by Invoice Number or Order Id"
+                                className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-400"
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                            />
+                            <button className="absolute right-0 top-0 mt-3 mr-3" onClick={() => setSearchTerm("")}>
+                                <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path>
+                                </svg>
+                            </button>
+                        </div>
+                        <div>
+                            <select
+                                value={selectedStatus}
+                                onChange={(e) => setSelectedStatus(e.target.value)}
+                                className="block border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-400"
+                            >
+                                <option value="">All Status</option>
+                                <option value="Pending">Pending</option>
+                                <option value="Confirmed">Confirmed</option>
+                                <option value="Shipped">Shipped</option>
+                                <option value="Delivered">Delivered</option>
+                                <option value="Paid">Paid</option>
+                                <option value="Cancelled">Cancelled</option>
+                            </select>
+                        </div>
+                    </div>
                     <p className="text-lg text-gray-600 mb-6">Total Orders: {totalOrders}</p>
                     <div className="overflow-x-auto shadow-md rounded-lg">
                         <table className="min-w-full bg-white divide-y divide-gray-200">
                             <thead className="bg-gray-100">
                                 <tr>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Date</th>
-                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Order Id</th>
-                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Invoice Number</th>
+                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Order Id</th>
+                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Invoice Number</th>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Total Grand Price</th>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Products</th>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Order Status</th>
@@ -119,7 +164,7 @@ const ManageOrder = () => {
                                 </tr>
                             </thead>
                             <tbody className="bg-white divide-y divide-gray-200">
-                                {products?.map((product, index) => (
+                                {filteredOrders?.slice((currentPage - 1) * ordersPerPage, currentPage * ordersPerPage).map((product, index) => (
                                     <tr key={index} className={index % 2 === 0 ? "bg-gray-50" : "bg-white"}>
                                         <td className="px-6 py-4">{new Date(product?.createdAt).toLocaleDateString()}</td>
                                         <td className="px-6 py-4">{product?.OrderId}</td>
@@ -136,8 +181,7 @@ const ManageOrder = () => {
                                                     </li>
                                                 ))}
                                             </ul>
-                                        </td>
-                                        <td className="px-6 py-4">
+                                        </td><td className="px-6 py-4">
                                             <select
                                                 value={product?.status}
                                                 onChange={(e) => handleStatusChange(product?._id, e.target.value)}
@@ -181,7 +225,6 @@ const ManageOrder = () => {
                                                     Pay Now
                                                 </button>
                                             )}
-                                          
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap">
                                             <div>
@@ -225,6 +268,8 @@ const ManageOrder = () => {
         </div>
     );
 };
+
+
 
 export default ManageOrder;
 
