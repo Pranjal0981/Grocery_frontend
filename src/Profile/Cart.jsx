@@ -307,8 +307,22 @@ const Cart = () => {
                 return;
             }
 
+            const unavailableStockProducts = checkOutCart.products.filter(item => {
+                const stock = item.stock ?? 0;
+                return stock <= 0;
+            });
+
+            if (unavailableStockProducts.length > 0) {
+                const productNames = unavailableStockProducts.map(item => item.productId.productName).join(', ');
+                toast.error(`The following products have unavailable stock: ${productNames}`);
+                return;
+            }
+
             const availableProducts = checkOutCart.products
-                .filter(item => !unavailableProduct.find(up => up.productId._id === item.productId._id))
+                .filter(item => {
+                    const stock = item.stock ?? 0;
+                    return stock > 0 && !unavailableProduct.find(up => up.productId._id === item.productId._id);
+                })
                 .map(item => ({
                     productId: item.productId._id,
                     quantity: item.quantity,
@@ -332,21 +346,12 @@ const Cart = () => {
 
             for (const item of checkOutCart.products) {
                 if (!unavailableProduct.find(up => up.productId._id === item.productId._id)) {
-                    const stock = item.stock || 0; // Ensure stock is defined and is a number
-                    const newStock = stock - item.quantity;
-
-                    if (isNaN(newStock)) {
-                        console.error(`Invalid stock calculation for product ${item.productId._id}:`, { stock, quantity: item.quantity, newStock });
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error',
-                            text: `Invalid stock value for product ${item.productId._id}. Please contact support.`,
-                        });
-                        return;
+                    const stock = item.stock ?? 0; // Ensure stock is defined and is a number
+                    if (stock > 0) {
+                        const newStock = stock - item.quantity;
+                        console.log(`Updating stock for ${item.productId._id}: Old stock ${stock}, Quantity ${item.quantity}, New stock ${newStock}`);
+                        await dispatch(asyncUpdateStock(item.productId._id, newStock, selectedStore, user._id));
                     }
-
-                    console.log(`Updating stock for ${item.productId._id}: Old stock ${stock}, Quantity ${item.quantity}, New stock ${newStock}`);
-                    await dispatch(asyncUpdateStock(item.productId._id, newStock, selectedStore, user._id));
                 }
             }
 
@@ -366,9 +371,6 @@ const Cart = () => {
         }
     };
 
-
-
-
     const handleOnlinePayment = async (amount) => {
         setIsPaymentLoading(true);
         try {
@@ -383,8 +385,23 @@ const Cart = () => {
                 return;
             }
 
+            const unavailableStockProducts = checkOutCart.products.filter(item => {
+                const stock = item.stock ?? 0;
+                return stock <= 0;
+            });
+
+            if (unavailableStockProducts.length > 0) {
+                const productNames = unavailableStockProducts.map(item => item.productId.productName).join(', ');
+                toast.error(`The following products have unavailable stock: ${productNames}`);
+                setIsPaymentLoading(false);
+                return;
+            }
+
             const availableProducts = checkOutCart.products
-                .filter(item => !unavailableProduct.find(up => up.productId === item.productId._id))
+                .filter(item => {
+                    const stock = item.stock ?? 0;
+                    return stock > 0 && !unavailableProduct.find(up => up.productId._id === item.productId._id);
+                })
                 .map(item => ({
                     productId: item.productId._id,
                     quantity: item.quantity,
@@ -440,22 +457,13 @@ const Cart = () => {
                         }, user._id, pdfBlob));
 
                         for (const item of checkOutCart.products) {
-                            if (!unavailableProduct.find(up => up.productId === item.productId._id)) {
-                                const stock = item.stock || 0; // Ensure stock is defined and is a number
-                                const newStock = stock - item.quantity;
-
-                                if (isNaN(newStock)) {
-                                    console.error(`Invalid stock calculation for product ${item.productId._id}:`, { stock, quantity: item.quantity, newStock });
-                                    Swal.fire({
-                                        icon: 'error',
-                                        title: 'Error',
-                                        text: `Invalid stock value for product ${item.productId._id}. Please contact support.`,
-                                    });
-                                    return;
+                            if (!unavailableProduct.find(up => up.productId._id === item.productId._id)) {
+                                const stock = item.stock ?? 0; // Ensure stock is defined and is a number
+                                if (stock > 0) {
+                                    const newStock = stock - item.quantity;
+                                    console.log(`Updating stock for ${item.productId._id}: Old stock ${stock}, Quantity ${item.quantity}, New stock ${newStock}`);
+                                    await dispatch(asyncUpdateStock(item.productId._id, newStock, selectedStore, user._id));
                                 }
-
-                                console.log(`Updating stock for ${item.productId._id}: Old stock ${stock}, Quantity ${item.quantity}, New stock ${newStock}`);
-                                await dispatch(asyncUpdateStock(item.productId._id, newStock, selectedStore, user._id));
                             }
                         }
 
@@ -493,6 +501,8 @@ const Cart = () => {
             setIsPaymentLoading(false);
         }
     };
+
+
 
 
     const handleDeleteItem = itemId => {
