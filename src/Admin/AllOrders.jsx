@@ -16,7 +16,7 @@ const ManageOrder = () => {
     const [selectedStatus, setSelectedStatus] = useState("");
     const ordersPerPage = 5; // Adjust number of orders per page
     const { store } = useParams();
-
+    console.log(store)
     useEffect(() => {
         dispatch(asyncFetchOrders(currentPage, store));
     }, [dispatch, currentPage, store]);

@@ -41,6 +41,8 @@ const Nav = () => {
     const [secondOpen, setSecondOpen] = React.useState(false)
     const dispatch = useDispatch()
     const [openStore, setOpenStore] = useState(false);
+
+    const [openOrders, setOpenOrders] = useState(false);
     const [openSheet, setOpenSheet] = useState(false);
 
     const [selectedCategory, setSelectedCategory] = useState('All categories');
@@ -74,6 +76,9 @@ const Nav = () => {
     }
     const handleStoreClick = () => {
         setOpenStore(!openStore);
+    };
+    const handleOrderClick = () => {
+        setOpenOrders(!openOrders);
     };
     const handleSheet=()=>{
         setOpenSheet(!openSheet)
@@ -496,11 +501,17 @@ catch (err) {
                                             <ListItemText primary="Super Admin Dashboard" />
                                         </ListItem>
                                     </Link>
-                                    <Link to="/superadmin/allorders" className="" style={{ textDecoration: 'none' }}>
-                                        <ListItem button>
-                                            <ListItemText primary="All orders" />
-                                        </ListItem>
-                                    </Link>
+                                    <ListItem button onClick={() => handleOrderClick()}>
+                                        <ListItemText primary="All Orders" />
+                                        {openOrders ? <ExpandLess /> : <ExpandMore />}
+                                    </ListItem>
+                                    <Collapse in={openOrders} timeout="auto" unmountOnExit>
+                                        {stores.map((store, index) => (
+                                            <ListItemButton key={index} component={Link} to={`/superadmin/orders/${store}`}>
+                                                <ListItemText primary={store} />
+                                            </ListItemButton>
+                                        ))}
+                                    </Collapse>
                                     <Link to="/admin/upload-products" className="" style={{ textDecoration: 'none' }}>
                                         <ListItem button>
                                             <ListItemText primary="Upload Products" />
