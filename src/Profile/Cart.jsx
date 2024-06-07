@@ -134,7 +134,7 @@ const generatePDF = async (checkOutCart, user, orderId, invoiceNumber) => {
                     `Rs ${product?.sellingPrice || ''}`,
                     `${gst}%`,
                     `${cgst}%`,
-                    `Rs ${totalPriceWithTax.toFixed(2)}`
+                    `Rs ${totalPrice.toFixed(2)}`
                 ]);
 
                 // Add to total MRP and selling price
@@ -201,6 +201,7 @@ const Cart = () => {
     const isCashOnDeliveryProcessing = useSelector(state => state.user.isCashOnDeliveryProcessing);
     const dispatch = useDispatch();
     const { checkOutCart, user, unavailableProduct = [] } = useSelector(state => state.user);
+    console.log(checkOutCart)
     const navigate = useNavigate();
     const [stores, setStores] = useState([]);
 
@@ -298,7 +299,7 @@ const Cart = () => {
     const handleCashOnDelivery = async () => {
         try {
             const orderId = generateOrderId();
-            const invoiceNumber=generateInvoiceNumber()
+            const invoiceNumber = generateInvoiceNumber();
             const pdfBlob = await generatePDF(checkOutCart, user, orderId, invoiceNumber);
 
             if (!selectedStore) {
@@ -307,7 +308,7 @@ const Cart = () => {
             }
 
             const availableProducts = checkOutCart.products
-                .filter(item => !unavailableProduct.find(up => up.productId === item.productId._id))
+                .filter(item => !unavailableProduct.find(up => up.productId._id === item.productId._id))
                 .map(item => ({
                     productId: item.productId._id,
                     quantity: item.quantity,
@@ -330,8 +331,21 @@ const Cart = () => {
             }, user._id, pdfBlob));
 
             for (const item of checkOutCart.products) {
-                if (!unavailableProduct.find(up => up.productId === item.productId._id)) {
-                    const newStock = item.stock - item.quantity;
+                if (!unavailableProduct.find(up => up.productId._id === item.productId._id)) {
+                    const stock = item.stock || 0; // Ensure stock is defined and is a number
+                    const newStock = stock - item.quantity;
+
+                    if (isNaN(newStock)) {
+                        console.error(`Invalid stock calculation for product ${item.productId._id}:`, { stock, quantity: item.quantity, newStock });
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: `Invalid stock value for product ${item.productId._id}. Please contact support.`,
+                        });
+                        return;
+                    }
+
+                    console.log(`Updating stock for ${item.productId._id}: Old stock ${stock}, Quantity ${item.quantity}, New stock ${newStock}`);
                     await dispatch(asyncUpdateStock(item.productId._id, newStock, selectedStore, user._id));
                 }
             }
@@ -351,6 +365,9 @@ const Cart = () => {
             });
         }
     };
+
+
+
 
     const handleOnlinePayment = async (amount) => {
         setIsPaymentLoading(true);
@@ -424,7 +441,20 @@ const Cart = () => {
 
                         for (const item of checkOutCart.products) {
                             if (!unavailableProduct.find(up => up.productId === item.productId._id)) {
-                                const newStock = item.stock - item.quantity;
+                                const stock = item.stock || 0; // Ensure stock is defined and is a number
+                                const newStock = stock - item.quantity;
+
+                                if (isNaN(newStock)) {
+                                    console.error(`Invalid stock calculation for product ${item.productId._id}:`, { stock, quantity: item.quantity, newStock });
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Error',
+                                        text: `Invalid stock value for product ${item.productId._id}. Please contact support.`,
+                                    });
+                                    return;
+                                }
+
+                                console.log(`Updating stock for ${item.productId._id}: Old stock ${stock}, Quantity ${item.quantity}, New stock ${newStock}`);
                                 await dispatch(asyncUpdateStock(item.productId._id, newStock, selectedStore, user._id));
                             }
                         }
@@ -463,6 +493,7 @@ const Cart = () => {
             setIsPaymentLoading(false);
         }
     };
+
 
     const handleDeleteItem = itemId => {
         dispatch(asyncDeleteCheckoutCart(user?._id, itemId));
@@ -542,6 +573,9 @@ const Cart = () => {
                         )}
                     </div>
                     <div>
+                        {/* <button onClick={handleGeneratePDF}>Generate pdf</button>
+                        <button onClick={handleOpenPDF}>Open pdf</button> */}
+
                         <h2 className="text-2xl font-bold mb-4 text-indigo-800">Store Selection</h2>
                         <div className="flex flex-col items-start">
                             <select

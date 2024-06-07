@@ -13,7 +13,7 @@ const ProductStore = () => {
 
     useEffect(() => {
         dispatch(fetchProductsByStore(store, currentPage, searchQuery));
-    }, [dispatch, store, currentPage, searchQuery]);
+    }, [dispatch, store, 3, searchQuery]);
 
     const handleSearchInputChange = (event) => {
         setSearchQuery(event.target.value);
