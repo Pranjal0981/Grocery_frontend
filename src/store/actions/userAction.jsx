@@ -6,28 +6,24 @@ import { toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import { Navigate } from "react-router-dom";
 
-export const asyncCurrentUser = () => async (dispatch, getState) => {
+export const asyncCurrentUser = () => async (dispatch) => {
     try {
-        // Retrieve token and token expiration time from localStorage
         const token = localStorage.getItem('token');
         const tokenExpiration = localStorage.getItem('tokenExpiration');
 
-        // Check if token is expired or not available
         if (!token || tokenExpiration < Date.now()) {
-            // If token is not found or expired, dispatch an action to clear the current user
             dispatch(saveUser(null));
             return;
         }
 
-        // Make a request to fetch the current user using the token
         const response = await axios.post('/user/currentUser', null, {
             headers: { Authorization: `Bearer ${token}` }
         });
 
-        // Dispatch action to save the current user in the Redux store
         dispatch(saveUser(response.data.user));
     } catch (error) {
         console.error(error);
+        dispatch(saveUser(null));
     }
 };
 
@@ -43,26 +39,21 @@ export const asyncSignupUser = (data) => async (dispatch) => {
     }
 };
 
-
-export const asyncSignIn = (data) => async (dispatch, getState) => {
+export const asyncSignIn = (data) => async (dispatch) => {
     try {
         const response = await axios.post('/user/login', data);
+        const token = response.data.token;
         const expiresInMilliseconds = response.data.expiresIn;
 
-        // Calculate token expiration time
         const expirationTime = Date.now() + expiresInMilliseconds;
 
-        // Save token and expiration time in localStorage
-        localStorage.setItem('token', response.data.token);
+        localStorage.setItem('token', token);
         localStorage.setItem('tokenExpiration', expirationTime);
 
-        // Dispatch action to save token expiration in Redux store
         await dispatch(saveTokenExpiration(expirationTime));
-
-        // Fetch current user after successful login
         dispatch(asyncCurrentUser());
 
-        toast.success("LoggedIn Successfully !");
+        toast.success("Logged in successfully!");
     } catch (error) {
         if (error.response && error.response.status === 401) {
             toast.error('Invalid email or password. Please try again.');
@@ -72,6 +63,7 @@ export const asyncSignIn = (data) => async (dispatch, getState) => {
         }
     }
 };
+
 
 export const asyncSignOut=(navigate)=>async(dispacth,getState)=>{
     try {
@@ -85,44 +77,81 @@ export const asyncSignOut=(navigate)=>async(dispacth,getState)=>{
     }
 }
 
-export const asyncFetchWishlist=(id)=>async(dispatch,getState)=>{
+export const asyncFetchWishlist = (id) => async (dispatch, getState) => {
     try {
-        const response=await axios.get(`/user/fetchWishlist/${id}`)
-        dispatch(saveWishlist(response.data.data.products))
+        const token = localStorage.getItem('token');
+        if (!token) {
+            throw new Error('User not authenticated');
+        }
+
+        const response = await axios.get(`/user/fetchWishlist/${id}`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+
+        dispatch(saveWishlist(response.data.data.products));
     } catch (error) {
-        toast.error(error.response.data.message)
+        toast.error(error.response.data.message);
     }
-}
+};
 
-export const asyncAddToWishlist=(userId,data)=>async(dispatch,getState)=>{
+
+export const asyncAddToWishlist = (userId, data) => async (dispatch, getState) => {
     try {
-        const resposne = await axios.post(`/user/addToWishlist/${userId}`,data)
-        toast.success("Product Added to wishlist")
-    } catch (error) {
-        toast.error("Login to Continue")
+        const token = localStorage.getItem('token'); // Assuming the token is stored in localStorage
 
-    }
-}
+        const response = await axios.post(`/user/addToWishlist/${userId}`, data, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+        console.log(response)
 
-export const asyncAddToCart = (userId, data) => async (dispatch, getState) => {
-
-    try {
-        const response = await axios.post(`/user/addToCart/${userId}`, data)
-        toast.success("Added to cart")
-       await dispatch(saveCheckOutCart(response.data))
+        // dispatch(wishlistProductAdded());
+        toast.success("Product Added to wishlist");
     } catch (error) {
         console.log(error)
-        toast.error("Login to continue")
-
+        toast.error("Login to Continue");
     }
-}
+};
+
+export const asyncAddToCart = (userId, data) => async (dispatch, getState) => {
+    try {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            throw new Error('User not authenticated');
+        }
+
+        const response = await axios.post(`/user/addToCart/${userId}`, data, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+        toast.success("Added to cart");
+        await dispatch(saveCheckOutCart(response.data));
+    } catch (error) {
+        console.error(error);
+        toast.error("Login to continue");
+    }
+};
+
 
 export const asyncUpdateCart = (userId, store, productIds) => async (dispatch) => {
     try {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            throw new Error('User not authenticated');
+        }
+
         const response = await axios.post('/user/updateCart/', {
             userId,
             store,
             productIds
+        }, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
         });
 
         if (response.status === 200) {
@@ -164,25 +193,46 @@ export const asyncUpdateCart = (userId, store, productIds) => async (dispatch) =
 }
 
 
+
 export const asyncDeleteFromWishlist = (userId, productId) => async (dispatch, getState) => {
     try {
-        const response = await axios.delete(`/user/deleteFromWishlist/${userId}/${productId}`)
-        toast.success("Product Deleted")
-        dispatch(asyncFetchWishlist(userId))
-    } catch (error) {
-        toast.error(error.response.data.message)
+        const token = localStorage.getItem('token');
+        if (!token) {
+            throw new Error('User not authenticated');
+        }
 
+        const response = await axios.delete(`/user/deleteFromWishlist/${userId}/${productId}`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+
+        toast.success("Product Deleted");
+        dispatch(asyncFetchWishlist(userId));
+    } catch (error) {
+        toast.error(error.response.data.message);
     }
-}
+};
 
 
-export const asyncFetchCartProduct=(userId)=>async(dispatch,getState)=>{
+export const asyncFetchCartProduct = (userId) => async (dispatch, getState) => {
     try {
-        const response=await axios.get(`/user/fetchCart/${userId}`)
-        console.log(response)
-        dispatch(saveCheckOutCart(response.data.cart))
+        const token = localStorage.getItem('token');
+        if (!token) {
+            throw new Error('User not authenticated');
+        }
+
+        const response = await axios.get(`/user/fetchCart/${userId}`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+
+        console.log(response);
+        dispatch(saveCheckOutCart(response.data.cart));
     } catch (error) {
-        toast.error(error.response.data.message)
+        console.error('Error fetching cart:', error);
+        toast.error(error.response?.data?.message || 'Error fetching cart');
     }
 }
 
@@ -208,51 +258,88 @@ export const asyncResetPassword = (id, password) => async (dispatch, getState) =
     }
 };
 
-export const asyncDeleteCheckoutCart=(userId,productId)=>async(dispatch,getState)=>{
+export const asyncDeleteCheckoutCart = (userId, productId) => async (dispatch, getState) => {
     try {
-        const response = await axios.delete(`/user/deleteFromCart/${userId}/${productId}`)
-        toast.success("Product Deleted")
-        dispatch(asyncFetchCartProduct(userId))
+        const token = localStorage.getItem('token');  // Retrieve token from local storage
+        if (!token) {
+            throw new Error('User not authenticated');
+        }
+
+        const response = await axios.delete(`/user/deleteFromCart/${userId}/${productId}`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+
+        toast.success("Product Deleted");
+        dispatch(asyncFetchCartProduct(userId));
     } catch (error) {
-        toast.error(error.response.data.message)
-
+        console.error('Error deleting product:', error);
+        toast.error(error.response?.data?.message || "Error deleting product from cart");
     }
-}
+};
 
-export const asyncAddAddress=(data)=>async(dispatch,getState)=>{
+
+export const asyncAddAddress = (data) => async (dispatch, getState) => {
     try {
-        const response=await axios.post(`/user/addAddress`,data)
-        toast.success("Address Added")
+        const token = localStorage.getItem('token'); // Retrieve the token from localStorage
+        if (!token) {
+            throw new Error('User not authenticated');
+        }
 
-        dispatch(saveUser(response.data.user))
+        const response = await axios.post('/user/addAddress', data, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+
+        toast.success("Address Added");
+        dispatch(saveUser(response.data.user));
     } catch (error) {
-        toast.error("Address Error")
-
+        console.error(error);
+        toast.error("Address Error");
     }
-}
+};
 
-export const asyncDeleteAddress =(index,userId)=>async(dispatch,getState)=>{
+export const asyncDeleteAddress = (index, userId) => async (dispatch, getState) => {
     try {
-        const response=await axios.delete(`/user/deleteAddress/${userId}/${index}`)
-        toast.warn("Address Deleted")
-        dispatch(asyncCurrentUser(userId))
+        const token = localStorage.getItem('token');
+        if (!token) {
+            throw new Error('User not authenticated');
+        }
+
+        const response = await axios.delete(`/user/deleteAddress/${userId}/${index}`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+        toast.warn("Address Deleted");
+        dispatch(asyncCurrentUser());
     } catch (error) {
-        toast.error("Error deleting address")
-
+        console.error(error);
+        toast.error("Error deleting address");
     }
-}
+};
 
-export const asyncUpdateUser=(data,userId)=>async(dispatch,getState)=>{
+export const asyncUpdateUser = (data, userId) => async (dispatch, getState) => {
     try {
-        const response = await axios.post(`/user/update/${userId}`,data)
-        toast.success("Updated successfully")
+        const token = localStorage.getItem('token'); // Retrieve the token from localStorage
 
-        await dispatch(asyncCurrentUser(userId))
+        const config = {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        };
+
+        const response = await axios.post(`/user/update/${userId}`, data, config);
+        toast.success("Updated successfully");
+
+        await dispatch(asyncCurrentUser(userId));
     } catch (error) {
-        toast.error("Error updating information")
-
+        toast.error("Error updating information");
     }
-}
+};
 
 
 export const asyncDeleteAccount = (userId) => async (dispatch, getState) => {
@@ -282,56 +369,87 @@ export const asyncCustomerOrder = (data, userId, pdfBlob) => async (dispatch, ge
         formData.append('pdfFile', pdfBlob, 'checkout_bill.pdf');
         formData.append('email', data.email);
 
+        // Retrieve the token from the Redux store
+        const  token  = localStorage.getItem("token"); // Assuming you have a slice of state for authentication that stores the token
+
         // Send POST request with FormData
         const response = await axios.post(`/user/order/${userId}`, formData, {
             headers: {
                 'Content-Type': 'multipart/form-data',
+                'Authorization': `Bearer ${token}` // Add token to headers
             },
         });
 
         await dispatch(asyncClearCart(userId)); // Clear the cart after successful order placement
 
-        // console.log(response);
-
         dispatch(setCashOnDeliveryProcessing(false));
-
+        toast.success('Order placed successfully');
     } catch (error) {
         console.error('Error placing order:', error);
         toast.error('Failed to place order. Please try again.');
         dispatch(setCashOnDeliveryProcessing(false)); // Set loading state to false in case of error
     }
+}
+export const asyncClearCart = (userId) => async (dispatch, getState) => {
+    try {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            throw new Error('User not authenticated');
+        }
+
+        const response = await axios.post('/user/clear-cart', { userId }, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+        dispatch(asyncFetchCartProduct(userId));
+    } catch (error) {
+        console.error(error);
+    }
 };
 
 
-export const asyncClearCart=(userId)=>async(dispatch,getState)=>{
-try {
-    const response = await axios.post('/user/clear-cart', { userId });
-    dispatch(asyncFetchCartProduct(userId))
-} catch (error) {
-    console.log(error)
-    
-}
-}
-
-export const asyncFetchCustomerOrder=(userId)=>async(dispatch,getState)=>{
+export const asyncFetchCustomerOrder = (userId) => async (dispatch, getState) => {
     try {
-        const resposne = await axios.get(`/user/fetchOrders/${userId}`)
-        dispatch(saveOrders(resposne.data))
+        const token = localStorage.getItem('token');
+        if (!token) {
+            throw new Error('User not authenticated');
+        }
+
+        const response = await axios.get(`/user/fetchOrders/${userId}`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+
+        dispatch(saveOrders(response.data));
     } catch (error) {
-        toast.error("Error fetching order")
+        console.error(error);
+        toast.error("Error fetching order");
     }
-}
+};
 
-export const asyncUpdateStock = (productId, newStock,store,userId)=>async(dispatch,getState)=>{
+
+export const asyncUpdateStock = (productId, newStock, store, userId) => async (dispatch, getState) => {
     try {
-        console.log(productId,newStock,store)
-        const response = await axios.post(`/products/updateProductStock/${productId}`, { newStock,store })
+        console.log(productId, newStock, store)
+        const token = localStorage.getItem('token');
+        if (!token) {
+            throw new Error('User not authenticated');
+        }
+
+        const response = await axios.post(`/products/updateProductStock/${productId}`, { newStock, store }, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
         console.log(response)
         dispatch(asyncFetchCartProduct(userId))
     } catch (error) {
-     console.log(error)   
+        console.log(error)
     }
 }
+
 
 export const asyncReturnRequest = (orderId,userId)=>async(dispatch,getState)=>{
     try {
@@ -354,25 +472,47 @@ export const asyncContactUs=(data)=>async(dispatch,getState)=>{
     }
 }
 
-export const asyncSetPreferredStore=(selectedStore,userId)=>async(dispatch,getState)=>{
+export const asyncSetPreferredStore = (selectedStore, userId) => async (dispatch, getState) => {
     try {
-        console.log(selectedStore)
-        const response=await axios.post(`/user/selectStore/${userId}/`,selectedStore)
-        dispatch(asyncCurrentUser(userId))
+        console.log(selectedStore);
 
+        const token = localStorage.getItem('token'); // Retrieve the authentication token from localStorage
+
+        if (!token) {
+            throw new Error('User not authenticated');
+        }
+
+        const response = await axios.post(`/user/selectStore/${userId}`, selectedStore, {
+            headers: {
+                Authorization: `Bearer ${token}` // Include the token in the request headers
+            }
+        });
+
+        dispatch(asyncCurrentUser(userId));
     } catch (error) {
-        toast.error("Error Setting the store")
+        toast.error("Error Setting the store");
     }
-}
+};
 
-export const asyncSelectAddressIndex=(id,index)=>async(dispatch,getState)=>{
+
+export const asyncSelectAddressIndex = (id, index) => async (dispatch, getState) => {
     try {
-        const response=await axios.post(`/user/${id}/setAddressIndex`,index)
-        dispatch(asyncCurrentUser())
+        const token = localStorage.getItem('token');
+        if (!token) {
+            throw new Error('User not authenticated');
+        }
+
+        const response = await axios.post(`/user/${id}/setAddressIndex`, { index }, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+        dispatch(asyncCurrentUser());
     } catch (error) {
-        toast.error("Unabler to set address")
+        toast.error("Unable to set address");
     }
-}
+};
+
 
 export const asyncPayment = (userId, data) => async (dispatch, getState) => {
     try {
@@ -384,13 +524,20 @@ export const asyncPayment = (userId, data) => async (dispatch, getState) => {
     }
 };
 
-export const asyncUpdateCartQuantity=(userId,productId,quantity)=>async(dispatch,getState)=>{
-    try{
-        console.log(userId,productId,quantity)
-const response=await axios.post('/user/updateProductQuantity',{userId,productId,quantity})
-dispatch(asyncFetchCartProduct(userId))
+export const asyncUpdateCartQuantity = (userId, productId, quantity) => async (dispatch, getState) => {
+    try {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            throw new Error('User not authenticated');
+        }
+
+        const response = await axios.post('/user/updateProductQuantity', { userId, productId, quantity }, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+        dispatch(asyncFetchCartProduct(userId));
+    } catch (error) {
+        console.error(error);
     }
-    catch(error){
-console.log(error)
-    }
-}
+};

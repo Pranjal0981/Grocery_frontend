@@ -311,7 +311,7 @@ const Cart = () => {
                 const stock = item.stock ?? 0;
                 return stock <= 0;
             });
-
+console.log(unavailableProduct)
             if (unavailableStockProducts.length > 0) {
                 const productNames = unavailableStockProducts.map(item => item.productId.productName).join(', ');
                 toast.error(`The following products have unavailable stock: ${productNames}`);
@@ -344,16 +344,16 @@ const Cart = () => {
                 invoiceNumber
             }, user._id, pdfBlob));
 
-            for (const item of checkOutCart.products) {
-                if (!unavailableProduct.find(up => up.productId._id === item.productId._id)) {
-                    const stock = item.stock ?? 0; // Ensure stock is defined and is a number
-                    if (stock > 0) {
-                        const newStock = stock - item.quantity;
-                        console.log(`Updating stock for ${item.productId._id}: Old stock ${stock}, Quantity ${item.quantity}, New stock ${newStock}`);
-                        await dispatch(asyncUpdateStock(item.productId._id, newStock, selectedStore, user._id));
-                    }
-                }
-            }
+            // for (const item of checkOutCart.products) {
+            //     if (!unavailableProduct.find(up => up.productId._id === item.productId._id)) {
+            //         const stock = item.stock ?? 0; // Ensure stock is defined and is a number
+            //         if (stock > 0) {
+            //             const newStock = stock - item.quantity;
+            //             console.log(`Updating stock for ${item.productId._id}: Old stock ${stock}, Quantity ${item.quantity}, New stock ${newStock}`);
+            //             await dispatch(asyncUpdateStock(item.productId._id, newStock, selectedStore, user._id));
+            //         }
+            //     }
+            // }
 
             Swal.fire({
                 icon: 'success',
@@ -414,12 +414,20 @@ const Cart = () => {
                 setIsPaymentLoading(false);
                 return;
             }
+            const token=localStorage.getItem('token')
 
-            const { data } = await axios.get("/api/getkey");
+            const { data } = await axios.get("/api/getkey", {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
             const key = data.key;
 
-            const { data: { order } } = await axios.post("/user/api/checkout", { amount });
-
+            const { data: { order } } = await axios.post("/user/api/checkout", { amount }, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
             const options = {
                 key,
                 amount: order.amount,

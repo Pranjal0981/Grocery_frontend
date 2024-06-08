@@ -187,9 +187,9 @@ catch (err) {
            await dispatch(asyncStoreLogout())
         }
     }
-    const isAdmin = isAuth && user.userType === 'Admin';
-    const isUser = isAuth && user.userType === 'customer';
-    const isSuperAdmin=isAuth && user.userType==='SuperAdmin'
+    const isAdmin = isAuth && user?.userType === 'Admin';
+    const isUser = isAuth && user?.userType === 'customer';
+    const isSuperAdmin=isAuth && user?.userType==='SuperAdmin'
 
     const categories = [
         { label: "Oral Care & Wellness", link: "/oral-care-wellness" },

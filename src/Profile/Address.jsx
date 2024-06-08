@@ -125,7 +125,7 @@ export const AddressForm = () => {
 export const Address = () => {
     const { user } = useSelector((state) => state.user);
     const dispatch = useDispatch();
-    const [selectedAddress, setSelectedAddress] = useState(user.selectedAddressIndex); // Set default to index 0
+    const [selectedAddress, setSelectedAddress] = useState(user?.selectedAddressIndex); // Set default to index 0
 
     // Function to handle delete address
     const handleDeleteAddress = (addressIndex) => {
