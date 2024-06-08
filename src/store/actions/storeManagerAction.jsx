@@ -1,52 +1,63 @@
-import axios from '../../config/axios'
+import axios from '../../config/axios';
 import { saveStoreProducts, saveAllUsers, saveOrders, saveDashBoardInfo, setLoading } from '../reducers/adminSlice';
 import { saveProduct } from '../reducers/productSlice';
-import { saveUser, removeUser } from '../reducers/userSlice'
+import { saveUser, removeUser, saveTokenExpiration } from '../reducers/userSlice';
 import { toast } from 'react-toastify';
-export const asyncCurrentManager = (token) => async (dispatch, getState) => {
+
+// Declaring localStorage globally
+const token = localStorage.getItem('token');
+
+export const asyncCurrentManager = () => async (dispatch, getState) => {
     try {
         const response = await axios.post('/storemanager/currentStoreManager', null, {
             headers: { Authorization: `Bearer ${token}` }
         });
-        console.log(response)
-        await dispatch(saveUser(response.data.storemanger));
+        console.log(response);
+        await dispatch(saveUser(response.data.user));
     } catch (error) {
         console.error(error);
     }
 };
 
-export const asyncStoreRegister=(data)=>async(dispatch,getState)=>{
+export const asyncStoreRegister = (data) => async (dispatch, getState) => {
     try {
-        console.log(data)
-        const response=await axios.post('/storemanager/register',data)
-        console.log(response)
-        toast.success("Signup Successfull")
+        console.log(data);
+        const response = await axios.post('/storemanager/register', data);
+        console.log(response);
+        toast.success("Signup Successful");
     } catch (error) {
-        console.log(error)
-        toast.error("Signup Error")
-
+        console.log(error);
+        toast.error("Signup Error");
     }
-}
+};
 
-export const asyncStoreLogin=(data,navigate)=>async(dispatch,getState)=>{
+export const asyncStoreLogin = (data, navigate) => async (dispatch, getState) => {
     try {
-        const response=await axios.post('/storemanager/login',data)
-        await dispatch(asyncCurrentManager(response.data.token))
-        toast.success("Login Successfull")
-        console.log(store)
-        navigate(`/store/allorders/${data.store}`)
+        const response = await axios.post('/storemanager/login', data);
+        const token = response.data.token;
+        const expiresInMilliseconds = response.data.expiresIn;
 
+        const expirationTime = Date.now() + expiresInMilliseconds;
+
+        localStorage.setItem('token', token);
+        localStorage.setItem('tokenExpiration', expirationTime);
+
+        await dispatch(saveTokenExpiration(expirationTime));
+        await dispatch(asyncCurrentManager());
+        toast.success("Login Successful");
+        console.log(store);
+        navigate(`/store/allorders/${data.store}`);
     } catch (error) {
-        console.log(error)
-        toast.error("Login Error")
-
+        console.log(error);
+        toast.error("Login Error");
     }
-}
-
+};
 
 export const asyncStoreLogout = () => async (dispatch, getState) => {
     try {
-        const res = await axios.get('/storemanager/logoutStore');
+        const res = await axios.get('/storemanager/logoutStore', {
+            headers: { Authorization: `Bearer ${token}` }
+        });
         await dispatch(removeUser());
         toast.success('Logged out.');
     } catch (error) {
@@ -57,29 +68,30 @@ export const asyncStoreLogout = () => async (dispatch, getState) => {
             toast.error('An error occurred. Please try again later.');
         }
     }
-}
+};
 
-
-export const asyncStoreManagerPassword=(id,password)=>async(dispatch,getState)=>{
-        try {
-            const response = await axios.post(`/storemanager/forget-link/${id}`, { password }); // Pass password as an object
-            toast.success("Password Reset Successfully")
-        } catch (error) {
-            toast.error("Error reseting password")
-
-        }
-    };
-
-export const asyncSendForgetLinkStoremanager = (email)=>async(dispatch,getState)=>{
+export const asyncStoreManagerPassword = (id, password) => async (dispatch, getState) => {
     try {
-        const response = await axios.post('/storemanager/send-mail',email) 
-        toast.success("Reset Link Sent")
+        const response = await axios.post(`/storemanager/forget-link/${id}`, { password }, {
+            headers: { Authorization: `Bearer ${token}` }
+        }); // Pass password as an object
+        toast.success("Password Reset Successfully");
     } catch (error) {
-        console.log(error)
-        toast.error("Error Sending Link")
+        toast.error("Error resetting password");
     }
-}
+};
 
+export const asyncSendForgetLinkStoremanager = (email) => async (dispatch, getState) => {
+    try {
+        const response = await axios.post('/storemanager/send-mail', email, {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+        toast.success("Reset Link Sent");
+    } catch (error) {
+        console.log(error);
+        toast.error("Error Sending Link");
+    }
+};
 
 export const asyncFetchAllProducts = (store, page = 1, searchQuery = '') => async (dispatch, getState) => {
     try {
@@ -87,14 +99,13 @@ export const asyncFetchAllProducts = (store, page = 1, searchQuery = '') => asyn
             params: {
                 page,
                 search: searchQuery
-            }
+            },
+            headers: { Authorization: `Bearer ${token}` }
         });
         console.log(response);
         const { products, totalPages } = response.data; // Destructure products and totalPages from response.data
-        await dispatch(saveStoreProducts({ products, totalPages }));    
-    
-    }
-         catch (error) {
+        await dispatch(saveStoreProducts({ products, totalPages }));
+    } catch (error) {
         console.log(error);
     }
 };
