@@ -134,7 +134,7 @@ const ManageOrder = () => {
                             <select
                                 value={selectedStatus}
                                 onChange={(e) => setSelectedStatus(e.target.value)}
-                                className="block border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-400"
+                                className="block border border-gray-300 rounded-md py-3 px-3 focus:outline-none focus:border-blue-400"
                             >
                                 <option value="">All Status</option>
                                 <option value="Pending">Pending</option>
@@ -151,12 +151,11 @@ const ManageOrder = () => {
                         <table className="min-w-full bg-white divide-y divide-gray-200">
                             <thead className="bg-gray-100">
                                 <tr>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Date</th>
+                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Date & Time</th>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Order Id</th>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Invoice Number</th>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Total Grand Price</th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Products</th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Order Status</th>
+                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider" style={{ minWidth: '150px' }}>Order Status</th>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Payment Method</th>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">User Details</th>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Action</th>
@@ -166,26 +165,15 @@ const ManageOrder = () => {
                             <tbody className="bg-white divide-y divide-gray-200">
                                 {filteredOrders?.slice((currentPage - 1) * ordersPerPage, currentPage * ordersPerPage).map((product, index) => (
                                     <tr key={index} className={index % 2 === 0 ? "bg-gray-50" : "bg-white"}>
-                                        <td className="px-6 py-4">{new Date(product?.createdAt).toLocaleDateString()}</td>
+                                        <td className="px-6 py-4">{new Date(product?.createdAt).toLocaleString('en-US', { hour12: true })}</td>
                                         <td className="px-6 py-4">{product?.OrderId}</td>
                                         <td className="px-6 py-4">{product?.InvoiceNumber}</td>
                                         <td className="px-6 py-4">{product?.totalGrandPrice}</td>
-                                        <td className="px-6 py-4">
-                                            <ul className="list-disc list-inside">
-                                                {product?.products?.map((item, idx) => (
-                                                    <li key={idx} className="mb-2">
-                                                        <strong>{item?.productId?.productName}</strong><br />
-                                                        <span className="text-sm text-gray-500">{item?.productId?.size}</span><br />
-                                                        <span className="text-sm text-gray-500">Rs.{item?.productId?.sellingPrice}</span><br />
-                                                        <span className="text-sm text-gray-500">Quantity: {item?.quantity}</span>
-                                                    </li>
-                                                ))}
-                                            </ul>
-                                        </td><td className="px-6 py-4">
+                                        <td className="px-6 py-4" style={{ minWidth: '150px' }}>
                                             <select
                                                 value={product?.status}
                                                 onChange={(e) => handleStatusChange(product?._id, e.target.value)}
-                                                className="block w-full p-2 border border-gray-300 rounded-md focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                                                className="block w-full p-1 border border-gray-300 rounded-md focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                                             >
                                                 <option value="Cancelled">Cancelled</option>
                                                 <option value="Pending">Pending</option>
@@ -211,9 +199,7 @@ const ManageOrder = () => {
                                                 )
                                             ))}
                                             <div>
-                                                <strong>
-                                                    Email : {product?.userId?.email}
-                                                </strong>
+                                                <strong>Email:</strong> {product?.userId?.email}
                                             </div>
                                         </td>
                                         <td className="px-6 py-4">
@@ -266,6 +252,9 @@ const ManageOrder = () => {
                 </>
             )}
         </div>
+
+
+
     );
 };
 
