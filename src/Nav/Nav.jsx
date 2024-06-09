@@ -67,7 +67,6 @@ const Nav = () => {
         setSelectedCategory(event.target.value);
     };
  const { user, isAuth } = useSelector((state) => state.user)
- console.log(user)
 // conso
     const handleSearch = async(searchTerm, selectedCategory)=> {
        

@@ -6,7 +6,6 @@ export const asyncFetchProducts = (page, preferredStore) => async (dispatch, get
         dispatch(setLoading(true));
         const url = preferredStore ? `/products/getproduct?page=${page}&preferredStore=${preferredStore}` : `/products/getproduct?page=${page}`;
         const response = await axios.get(url);
-        console.log(response)
         const totalPages = response.data.totalPages; // Extract totalPages from response
         await dispatch(saveProduct(response.data.data));
         return totalPages; // Return totalPages to be used in component logic
@@ -20,10 +19,8 @@ export const asyncFetchProducts = (page, preferredStore) => async (dispatch, get
 
 export const asyncExploreById = (id) => async (dispatch, getState) => {
     try {
-        console.log(id)
         dispatch(setLoading(true));
         const response = await axios.get(`/products/explore/${id}`)
-        console.log(response)
         await dispatch(saveProduct(response.data.data.product));
         await dispatch(saveStoreStocks(response.data.data.stores))
     } catch (error) {

@@ -11,6 +11,11 @@ export const StoreManagerLogin = () => {
     const [stores, setStores] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
+    const [formData, setFormData] = useState({
+        email: "",
+        password: "",
+        store: ""
+    });
 
     useEffect(() => {
         // Fetch the list of stores from the JSON file
@@ -19,36 +24,43 @@ export const StoreManagerLogin = () => {
             .then((data) => setStores(data))
             .catch((error) => console.error('Error fetching stores:', error));
     }, []);
-    const [formData, setFormData] = useState({
-        email: "",
-        password: "",
-        store: ""
-    });
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
     };
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        // console.log(store)
-        setError('');
-        setLoading(true);
-        try{
-        dispatch(asyncStoreLogin(formData, navigate));
+    const validateForm = () => {
+        const { email, password, store } = formData;
+        if (!email || !password || !store) {
+            setError('All fields are required.');
+            return false;
         }
-catch (err) {
-                setError('Failed.');
-            } finally {
-                setLoading(false);
-            }
+        return true;
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setError('');
+        if (!validateForm()) {
+            return;
+        }
+        setLoading(true);
+        try {
+            await dispatch(asyncStoreLogin(formData, navigate));
+        } catch (err) {
+            setError('Login failed. Please check your credentials and try again.');
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
-        <div className="max-w-md mx-auto">
+        <div className="max-w-md mx-auto mt-10 p-6 bg-gray-50 shadow-md rounded-lg">
             <form onSubmit={handleSubmit} className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-                <h2 className="text-2xl font-bold mb-4">Store Manager Login</h2>
+                <h2 className="text-2xl font-bold mb-4 text-center">Store Manager Login</h2>
+
+                {error && <div className="mb-4 text-red-600 text-center">{error}</div>}
 
                 <div className="mb-4">
                     <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">
@@ -64,6 +76,7 @@ catch (err) {
                         onChange={handleInputChange}
                     />
                 </div>
+
                 <div className="mb-4">
                     <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="password">
                         Password
@@ -98,29 +111,28 @@ catch (err) {
                         ))}
                     </select>
                 </div>
+
                 <button
                     type="submit"
                     className={`w-full bg-blue-500 text-white py-2 rounded focus:outline-none ${loading ? 'opacity-75 cursor-not-allowed' : 'hover:bg-blue-600'} transition duration-200`}
                     disabled={loading}
                 >
-                    {loading ? 'Loggin...' : 'Login'}
+                    {loading ? <span>Logging in...</span> : 'Login'}
                 </button>
-                <Link
-                    to="/storemanager/register"
-                    className="block text-center text-gray-700 text-sm mt-2 hover:underline"
-                >
-                    Don't have an account? Register here
-                </Link>
-                <Link
-                    to="/storemanager/forget-password"
-                    className="block text-center text-gray-700 text-sm mt-2 hover:underline"
-                >
-                    Forgot Password?
-                </Link>
+
+                <div className="mt-4 flex flex-col items-center">
+                    <Link to="/storemanager/register" className="text-gray-700 text-sm mt-2 hover:underline">
+                        Don't have an account? Register here
+                    </Link>
+                    <Link to="/storemanager/forget-password" className="text-gray-700 text-sm mt-2 hover:underline">
+                        Forgot Password?
+                    </Link>
+                </div>
             </form>
         </div>
     );
 };
+
 
 
 
