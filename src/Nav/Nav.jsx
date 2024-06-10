@@ -647,7 +647,7 @@ catch (err) {
                                                         {loading ? 'Signin...' : 'Signin'}
                                                     </button>
                                             </form>
-                                            <a href="/forget-password">Forget Password</a>
+                                            <Link to="/forget-password">Forget Password</Link>
                                         </div>
                                     )}
                                     {selectedTab === 1 && (

@@ -30,8 +30,10 @@ export const asyncSuperAdminSignUp = (data) => async (dispatch, getState) => {
 
 export const asyncSuperAdminSignIn = (data, navigate) => async (dispatch, getState) => {
     try {
-        const res = await axios.post('/superadmin/login', data);
-        await dispatch(asyncCurrentSuperAdmin(res.data.token));
+        const res = await axios.post('/superadmin/login', data,{
+            headers: { Authorization: `Bearer ${token}` }
+        });
+        await dispatch(asyncCurrentSuperAdmin(token));
         const expiresInMilliseconds = res.data.expiresIn;
         const expirationTime = Date.now() + expiresInMilliseconds;
         localStorage.setItem('token', res.data.token);
@@ -174,21 +176,21 @@ export const fetchDashBoardInfo = () => async (dispatch, getState) => {
 
 export const asyncSuperAdminBlockUser = (userId) => async (dispatch, getState) => {
     try {
-        const response = await axios.post(`/superadmin/blockUser/${userId}`,{
+        const token = localStorage.getItem('token');
+        const response = await axios.post(`/superadmin/blockUser/${userId}`, null, {
             headers: { Authorization: `Bearer ${token}` }
+        });
+        toast.warn("User Blocked");
 
-        })
-        toast.warn("User Blocked")
-
-        dispatch(asyncfetchAllusers())
+        dispatch(asyncfetchAllusers());
     } catch (error) {
-        toast.error(error.response.data.message)
+        toast.error(error.response?.data?.message || "An error occurred");
     }
-}
+};
 
 export const asyncSuperAdminUnblockUser = (userID) => async (dispatch, getState) => {
     try {
-        const response = await axios.post(`/superadmin/unblockUser/${userID}`,{
+        const response = await axios.post(`/superadmin/unblockUser/${userID}`,null,{
             headers: { Authorization: `Bearer ${token}` }
 
         })
