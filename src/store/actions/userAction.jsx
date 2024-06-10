@@ -52,14 +52,15 @@ export const asyncSignIn = (data) => async (dispatch) => {
 
         await dispatch(saveTokenExpiration(expirationTime));
         dispatch(asyncCurrentUser());
-
-        toast.success("Logged in successfully!");
+console.log(response)
+        toast.success("Logged In successfully");
     } catch (error) {
+        console.log(error)
         if (error.response && error.response.status === 401) {
-            toast.error('Invalid email or password. Please try again.');
+            toast.error(error.response.data.message);
         } else {
             console.error(error);
-            toast.error('An error occurred. Please try again later.');
+            toast.error(error.response.data.message);
         }
     }
 };
@@ -398,6 +399,7 @@ export const asyncCustomerOrder = (data, userId, pdfBlob) => async (dispatch, ge
         dispatch(setCashOnDeliveryProcessing(false)); // Set loading state to false in case of error
     }
 }
+
 export const asyncClearCart = (userId) => async (dispatch, getState) => {
     try {
         const token = localStorage.getItem('token');

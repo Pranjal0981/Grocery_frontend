@@ -31,14 +31,14 @@ export const asyncSuperAdminSignUp = (data) => async (dispatch, getState) => {
 export const asyncSuperAdminSignIn = (data, navigate) => async (dispatch, getState) => {
     try {
         const res = await axios.post('/superadmin/login', data,{
-            headers: { Authorization: `Bearer ${token}` }
+            // headers: { Authorization: `Bearer ${token}` }
         });
         await dispatch(asyncCurrentSuperAdmin(token));
-        const expiresInMilliseconds = res.data.expiresIn;
-        const expirationTime = Date.now() + expiresInMilliseconds;
+        // const expiresInMilliseconds = res.data.expiresIn;
+        // const expirationTime = Date.now() + expiresInMilliseconds;
         localStorage.setItem('token', res.data.token);
-        localStorage.setItem('tokenExpiration', expirationTime);
-        dispatch(saveTokenExpiration(expirationTime));
+        // localStorage.setItem('tokenExpiration', expirationTime);
+        // dispatch(saveTokenExpiration(expirationTime));
         toast.success("LoggedIn sucessfully")
         navigate('/superadmin/dashboard')
 
