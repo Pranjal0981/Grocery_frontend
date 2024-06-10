@@ -201,7 +201,9 @@ const Cart = () => {
     const isCashOnDeliveryProcessing = useSelector(state => state.user.isCashOnDeliveryProcessing);
     const dispatch = useDispatch();
     const { checkOutCart, user, unavailableProduct = [] } = useSelector(state => state.user);
-    console.log(checkOutCart)
+    console.log(unavailableProduct)
+
+    // console.log(checkOutCart)
     const navigate = useNavigate();
     const [stores, setStores] = useState([]);
 
@@ -343,6 +345,7 @@ console.log(unavailableProduct)
                 orderId,
                 invoiceNumber
             }, user._id, pdfBlob));
+            await dispatch(asyncFetchCartProduct(user._id))
 
             for (const item of checkOutCart.products) {
                 if (!unavailableProduct.find(up => up.productId._id === item.productId._id)) {
@@ -354,6 +357,7 @@ console.log(unavailableProduct)
                     }
                 }
             }
+
 
             Swal.fire({
                 icon: 'success',
