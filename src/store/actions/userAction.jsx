@@ -158,26 +158,26 @@ export const asyncUpdateCart = (userId, store, productIds) => async (dispatch) =
             const { data } = response;
             if (data.success) {
                 toast.success('Cart updated successfully');
-                dispatch(saveUnavailableProduct([])); // Clear unavailable products if the cart is updated successfully
-                dispatch(asyncFetchCartProduct(userId))
+               await dispatch(saveUnavailableProduct([])); // Clear unavailable products if the cart is updated successfully
+                await dispatch(asyncFetchCartProduct(userId))
 
             } else {
                 if (data.unavailableProducts) {
                     const unavailableProductNames = data.unavailableProducts.map(product => product.name).join(', ');
                     toast.error(`The following products are not available in the selected store: ${unavailableProductNames}`);
-                    dispatch(asyncFetchCartProduct(userId))
+                  await  dispatch(asyncFetchCartProduct(userId))
 
                 } else {
                     toast.error(data.message || 'Failed to update the cart');
-                    dispatch(asyncFetchCartProduct(userId))
+                  await  dispatch(asyncFetchCartProduct(userId))
 
                 }
             }
 
             // Dispatch action to save unavailable products to Redux store
             if (data.unavailableProducts) {
-                dispatch(saveUnavailableProduct(data.unavailableProducts));
-                dispatch(asyncFetchCartProduct(userId))
+                await dispatch(saveUnavailableProduct(data.unavailableProducts));
+                await  dispatch(asyncFetchCartProduct(userId))
             }
         }
     } catch (error) {
@@ -189,7 +189,7 @@ export const asyncUpdateCart = (userId, store, productIds) => async (dispatch) =
                 const unavailableProductNames = data.unavailableProducts.map(product => product.name).join(', ');
                 toast.error(`The following products are not available in the selected store: ${unavailableProductNames}`);
                 // Dispatch action to save unavailable products to Redux store
-                dispatch(saveUnavailableProduct(data.unavailableProducts));
+                await dispatch(saveUnavailableProduct(data.unavailableProducts));
             } else {
                 toast.error(data.message || 'Error updating cart');
             }
