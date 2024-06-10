@@ -391,6 +391,7 @@ export const asyncCustomerOrder = (data, userId, pdfBlob) => async (dispatch, ge
 
         dispatch(setCashOnDeliveryProcessing(false));
         toast.success('Order placed successfully');
+        await dispatch(asyncClearCart(userId))
     } catch (error) {
         console.error('Error placing order:', error);
         toast.error('Failed to place order. Please try again.');
