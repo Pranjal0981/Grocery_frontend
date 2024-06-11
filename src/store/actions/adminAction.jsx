@@ -212,7 +212,7 @@ export const asyncDelProduct = (productId, store, currentPage, searchQuery) => a
         });
 
         toast.warn('Product Deleted');
-        dispatch(fetchProductsByStore(store, currentPage, searchQuery));
+        await dispatch(fetchProductsByStore(store, currentPage, searchQuery));
     } catch (error) {
         toast.error(error.response.data.message); // Display error message using toast
     }

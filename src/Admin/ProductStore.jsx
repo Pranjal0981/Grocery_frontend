@@ -23,7 +23,7 @@ const ProductStore = () => {
         console.log(currentPage)
         await dispatch(asyncDelProduct(id, store, currentPage, searchQuery));
         // Refresh the product list after deletion
-        dispatch(fetchProductsByStore(store, currentPage, searchQuery));
+        // dispatch(fetchProductsByStore(store, currentPage, searchQuery));
     };
 
     const handleSearch = () => {
