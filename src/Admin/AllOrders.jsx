@@ -30,13 +30,21 @@ const ManageOrder = () => {
     };
 
     const totalPages = Math.ceil(totalOrders / ordersPerPage);
-
+const token=localStorage.getItem('token')
     const openRazorpay = async (amount) => {
         try {
-            const { data } = await axios.get("/api/getkey");
+            const { data } = await axios.get("/api/getkey",{
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
             const key = data.key;
 
-            const { data: { order } } = await axios.post("/user/api/checkout", { amount });
+            const { data: { order } } = await axios.post("/user/api/checkout", { amount },{
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
 
             const options = {
                 key,
