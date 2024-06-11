@@ -7,7 +7,6 @@ import { BsBagCheck } from "react-icons/bs";
 import { IoIosGlobe } from "react-icons/io";
 import { LuGitCompare } from "react-icons/lu";
 import { CiLogout } from "react-icons/ci";
-import { CiHeart } from "react-icons/ci";
 import { MdAccountCircle } from "react-icons/md";
 import { useSelector, useDispatch } from 'react-redux';
 import { asyncSignOut, asyncSetPreferredStore } from '../store/actions/userAction';
@@ -20,6 +19,7 @@ const Dashboard = () => {
     const [preferredStore, setPreferredStore] = useState([]);
     const [selectedStore, setSelectedStore] = useState(user?.PreferredStore || '');
     const [products, setProducts] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         // Fetch the list of stores from the JSON file
@@ -37,89 +37,91 @@ const Dashboard = () => {
         setSelectedStore(store);
     }
 
-    const handleSubmitPreferredStore = (e) => {
+    const handleSubmitPreferredStore = async (e) => {
         e.preventDefault();
-        dispatch(asyncSetPreferredStore({ selectedStore }, user._id));
-        toast.success("Store Set");
+        setIsLoading(true);
+        try {
+            await dispatch(asyncSetPreferredStore({ selectedStore }, user._id));
+            toast.success("Store Set");
+        } catch (error) {
+            toast.error("Failed to set store");
+        } finally {
+            setIsLoading(false);
+        }
     }
 
     return (
-        <div className="h-auto w-full">
-            <h1 className='flex gap-[20px] w-full items-center justify-center text-4xl p-[30px] bg-gray-100'><FaUser /> MY ACCOUNT</h1>
-            <div className="main-dv w-full  flex flex-col md:flex-row">
-                <div className="left w-full md:w-[30%] h-[100%] bg-gray-200 flex flex-col justify-evenly p-[10px]">
-                    <div className="flex flex-col justify-center items-center">
-                        <FaCircleUser className='text-6xl text-gray-600' />
-                        <h1>{user?.firstName} {user?.lastName}</h1>
-                        <h1>{user?.email}</h1>
+        <div className="min-h-screen bg-gradient-to-r from-blue-50 to-blue-100 p-4">
+            <h1 className='flex gap-5 items-center justify-center text-4xl p-8 bg-gradient-to-r from-blue-300 to-blue-500 text-white shadow-lg rounded-xl'>
+                <FaUser /> MY ACCOUNT
+            </h1>
+            <div className="flex flex-col md:flex-row gap-4 mt-8">
+                <div className="w-full md:w-1/3 bg-white shadow-2xl rounded-lg p-6">
+                    <div className="flex flex-col items-center text-center">
+                        <FaCircleUser className='text-6xl text-gray-600 mb-4' />
+                        <h1 className='text-2xl font-bold'>{user?.firstName} {user?.lastName}</h1>
+                        <h2 className='text-gray-600'>{user?.email}</h2>
                     </div>
-                    <div className='flex flex-col gap-[20px]'>
-                        <Link to='/dashboard' className='flex items-center gap-[10px]'>
+                    <div className='mt-8'>
+                        <Link to='/dashboard' className='flex items-center gap-3 py-2 text-lg text-gray-700 hover:text-blue-500 transition-colors'>
                             <MdDashboard />
                             Dashboard
                         </Link>
-                        <Link to='/orders' className='flex items-center gap-[10px]'>
+                        <Link to='/orders' className='flex items-center gap-3 py-2 text-lg text-gray-700 hover:text-blue-500 transition-colors'>
                             <BsBagCheck />
                             Orders
                         </Link>
-                        <Link to='/address' className='flex items-center gap-[10px]'>
+                        <Link to='/address' className='flex items-center gap-3 py-2 text-lg text-gray-700 hover:text-blue-500 transition-colors'>
                             <IoIosGlobe />
                             Addresses
                         </Link>
-                        <Link to='/wishlist' className='flex items-center gap-[10px]'>
+                        <Link to='/wishlist' className='flex items-center gap-3 py-2 text-lg text-gray-700 hover:text-blue-500 transition-colors'>
                             <LuGitCompare />
                             Wishlist
                         </Link>
-                        <Link className='flex items-center gap-[10px]' onClick={handleLogout}>
+                        <button onClick={handleLogout} className='flex items-center gap-3 py-2 text-lg text-gray-700 hover:text-blue-500 transition-colors w-full text-left'>
                             <CiLogout />
                             Logout
-                        </Link>
+                        </button>
                     </div>
                 </div>
-                <div className="right w-full md:w-[70%] h-full p-[10px]">
-                    <h1 className='text-2xl'>Welcome to your Account Page</h1>
-                    <p>Hi {user?.firstName} {user?.lastName}, today is a great day to check your account page. You can also check:</p>
-                    <div className="flex flex-col md:flex-row w-full justify-center items-center md:justify-between p-[10px] mt-[20px]">
-                        <Link to='/orders' className='bg-orange-500 flex items-center justify-center gap-[10px] text-white w-[250px] md:w-auto text-center text-[17px] p-[10px] pl-[10px] pr-[10px] rounded-full mb-[10px] md:mb-0'>
-                            <BsBagCheck />
+                <div className="w-full md:w-2/3 bg-white shadow-2xl rounded-lg p-6">
+                    <h1 className='text-2xl font-bold mb-4'>Welcome to your Account {user?.firstName} {user?.lastName}</h1>
+                    <p className='mb-6'>Hi {user?.firstName} {user?.lastName}, today is a great day to check your account page. You can also check:</p>
+                    <div className="flex flex-col md:flex-row gap-4">
+                        <Link to='/orders' className='bg-gradient-to-r from-green-400 to-green-600 text-white py-3 px-6 rounded-full shadow-md hover:shadow-lg transform hover:scale-105 transition-transform'>
+                            <BsBagCheck className='inline-block mr-2' />
                             Recent Order
                         </Link>
-                        <Link to='/address' className='bg-orange-500 flex items-center justify-center gap-[10px] text-white w-[250px] md:w-auto text-center p-[10px] pl-[10px] pr-[10px] rounded-full mb-[10px] md:mb-0'>
-                            <IoIosGlobe />
+                        <Link to='/address' className='bg-gradient-to-r from-orange-400 to-orange-600 text-white py-3 px-6 rounded-full shadow-md hover:shadow-lg transform hover:scale-105 transition-transform'>
+                            <IoIosGlobe className='inline-block mr-2' />
                             Address
                         </Link>
-                        <Link to='/account-details' className='bg-orange-500 flex items-center justify-center gap-[10px] text-white w-[250px] md:w-auto text-center p-[10px] pl-[10px] pr-[10px] rounded-full'>
-                            <MdAccountCircle />
+                        <Link to='/account-details' className='bg-gradient-to-r from-orange-400 to-orange-600 text-white py-3 px-6 rounded-full shadow-md hover:shadow-lg transform hover:scale-105 transition-transform'>
+                            <MdAccountCircle className='inline-block mr-2' />
                             Account Details
                         </Link>
                     </div>
-                    <form onSubmit={handleSubmitPreferredStore} className="flex flex-col md:flex-row items-center justify-center  mt-4">
+                    <form onSubmit={handleSubmitPreferredStore} className="flex flex-col md:flex-row items-center mt-8 gap-4">
                         <select
                             value={selectedStore}
                             onChange={(e) => handleStoreChange(e.target.value)}
-                            className="border-2 border-gray-400 px-4 py-2 rounded-md focus:outline-none focus:border-blue-500"
+                            className="border-2 border-gray-300 px-4 py-2 rounded-lg shadow-md focus:outline-none focus:border-blue-500 transition-colors"
                         >
                             <option value="" disabled>Select Store</option>
                             {preferredStore.map((store, index) => (
                                 <option key={index} value={store}>{store}</option>
                             ))}
                         </select>
-                        <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 focus:outline-none focus:bg-blue-600">
-                            Set Preferred Store
+                        <button type="submit" className={`bg-blue-500 text-white py-2 px-6 rounded-lg shadow-md hover:shadow-lg transform hover:scale-105 transition-transform ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`} disabled={isLoading}>
+                            {isLoading ? 'Setting...' : 'Set Preferred Store'}
                         </button>
-                    </form>
-                    <div>
-                        <h2>Products for {user?.preferredStore}</h2>
-                        <ul>
-                            {products.map((product) => (
-                                <li key={product.id}>{product.name}</li>
-                            ))}
-                        </ul>
-                    </div>
+                </form>
+                    
                 </div>
             </div>
         </div>
     );
-};
+}
 
-export default Dashboard;
+export default Dashboard
