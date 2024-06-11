@@ -2,6 +2,7 @@ import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { asyncDelProduct, fetchProductsByStore } from '../store/actions/adminAction';
+import queryString from 'query-string';
 
 const ProductStore = () => {
     const { products, totalPages } = useSelector((state) => state.admin);
@@ -10,12 +11,21 @@ const ProductStore = () => {
     const navigate = useNavigate();
     const location = useLocation();
 
-    const [currentPage, setCurrentPage] = useState(location.state?.currentPage || 1);
-    const [searchQuery, setSearchQuery] = useState(location.state?.searchQuery || '');
+    const queryParams = queryString.parse(location.search);
+    const initialPage = queryParams.page ? parseInt(queryParams.page, 10) : 1;
+    const initialSearchQuery = queryParams.search || '';
+
+    const [currentPage, setCurrentPage] = useState(initialPage);
+    const [searchQuery, setSearchQuery] = useState(initialSearchQuery);
 
     useEffect(() => {
         dispatch(fetchProductsByStore(store, currentPage, searchQuery));
     }, [dispatch, store, currentPage, searchQuery]);
+
+    useEffect(() => {
+        const newQueryString = queryString.stringify({ page: currentPage, search: searchQuery });
+        navigate(`${location.pathname}?${newQueryString}`, { replace: true });
+    }, [currentPage, searchQuery, navigate, location.pathname]);
 
     const handleSearchInputChange = (event) => {
         setSearchQuery(event.target.value);
@@ -31,7 +41,7 @@ const ProductStore = () => {
     };
 
     const handleUpdateProduct = (id) => {
-        navigate(`/admin/update-product/${id}`, { state: { currentPage, searchQuery } });
+        navigate(`/admin/update-product/${id}?page=${currentPage}&search=${searchQuery}`);
     };
 
     const handleClick = (productId) => {
@@ -81,5 +91,7 @@ const ProductStore = () => {
         </div>
     );
 };
+
+
 
 export default ProductStore;

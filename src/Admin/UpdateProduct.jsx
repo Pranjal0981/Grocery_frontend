@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { asyncExploreById } from "../store/actions/productAction";
+import queryString from 'query-string';
 import { asyncUpdateProduct } from "../store/actions/adminAction";
 const UpdateProduct = () => {
+    
     const { id } = useParams();
+    const location = useLocation();
     const dispatch = useDispatch();
     const [selectedStore, setSelectedStore] = useState(null);
     const [storeOptions, setStoreOptions] = useState([]);
@@ -14,13 +17,15 @@ const UpdateProduct = () => {
     const stores = useSelector((state) => state.product.store);
     const [updatedProduct, setUpdatedProduct] = useState({});
 
+    const navigate = useNavigate();
+    const { page, search } = queryString.parse(location.search);
+
     useEffect(() => {
         fetch('/stores.json')
             .then((response) => response.json())
             .then((data) => setStoreOptions(data))
             .catch((error) => console.error('Error fetching stores:', error));
     }, []);
-    console.log(storeOptions)
 
     useEffect(() => {
         if (product) {
@@ -71,7 +76,9 @@ const UpdateProduct = () => {
             formData.append('image', imageFile);
         }
 
-        dispatch(asyncUpdateProduct(id, formData));
+        await dispatch(asyncUpdateProduct(id, formData));
+
+        // navigate(`/product-store/${product.store}?page=${page}&search=${search}`);
     };
 
     const handleStoreChange = (e) => {
@@ -212,7 +219,7 @@ const UpdateProduct = () => {
                             name="category"
                             value={updatedProduct.category || ''}
                             onChange={handleChange}
-                            className="form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
+                            className="form-input mt-1                                block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
                         />
                     </div>
                     {/* Brand */}
@@ -320,7 +327,7 @@ const UpdateProduct = () => {
                             type="number"
                             id="stock"
                             name="stock"
-                            value={updatedProduct.stock }
+                            value={updatedProduct.stock}
                             onChange={handleChange}
                             className="form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
                         />
@@ -402,5 +409,5 @@ const UpdateProduct = () => {
     );
 };
 
-
 export default UpdateProduct;
+
