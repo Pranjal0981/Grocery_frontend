@@ -1,15 +1,17 @@
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { asyncDelProduct, asyncUpdateProduct, fetchProductsByStore } from '../store/actions/adminAction';
+import { asyncDelProduct, fetchProductsByStore } from '../store/actions/adminAction';
 
 const ProductStore = () => {
     const { products, totalPages } = useSelector((state) => state.admin);
     const { store } = useParams();
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const [currentPage, setCurrentPage] = useState(1);
-    const [searchQuery, setSearchQuery] = useState('');
+    const location = useLocation();
+
+    const [currentPage, setCurrentPage] = useState(location.state?.currentPage || 1);
+    const [searchQuery, setSearchQuery] = useState(location.state?.searchQuery || '');
 
     useEffect(() => {
         dispatch(fetchProductsByStore(store, currentPage, searchQuery));
@@ -19,11 +21,8 @@ const ProductStore = () => {
         setSearchQuery(event.target.value);
     };
 
-    const handleDelete = async (id,currentPage,searchQuery) => {
-        console.log(currentPage)
+    const handleDelete = async (id, currentPage, searchQuery) => {
         await dispatch(asyncDelProduct(id, store, currentPage, searchQuery));
-        // Refresh the product list after deletion
-        // dispatch(fetchProductsByStore(store, currentPage, searchQuery));
     };
 
     const handleSearch = () => {
@@ -32,13 +31,11 @@ const ProductStore = () => {
     };
 
     const handleUpdateProduct = (id) => {
-        console.log(id)
-        navigate(`/admin/update-product/${id}`);
+        navigate(`/admin/update-product/${id}`, { state: { currentPage, searchQuery } });
     };
 
     const handleClick = (productId) => {
         console.log(`Product clicked: ${productId}`);
-        // Add any additional functionality here if needed
     };
 
     return (
@@ -67,7 +64,7 @@ const ProductStore = () => {
                             <p className="text-gray-800 font-bold mt-2">Stock: {product?.stock}</p>
                             <p className="text-gray-800 font-bold mt-2">Product Code: {product?.productId?.productCode}</p>
                             <div className="flex gap-[30px]">
-                                <button onClick={() => handleDelete(product?.productId?._id,currentPage,searchQuery)} className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded mt-2">Delete</button>
+                                <button onClick={() => handleDelete(product?.productId?._id, currentPage, searchQuery)} className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded mt-2">Delete</button>
                                 <button onClick={() => handleUpdateProduct(product?.productId._id)} className="bg-sky-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded mt-2">Update</button>
                             </div>
                         </div>
