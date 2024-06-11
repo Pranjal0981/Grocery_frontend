@@ -7,6 +7,8 @@ import { toast } from 'react-toastify';
 const token=localStorage.getItem('token')
 export const asyncCurrentSuperAdmin = () => async (dispatch, getState) => {
     try {
+        const token = localStorage.getItem('token')
+console.log(token)
         const response = await axios.post('/superadmin/currentsuperAdmin', null, {
             headers: { Authorization: `Bearer ${token}` }
         });
@@ -31,7 +33,7 @@ export const asyncSuperAdminSignUp = (data) => async (dispatch, getState) => {
 export const asyncSuperAdminSignIn = (data, navigate) => async (dispatch, getState) => {
     try {
         const res = await axios.post('/superadmin/login', data,{
-            // headers: { Authorization: `Bearer ${token}` }
+            headers: { Authorization: `Bearer ${token}` }
         });
         await dispatch(asyncCurrentSuperAdmin(token));
         // const expiresInMilliseconds = res.data.expiresIn;

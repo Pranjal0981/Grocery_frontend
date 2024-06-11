@@ -9,6 +9,8 @@ const token = localStorage.getItem('token');
 
 export const asyncCurrentManager = () => async (dispatch, getState) => {
     try {
+        const token = localStorage.getItem('token');
+
         const response = await axios.post('/storemanager/currentStoreManager', null, {
             headers: { Authorization: `Bearer ${token}` }
         });
