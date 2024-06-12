@@ -201,7 +201,7 @@ const Cart = () => {
     const isCashOnDeliveryProcessing = useSelector(state => state.user.isCashOnDeliveryProcessing);
     const dispatch = useDispatch();
     const { checkOutCart, user, unavailableProduct = [] } = useSelector(state => state.user);
-    console.log(unavailableProduct)
+    console.log(checkOutCart)
 
     // console.log(checkOutCart)
     const navigate = useNavigate();
@@ -258,7 +258,6 @@ const Cart = () => {
         return invoiceNumber;
     };
 
-
     const handlePlaceOrder = () => {
         if (!user.address || user.address.length === 0) {
             toast.error('Please add your details and phone number before placing the order.');
@@ -273,8 +272,18 @@ const Cart = () => {
             toast.error('Some products are unavailable in the selected store. Please remove them before placing the order.');
             return;
         }
+
+        // Check if any product quantity exceeds stock
+        const outOfStockProducts = checkOutCart.products.filter(item => item.quantity > item.stock);
+        if (outOfStockProducts.length > 0) {
+            const productNames = outOfStockProducts.map(item => item.productId.productName).join(', ');
+            toast.error(`The following products have insufficient stock: ${productNames}`);
+            return;
+        }
+
         setShowModal(true);
     };
+
 
     const handleCloseModal = () => {
         setShowModal(false);
@@ -313,10 +322,18 @@ const Cart = () => {
                 const stock = item.stock ?? 0;
                 return stock <= 0;
             });
-console.log(unavailableProduct)
+
             if (unavailableStockProducts.length > 0) {
                 const productNames = unavailableStockProducts.map(item => item.productId.productName).join(', ');
                 toast.error(`The following products have unavailable stock: ${productNames}`);
+                return;
+            }
+
+            // Check if any product quantity exceeds stock
+            const outOfStockProducts = checkOutCart.products.filter(item => item.quantity > item.stock);
+            if (outOfStockProducts.length > 0) {
+                const productNames = outOfStockProducts.map(item => item.productId.productName).join(', ');
+                toast.error(`The following products have insufficient stock: ${productNames}`);
                 return;
             }
 
@@ -345,19 +362,6 @@ console.log(unavailableProduct)
                 orderId,
                 invoiceNumber
             }, user._id, pdfBlob));
-            await dispatch(asyncFetchCartProduct(user._id))
-
-            for (const item of checkOutCart.products) {
-                if (!unavailableProduct.find(up => up.productId._id === item.productId._id)) {
-                    const stock = item.stock ?? 0; // Ensure stock is defined and is a number
-                    if (stock > 0) {
-                        const newStock = stock - item.quantity;
-                        console.log(`Updating stock for ${item.productId._id}: Old stock ${stock}, Quantity ${item.quantity}, New stock ${newStock}`);
-                        await dispatch(asyncUpdateStock(item.productId._id, newStock, selectedStore, user._id));
-                    }
-                }
-            }
-
 
             Swal.fire({
                 icon: 'success',
@@ -401,6 +405,15 @@ console.log(unavailableProduct)
                 return;
             }
 
+            // Check if any product quantity exceeds stock
+            const outOfStockProducts = checkOutCart.products.filter(item => item.quantity > item.stock);
+            if (outOfStockProducts.length > 0) {
+                const productNames = outOfStockProducts.map(item => item.productId.productName).join(', ');
+                toast.error(`The following products have insufficient stock: ${productNames}`);
+                setIsPaymentLoading(false);
+                return;
+            }
+
             const availableProducts = checkOutCart.products
                 .filter(item => {
                     const stock = item.stock ?? 0;
@@ -418,7 +431,7 @@ console.log(unavailableProduct)
                 setIsPaymentLoading(false);
                 return;
             }
-            const token=localStorage.getItem('token')
+            const token = localStorage.getItem('token')
 
             const { data } = await axios.get("/api/getkey", {
                 headers: {
@@ -513,6 +526,7 @@ console.log(unavailableProduct)
             setIsPaymentLoading(false);
         }
     };
+
 
 
 
@@ -668,7 +682,7 @@ console.log(unavailableProduct)
                 )}
             </div>
         );
-    };
+};
 
 
 
