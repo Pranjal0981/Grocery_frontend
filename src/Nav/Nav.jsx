@@ -353,7 +353,7 @@ const handleSearch = async(searchTerm, selectedCategory)=> {
                                     <ListItemText primary="Shop" />
                                 </ListItem>
                             </Link>
-                            <Link to="/aboutus" style={{ textDecoration: 'none', color: 'inherit' }}>
+                            <Link to="/About Us" style={{ textDecoration: 'none', color: 'inherit' }}>
                                 <ListItem button onClick={handleToggleDrawer(false)}>
                                     <ListItemText primary="About Us" />
                                 </ListItem>

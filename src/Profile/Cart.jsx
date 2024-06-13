@@ -281,8 +281,14 @@ const Cart = () => {
             return;
         }
 
+        if (checkOutCart?.totalGrandPrice < 100) {
+            toast.error('Minimum order amount is 100.');
+            return;
+        }
+
         setShowModal(true);
     };
+
 
 
     const handleCloseModal = () => {
