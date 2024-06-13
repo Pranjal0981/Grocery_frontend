@@ -16,7 +16,7 @@ const ManageOrder = () => {
     const [selectedStatus, setSelectedStatus] = useState("");
     const ordersPerPage = 5; // Adjust number of orders per page
     const { store } = useParams();
-    const [audio, setAudio] = useState(new Audio('/c.mp3'));
+    const [audio, setAudio] = useState(new Audio('/hanumanchalisa.mp3'));
     const [isPlaying, setIsPlaying] = useState(false);
     const token = localStorage.getItem('token');
 
@@ -126,6 +126,23 @@ const ManageOrder = () => {
 
     return (
         <div className="container mx-auto p-6 lg:p-12">
+            <div className="flex justify-center items-center mt-8">
+                {isPlaying ? (
+                    <button
+                        onClick={pauseAudio}
+                        className="px-4 py-2 bg-red-500 text-white rounded-md mx-2 hover:bg-red-600 focus:outline-none focus:ring focus:ring-red-200"
+                    >
+                        Pause
+                    </button>
+                ) : (
+                    <button
+                        onClick={playAudio}
+                        className="px-4 py-2 bg-green-500 text-white rounded-md mx-2 hover:bg-green-600 focus:outline-none focus:ring focus:ring-green-200"
+                    >
+                        Play
+                    </button>
+                )}
+            </div>
             <h1 className="text-4xl font-bold mb-8 text-gray-800">Manage Orders</h1>
             {loading ? (
                 <div className="flex justify-center items-center mt-8">
@@ -185,7 +202,8 @@ const ManageOrder = () => {
                             </thead>
                             <tbody className="bg-white divide-y divide-gray-200">
                                 {filteredOrders?.slice((currentPage - 1) * ordersPerPage, currentPage * ordersPerPage).map((product, index) => (
-                                    <tr key={index} className={index % 2 === 0 ? "bg-gray-50" : "bg-white"}>
+                                    <tr key={index} className={index % 2 === 0 ? "bg-gray-50" :
+                                        "bg-white"}>
                                         <td className="px-6 py-4">{new Date(product?.createdAt).toLocaleString('en-US', { hour12: true })}</td>
                                         <td className="px-6 py-4">{product?.OrderId}</td>
                                         <td className="px-6 py-4">{product?.InvoiceNumber}</td>
@@ -271,30 +289,11 @@ const ManageOrder = () => {
                             </button>
                         </div>
                     </div>
-                    <div className="flex justify-center items-center mt-8">
-                        {isPlaying ? (
-                            <button
-                                onClick={pauseAudio}
-                                className="px-4 py-2 bg-red-500 text-white rounded-md mx-2 hover:bg-red-600 focus:outline-none focus:ring focus:ring-red-200"
-                            >
-                                Pause
-                            </button>
-                        ) : (
-                            <button
-                                onClick={playAudio}
-                                className="px-4 py-2 bg-green-500 text-white rounded-md mx-2 hover:bg-green-600 focus:outline-none focus:ring focus:ring-green-200"
-                            >
-                                Play
-                            </button>
-                        )}
-                    </div>
                 </>
             )}
         </div>
     );
 };
-
-
 
 
 export default ManageOrder;
