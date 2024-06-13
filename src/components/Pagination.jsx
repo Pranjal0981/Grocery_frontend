@@ -150,7 +150,11 @@ const Pagination = ({ currentPage, onPageChange }) => {
     }, [product, productsPerPage]);
 
     if (showSpinner || loading) {
-        return <CustomSpinner />;
+        return (
+        <div className='w-full ml-auto'>
+            <CustomSpinner />
+        </div>
+        )
     } else if (!product || product.length === 0) {
         return (
             <div className="container mx-auto mt-20 flex justify-center items-center">
