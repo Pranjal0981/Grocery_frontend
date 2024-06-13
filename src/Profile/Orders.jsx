@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { asyncFetchCustomerOrder, asyncReturnRequest, asyncUpdateStock, asyncCopyStore } from "../store/actions/userAction";
+import { asyncFetchCustomerOrder, asyncReturnRequest, asyncUpdateStock } from "../store/actions/userAction";
 
 const Order = () => {
     const dispatch = useDispatch();
@@ -13,9 +13,7 @@ const Order = () => {
             dispatch(asyncFetchCustomerOrder(user?._id));
         }
     }, [dispatch, user?._id]);
-    const handleCopy=async()=>{
-        await dispatch(asyncCopyStore())
-    }
+   
     const calculateDaysDifference = (date1, date2) => {
         const diffTime = Math.abs(date2 - date1);
         return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
