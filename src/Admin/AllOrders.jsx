@@ -16,7 +16,10 @@ const ManageOrder = () => {
     const [selectedStatus, setSelectedStatus] = useState("");
     const ordersPerPage = 5; // Adjust number of orders per page
     const { store } = useParams();
-    console.log(store)
+    const [audio, setAudio] = useState(new Audio('/c.mp3'));
+    const [isPlaying, setIsPlaying] = useState(false);
+    const token = localStorage.getItem('token');
+
     useEffect(() => {
         dispatch(asyncFetchOrders(currentPage, store));
     }, [dispatch, currentPage, store]);
@@ -30,17 +33,17 @@ const ManageOrder = () => {
     };
 
     const totalPages = Math.ceil(totalOrders / ordersPerPage);
-const token=localStorage.getItem('token')
+
     const openRazorpay = async (amount) => {
         try {
-            const { data } = await axios.get("/api/getkey",{
+            const { data } = await axios.get("/api/getkey", {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
             });
             const key = data.key;
 
-            const { data: { order } } = await axios.post("/user/api/checkout", { amount },{
+            const { data: { order } } = await axios.post("/user/api/checkout", { amount }, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -110,6 +113,16 @@ const token=localStorage.getItem('token')
         }
         return true;
     });
+
+    const playAudio = () => {
+        audio.play();
+        setIsPlaying(true);
+    };
+
+    const pauseAudio = () => {
+        audio.pause();
+        setIsPlaying(false);
+    };
 
     return (
         <div className="container mx-auto p-6 lg:p-12">
@@ -181,7 +194,8 @@ const token=localStorage.getItem('token')
                                             <select
                                                 value={product?.status}
                                                 onChange={(e) => handleStatusChange(product?._id, e.target.value)}
-                                                className="block w-full p-1 border border-gray-300 rounded-md focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                                                className="block w-full p-1 border border-gray-300 rounded-md focus:ring focus:ring
+-indigo-200 focus:ring-opacity-50"
                                             >
                                                 <option value="Cancelled">Cancelled</option>
                                                 <option value="Pending">Pending</option>
@@ -257,14 +271,29 @@ const token=localStorage.getItem('token')
                             </button>
                         </div>
                     </div>
+                    <div className="flex justify-center items-center mt-8">
+                        {isPlaying ? (
+                            <button
+                                onClick={pauseAudio}
+                                className="px-4 py-2 bg-red-500 text-white rounded-md mx-2 hover:bg-red-600 focus:outline-none focus:ring focus:ring-red-200"
+                            >
+                                Pause
+                            </button>
+                        ) : (
+                            <button
+                                onClick={playAudio}
+                                className="px-4 py-2 bg-green-500 text-white rounded-md mx-2 hover:bg-green-600 focus:outline-none focus:ring focus:ring-green-200"
+                            >
+                                Play
+                            </button>
+                        )}
+                    </div>
                 </>
             )}
         </div>
-
-
-
     );
 };
+
 
 
 
