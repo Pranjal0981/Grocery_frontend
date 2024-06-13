@@ -209,24 +209,18 @@ catch (err) {
 
  
     return (
-
-        <>
-
+    <>
             <div className="flex gap-[20px] justify-around items-center h-[10vh] w-auto bg-[#96B415] sticky top-[0%] z-[99]">
                 <button onClick={toggleDrawer(true)} className="flex items-center justify-center w-8 h-8 text-white rounded-full border-2 border-white">
                     <FaBars />
-
                 </button>
                 <div className="flex items-center gap-5">
                     <h1 className="ml-5 text-xl">
                         <Link to='/'>
                             <img src="/RGS-New-Logo.webp" className="h-12" alt="" />
-
                         </Link>
                     </h1>
-                    
                 </div>
-
                 <div className="hidden md:flex items-center rounded-full bg-white text-black-200 border border-gray-300">
                     <select
                         className="px-3 py-1 bg-transparent border-none focus:outline-none text-lg"
@@ -238,7 +232,6 @@ catch (err) {
                             <option key={index} value={category.label}>{category.label}</option>
                         ))}
                     </select>
-
                     <input
                         type="text"
                         className="w-full px-3 py-1 bg-transparent border-none focus:outline-none text-lg"
@@ -246,25 +239,22 @@ catch (err) {
                         value={searchTerm}
                         onChange={handleChangeSearchTerm}
                     />
-                    <button className="px-3 py-1 bg-transparent border-none focus:outline-none" onClick={()=>handleSearch(searchTerm,selectedCategory)}>
+                    <button className="px-3 py-1 bg-transparent border-none focus:outline-none" onClick={() => handleSearch(searchTerm, selectedCategory)}>
                         <FaSearchengin className="text-lg" />
                     </button>
                 </div>
-
                 <div className="flex">
                     <button className="flex gap-2 items-center text-white text-lg" onClick={toggleSecondDrawer(true)}>
                         <FaUser />
                         <p className='hidden md:block'>My Account</p>
                     </button>
                 </div>
-
                 <div className="flex">
                     <Link to='/wishlist' className="flex gap-2 items-center text-white text-lg">
                         <FaHeart />
                         <p className='hidden md:block'>WISHLIST</p>
                     </Link>
                 </div>
-
                 <div className="flex bg-white rounded-full w-[100px] h-[35px] justify-center ">
                     <Link to='/cart' className="flex gap-2 items-center  text-lg ">
                         <FaShoppingBag />
@@ -275,7 +265,7 @@ catch (err) {
             <div className="hidden md:flex justify-between p-[10px] ">
                 <div className=" md:left flex w-[50%] justify-evenly">
                     {links.map((link, index) => (
-                        <Link to={link.to} key={index}>
+                        <Link to={link.to} key={index} onClick={toggleDrawer(false)}>
                             {link.label}
                         </Link>
                     ))}
@@ -284,7 +274,6 @@ catch (err) {
                     <div>
                         <Link to="tel:+919244321195">Call +91-9244321195</Link>
                     </div>
-
                     <div className='flex gap-[10px]'>
                         {socialMediaLinks.map((socialMedia, index) => (
                             <Link to={socialMedia.to} key={index}>
@@ -326,38 +315,32 @@ catch (err) {
                                 </button>
                             </div>
                             <Link to="/" style={{ textDecoration: 'none', color: 'inherit' }}>
-                                <ListItem button>
+                                <ListItem button onClick={toggleDrawer(false)}>
                                     <ListItemText primary="Home" />
                                 </ListItem>
                             </Link>
                             <Link to="/our-business" style={{ textDecoration: 'none', color: 'inherit' }}>
-                                <ListItem button>
+                                <ListItem button onClick={toggleDrawer(false)}>
                                     <ListItemText primary="Join Our Business" />
                                 </ListItem>
                             </Link>
                             <Link to="/shop" style={{ textDecoration: 'none', color: 'inherit' }}>
-                                <ListItem button>
+                                <ListItem button onClick={toggleDrawer(false)}>
                                     <ListItemText primary="Shop" />
                                 </ListItem>
                             </Link>
                             <Link to="/aboutus" style={{ textDecoration: 'none', color: 'inherit' }}>
-                                <ListItem button>
+                                <ListItem button onClick={toggleDrawer(false)}>
                                     <ListItemText primary="About Us" />
                                 </ListItem>
                             </Link>
                             <Link to="/contact" style={{ textDecoration: 'none', color: 'inherit' }}>
-                                <ListItem button>
-                                    <ListItemText primary="Contact Us" />
-                                </ListItem>
-                            </Link>
-                            
-                            <Link to="/contact" style={{ textDecoration: 'none', color: 'inherit' }}>
-                                <ListItem button>
+                                <ListItem button onClick={toggleDrawer(false)}>
                                     <ListItemText primary="Contact Us" />
                                 </ListItem>
                             </Link>
                             <Link to="/storemanager/login" style={{ textDecoration: 'none', color: 'inherit' }}>
-                                <ListItem button>
+                                <ListItem button onClick={toggleDrawer(false)}>
                                     <ListItemText primary="Store Login" />
                                 </ListItem>
                             </Link>
@@ -377,20 +360,17 @@ catch (err) {
                             </div>
                         </List>
                     </div>
-
-
-
                 ) : (
                     <div className='h-full bg-[#96B415]'>
 
                         <List className='bg-[#96B415] h-full text-white' >
-                                {categories.map(({ label, link }, index) => (
-                                    <Link to={`/category/${label}`} style={{ textDecoration: 'none', color: 'inherit' }}>
-                                        <ListItem button>
-                                            <ListItemText primary={label} />
-                                        </ListItem>
-                                    </Link>
-                                ))}
+                            {categories.map(({ label, link }, index) => (
+                                <Link to={`/category/${label}`} style={{ textDecoration: 'none', color: 'inherit' }} onClick={toggleDrawer(false)}>
+                                    <ListItem button>
+                                        <ListItemText primary={label} />
+                                    </ListItem>
+                                </Link>
+                            ))}
                             <div className="flex mt-auto mb-5">
                                 <a href="https://www.instagram.com/" target="_blank" rel="noopener noreferrer" className="text-white mx-2">
                                     <FaInstagram />
@@ -419,71 +399,73 @@ catch (err) {
                     <div className='h-full w-[300px] p-[40px]'>
                         <List className='flex flex-col w-full gap-[20px]'>
                             <h1 className='text-center'>MY ACCOUNT</h1>
-                            <Link to="/dashboard" className="" style={{ textDecoration: 'none' }}>
+                            <Link to="/dashboard" className="" style={{ textDecoration: 'none' }} onClick={toggleSecondDrawer(false)}>
                                 <ListItem button>
                                     <ListItemText primary="DASHBOARD" />
                                 </ListItem>
                             </Link>
-                            <Link to="/orders" className="" style={{ textDecoration: 'none' }}>
+                            <Link to="/orders" className="" style={{ textDecoration: 'none' }} onClick={toggleSecondDrawer(false)}>
                                 <ListItem button>
                                     <ListItemText primary="ORDERS" />
                                 </ListItem>
                             </Link>
-                            <Link to="/edit-address" className="" style={{ textDecoration: 'none' }}>
+                            <Link to="/edit-address" className="" style={{ textDecoration: 'none' }} onClick={toggleSecondDrawer(false)}>
                                 <ListItem button>
                                     <ListItemText primary="ADDRESS" />
                                 </ListItem>
                             </Link>
-                            <Link to="/account-details" className="" style={{ textDecoration: 'none' }}>
-                                <ListItem button>
-                                    <ListItemText primary="ACCOUNT DETAILS" />
-                                </ListItem>
-                            </Link>
-                            <Link to="/wishlist" className="" style={{ textDecoration: 'none' }}>
-                                <ListItem button>
-                                    <ListItemText primary="WISHLIST" />
-                                </ListItem>
-                            </Link>
+                            <Link to="/account-details" className="" style={{ textDecoration: 'none' }} onClick={toggleSecondDrawer (false)}>
+                                <Link to="/account-details" className="" style={{ textDecoration: 'none' }} onClick={toggleSecondDrawer(false)}>
+                                    <ListItem button>
+                                        <ListItemText primary="ACCOUNT DETAILS" />
+                                    </ListItem>
+                                </Link>
+                                </Link>
+                                <Link to="/wishlist" className="" style={{ textDecoration: 'none' }} onClick={toggleSecondDrawer(false)}>
+                                    <ListItem button>
+                                        <ListItemText primary="WISHLIST" />
+                                    </ListItem>
+                                </Link>
 
-                            <Link to="/logout" className="" style={{ textDecoration: 'none' }} onClick={handleLogout}>
-                                <ListItem button>
-                                    <ListItemText primary="LOGOUT" />
-                                </ListItem>
-                            </Link>
+                                <Link to="/logout" className="" style={{ textDecoration: 'none' }} onClick={handleLogout}>
+                                    <ListItem button>
+                                        <ListItemText primary="LOGOUT" />
+                                    </ListItem>
+                                </Link>
                         </List>
                     </div>
                 ) : user?.userType === "Admin" ? (
                     <div className="admin-dashboard h-full w-[300px] p-[40px]">
                         <List className='flex flex-col w-full gap-[20px]'>
                             <h1 className='text-center'>ADMIN ACCOUNT</h1>
-                            <Link to="/admin/upload-products" className="" style={{ textDecoration: 'none' }}>
+                            <Link to="/admin/upload-products" className="" style={{ textDecoration: 'none' }} onClick={toggleSecondDrawer(false)}>
                                 <ListItem button>
                                     <ListItemText primary="Upload Products" />
                                 </ListItem>
                             </Link>
 
-                            <Link to="/admin/allOrders" className="" style={{ textDecoration: 'none' }}>
+                            <Link to="/admin/allOrders" className="" style={{ textDecoration: 'none' }} onClick={toggleSecondDrawer(false)}>
                                 <ListItem button>
                                     <ListItemText primary="All Orders" />
                                 </ListItem>
                             </Link>
 
-                            <Link to="/admin/fetchOutOfStockProducts" className="" style={{ textDecoration: 'none' }}>
+                            <Link to="/admin/fetchOutOfStockProducts" className="" style={{ textDecoration: 'none' }} onClick={toggleSecondDrawer(false)}>
                                 <ListItem button>
                                     <ListItemText primary="Out Of Stock" />
                                 </ListItem>
                             </Link>
-                                <ListItem button onClick={() => handleStoreClick()}>
-                                    <ListItemText primary="Stores" />
-                                    {openStore ? <ExpandLess /> : <ExpandMore />}
-                                </ListItem>
-                                <Collapse in={openStore} timeout="auto" unmountOnExit>
-                                    {stores.map((store, index) => (
-                                        <ListItemButton key={index} component={Link} to={`/stores/fetchProducts/${store}`}>
-                                            <ListItemText primary={store} />
-                                        </ListItemButton>
-                                    ))}
-                                </Collapse>
+                            <ListItem button onClick={() => handleStoreClick()}>
+                                <ListItemText primary="Stores" />
+                                {openStore ? <ExpandLess /> : <ExpandMore />}
+                            </ListItem>
+                            <Collapse in={openStore} timeout="auto" unmountOnExit>
+                                {stores.map((store, index) => (
+                                    <ListItemButton key={index} component={Link} to={`/stores/fetchProducts/${store}`} onClick={toggleSecondDrawer(false)}>
+                                        <ListItemText primary={store} />
+                                    </ListItemButton>
+                                ))}
+                            </Collapse>
                             <Link to="/admin/logout" className="" style={{ textDecoration: 'none' }} onClick={handleLogout}>
                                 <ListItem button>
                                     <ListItemText primary="Logout" />
@@ -495,83 +477,77 @@ catch (err) {
                     <div className="admin-dashboard h-full w-[300px] p-[40px]">
                         <List className='flex flex-col w-full gap-[20px]'>
                             <h1 className='text-center'>SUPER ADMIN ACCOUNT</h1>
-                                    <Link to="/superadmin/dashboard" className="" style={{ textDecoration: 'none' }}>
-                                        <ListItem button>
-                                            <ListItemText primary="Super Admin Dashboard" />
-                                        </ListItem>
-                                    </Link>
-                                    <ListItem button onClick={() => handleOrderClick()}>
-                                        <ListItemText primary="All Orders" />
-                                        {openOrders ? <ExpandLess /> : <ExpandMore />}
-                                    </ListItem>
-                                    <Collapse in={openOrders} timeout="auto" unmountOnExit>
-                                        {stores.map((store, index) => (
-                                            <ListItemButton key={index} component={Link} to={`/superadmin/orders/${store}`}>
-                                                <ListItemText primary={store} />
-                                            </ListItemButton>
-                                        ))}
-                                    </Collapse>
-                                    <Link to="/admin/upload-products" className="" style={{ textDecoration: 'none' }}>
-                                        <ListItem button>
-                                            <ListItemText primary="Upload Products" />
-                                        </ListItem>
-                                    </Link>
+                            <Link to="/superadmin/dashboard" className="" style={{ textDecoration: 'none' }} onClick={toggleSecondDrawer(false)}>
+                                <ListItem button>
+                                    <ListItemText primary="Super Admin Dashboard" />
+                                </ListItem>
+                            </Link>
+                            <ListItem button onClick={() => handleOrderClick()}>
+                                <ListItemText primary="All Orders" />
+                                {openOrders ? <ExpandLess /> : <ExpandMore />}
+                            </ListItem>
+                            <Collapse in={openOrders} timeout="auto" unmountOnExit>
+                                {stores.map((store, index) => (
+                                    <ListItemButton key={index} component={Link} to={`/superadmin/orders/${store}`} onClick={toggleSecondDrawer(false)}>
+                                        <ListItemText primary={store} />
+                                    </ListItemButton>
+                                ))}
+                            </Collapse>
+                            <Link to="/admin/upload-products" className="" style={{ textDecoration: 'none' }} onClick={toggleSecondDrawer(false)}>
+                                <ListItem button>
+                                    <ListItemText primary="Upload Products" />
+                                </ListItem>
+                            </Link>
+                            <ListItem button onClick={() => handleStoreClick()}>
+                                <ListItemText primary="Stores" />
+                                {openStore ? <ExpandLess /> : <ExpandMore />}
+                            </ListItem>
+                            <Collapse in={openStore} timeout="auto" unmountOnExit>
+                                {stores.map((store, index) => (
+                                    <ListItemButton key={index} component={Link} to={`/stores/fetchProducts/${store}`} onClick={toggleSecondDrawer(false)}>
+                                        <ListItemText primary={store} />
+                                    </ListItemButton>
+                                ))}
+                            </Collapse>
+                            <Link to="/admin/fetchOutOfStockProducts" className="" style={{ textDecoration: 'none' }} onClick={toggleSecondDrawer(false)}>
+                                <ListItem button>
+                                    <ListItemText primary="Out Of Stock" />
+                                </ListItem>
+                            </Link>
 
-                                    <ListItem button onClick={() => handleStoreClick()}>
-                                        <ListItemText primary="Stores" />
-                                        {openStore ? <ExpandLess /> : <ExpandMore />}
-                                    </ListItem>
-                                    <Collapse in={openStore} timeout="auto" unmountOnExit>
-                                        {stores.map((store, index) => (
-                                            <ListItemButton key={index} component={Link} to={`/stores/fetchProducts/${store}`}>
-                                                <ListItemText primary={store} />
-                                            </ListItemButton>
-                                        ))}
-                                    </Collapse>
-                                    <Link to="/admin/fetchOutOfStockProducts" className="" style={{ textDecoration: 'none' }}>
-                                        <ListItem button>
-                                            <ListItemText primary="Out Of Stock" />
-                                        </ListItem>
-                                    </Link>
-                         
-                            <Link to="/superadmin/fetchAllUsers" className="" style={{ textDecoration: 'none' }}>
+                            <Link to="/superadmin/fetchAllUsers" className="" style={{ textDecoration: 'none' }} onClick={toggleSecondDrawer(false)}>
                                 <ListItem button>
                                     <ListItemText primary="All Users" />
                                 </ListItem>
                             </Link>
 
-                          
-                            <Link to="/superadmin/activeMembers" className="" style={{ textDecoration: 'none' }}>
+                            <Link to="/superadmin/activeMembers" className="" style={{ textDecoration: 'none' }} onClick={toggleSecondDrawer(false)}>
                                 <ListItem button>
                                     <ListItemText primary="Active Users" />
                                 </ListItem>
                             </Link>
-                            <Link to="/superadmin/inactiveMembers" className="" style={{ textDecoration: 'none' }}>
+                            <Link to="/superadmin/inactiveMembers" className="" style={{ textDecoration: 'none' }} onClick={toggleSecondDrawer(false)}>
                                 <ListItem button>
                                     <ListItemText primary="InActive Users" />
                                 </ListItem>
                             </Link>
-                            
-                                    <Link to="/superadmin/getUserQuery" className="" style={{ textDecoration: 'none' }}>
-                                        <ListItem button>
-                                            <ListItemText primary="User Query" />
-                                        </ListItem>
-                                    </Link>
-                            {/* Store Section */}
+
+                            <Link to="/superadmin/getUserQuery" className="" style={{ textDecoration: 'none' }} onClick={toggleSecondDrawer(false)}>
+                                <ListItem button>
+                                    <ListItemText primary="User Query" />
+                                </ListItem>
+                            </Link>
                             <ListItem button onClick={() => handleSheet()}>
                                 <ListItemText primary="Stores Sheet" />
                                 {openSheet ? <ExpandLess /> : <ExpandMore />}
                             </ListItem>
-                                    <Collapse in={openSheet} timeout="auto" unmountOnExit>
+                            <Collapse in={openSheet} timeout="auto" unmountOnExit>
                                 {stores.map((store, index) => (
-                                    <ListItemButton key={index} component={Link} to={`/superadmin/stores/${store}`}>
+                                    <ListItemButton key={index} component={Link} to={`/superadmin/stores/${store}`} onClick={toggleSecondDrawer(false)}>
                                         <ListItemText primary={store} />
                                     </ListItemButton>
                                 ))}
                             </Collapse>
-
-                            {/* End of Store Section */}
-                                   
                             <Link to="/superadmin/logout" className="" style={{ textDecoration: 'none' }} onClick={handleLogout}>
                                 <ListItem button>
                                     <ListItemText primary="Logout" />
@@ -581,119 +557,117 @@ catch (err) {
                     </div>
                 ) : user?.userType === "Storemanager" ? (
                     <div className="store-manager-dashboard h-full w-[300px] p-[40px]">
-
-                                    <Link to={`/store/allOrders/${user?.store}`} className="" style={{ textDecoration: 'none' }}>
-                                        <ListItem button>
-                                            <ListItemText primary="All Orders" />
-                                        </ListItem>
-                                    </Link>
-
-                                    <Link to={`/store/allproducts/${user?.store}`} className="" style={{ textDecoration: 'none' }}>
-                                        <ListItem button>
-                                            <ListItemText primary="All Products" />
-                                        </ListItem>
-                                    </Link>
-                                    <Link to="" className="" style={{ textDecoration: 'none' }} onClick={handleLogout}>
-                                        <ListItem button>
-                                            <ListItemText primary="Logout" />
-                                        </ListItem>
-                                    </Link>
+                        <Link to={`/store/allOrders/${user?.store}`} className="" style={{ textDecoration: 'none' }} onClick={toggleSecondDrawer(false)}>
+                            <ListItem button>
+                                <ListItemText primary="All Orders" />
+                            </ListItem>
+                        </Link>
+                        <Link to={`/store/allproducts/${user?.store}`} className="" style={{ textDecoration: 'none' }} onClick={toggleSecondDrawer(false)}>
+                            <ListItem button>
+                                <ListItemText primary="All Products" />
+                            </ListItem>
+                        </Link>
+                        <Link to="" className="" style={{ textDecoration: 'none' }} onClick={handleLogout}>
+                            <ListItem button>
+                                <ListItemText primary="Logout" />
+                            </ListItem>
+                        </Link>
                     </div>
-                ) : (<div className="flex justify-center items-center h-screen">
-                                <div className="bg-gray-200  rounded-lg shadow-md">
-                                    <Tabs
-                                        value={selectedTab}
-                                        onChange={handleTabChange}
-                                        sx={{ backgroundColor: '#dadada', color: 'black', width: '350px' }}
-                                    >
-                                        <Tab label="Sign In" sx={{ color: 'black', width: '50%' }} />
-                                        <Tab label="Sign Up" sx={{ color: 'black', width: '50%' }} />
-                                    </Tabs>
-                                    {selectedTab === 0 && (
-                                        <div className='p-5'>
-                                            <form className="flex flex-col space-y-4" onSubmit={handleLogin}>
-                                                <input
-                                                    type="email"
-                                                    name="email"
-                                                    value={formData.email}
-                                                    placeholder="Email"
-                                                    className="border border-gray-300 px-4 py-2 rounded focus:outline-none"
-                                                    onChange={handleInputChange}
-                                                />
-                                                    <div className="relative">
-                                                        <input
-                                                            type={showPassword ? 'text' : 'password'}
-                                                            name="password"
-                                                            value={formData.password}
-                                                            placeholder="Minimum 4 Characters"
-                                                            className="border border-gray-300 px-4 py-2 rounded focus:outline-none"
-                                                            onChange={handleInputChange}
-                                                        />
-                                                        <button
-                                                            type="button"
-                                                            className="absolute inset-y-0 right-0 px-3 py-2"
-                                                            onClick={handleTogglePassword}
-                                                        >
-                                                            {showPassword ? <FaEyeSlash /> : <FaEye />}
-                                                        </button>
-                                                    </div>
-
-                                                    <button
-                                                        type="submit"
-                                                        className={`w-full bg-blue-500 text-white px-4 py-2 rounded focus:outline-none ${loading ? 'opacity-75 cursor-not-allowed' : 'hover:bg-blue-600'
-                                                            } transition duration-200`}
-                                                        disabled={loading}
-                                                    >
-                                                        {loading ? 'Signin...' : 'Signin'}
-                                                    </button>
-                                            </form>
-                                            <Link href="/forget-password">Forget Password</Link>
+                ) : (
+                    <div className="flex justify-center items-center h-screen">
+                        <div className="bg-gray-200  rounded-lg shadow-md">
+                            <Tabs
+                                value={selectedTab}
+                                onChange={handleTabChange}
+                                sx={{ backgroundColor: '#dadada', color: 'black', width: '350px' }}
+                            >
+                                <Tab label="Sign In" sx={{ color: 'black', width: '50%' }} />
+                                <Tab label="Sign Up" sx={{ color: 'black', width: '50%' }} />
+                            </Tabs>
+                            {selectedTab === 0 && (
+                                <div className='p-5'>
+                                    <form className="flex flex-col space-y-4" onSubmit={handleLogin}>
+                                        <input
+                                            type="email"
+                                            name="email"
+                                            value={formData.email}
+                                            placeholder="Email"
+                                            className="border border-gray-300 px-4 py-2 rounded focus:outline-none"
+                                            onChange={handleInputChange}
+                                        />
+                                        <div className="relative">
+                                            <input
+                                                type={showPassword ? 'text'
+                                                    : 'password'}
+                                                name="password"
+                                                value={formData.password}
+                                                placeholder="Minimum 4 Characters"
+                                                className="border border-gray-300 px-4 py-2 rounded focus:outline-none"
+                                                onChange={handleInputChange}
+                                            />
+                                            <button
+                                                type="button"
+                                                className="absolute inset-y-0 right-0 px-3 py-2"
+                                                onClick={handleTogglePassword}
+                                            >
+                                                {showPassword ? <FaEyeSlash /> : <FaEye />}
+                                            </button>
                                         </div>
-                                    )}
-                                    {selectedTab === 1 && (
-                                        <div className='p-5'>
-                                            <form className="flex flex-col space-y-4" onSubmit={handleCustomerSubmit}>
-                                                <input
-                                                    type="email"
-                                                    name="email"
-                                                    value={formData.email}
-                                                    placeholder="Email"
-                                                    className="border border-gray-300 px-4 py-2 rounded focus:outline-none"
-                                                    onChange={handleInputChange}
-                                                />
-                                                    <div className="relative">
-                                                        <input
-                                                            type={showPassword ? 'text' : 'password'}
-                                                            name="password"
-                                                            value={formData.password}
-                                                            placeholder="Minimum 8 Characters"
-                                                            className="border border-gray-300 px-4 py-2 rounded focus:outline-none"
-                                                            onChange={handleInputChange}
-                                                        />
-                                                        <button
-                                                            type="button"
-                                                            className="absolute inset-y-0 right-0 px-3 py-2"
-                                                            onClick={handleTogglePassword}
-                                                        >
-                                                            {showPassword ? <FaEyeSlash /> : <FaEye />}
-                                                        </button>
-                                                    </div>
 
-                                                    <button
-                                                        type="submit"
-                                                        className={`w-full bg-blue-500 text-white px-4 py-2 rounded focus:outline-none ${loading ? 'opacity-75 cursor-not-allowed' : 'hover:bg-blue-600'
-                                                            } transition duration-200`}
-                                                        disabled={loading}
-                                                    >
-                                                        {loading ? 'Signup...' : 'Signup'}
-                                                    </button>
-                                            </form>
-                            </div>)}
+                                        <button
+                                            type="submit"
+                                            className={`w-full bg-blue-500 text-white px-4 py-2 rounded focus:outline-none ${loading ? 'opacity-75 cursor-not-allowed' : 'hover:bg-blue-600'
+                                                } transition duration-200`}
+                                            disabled={loading}
+                                        >
+                                            {loading ? 'Signin...' : 'Signin'}
+                                        </button>
+                                    </form>
+                                    <Link to="/forget-password">Forget Password</Link>
+                                </div>
+                            )}
+                            {selectedTab === 1 && (
+                                <div className='p-5'>
+                                    <form className="flex flex-col space-y-4" onSubmit={handleCustomerSubmit}>
+                                        <input
+                                            type="email"
+                                            name="email"
+                                            value={formData.email}
+                                            placeholder="Email"
+                                            className="border border-gray-300 px-4 py-2 rounded focus:outline-none"
+                                            onChange={handleInputChange}
+                                        />
+                                        <div className="relative">
+                                            <input
+                                                type={showPassword ? 'text' : 'password'}
+                                                name="password"
+                                                value={formData.password}
+                                                placeholder="Minimum 8 Characters"
+                                                className="border border-gray-300 px-4 py-2 rounded focus:outline-none"
+                                                onChange={handleInputChange}
+                                            />
+                                            <button
+                                                type="button"
+                                                className="absolute inset-y-0 right-0 px-3 py-2"
+                                                onClick={handleTogglePassword}
+                                            >
+                                                {showPassword ? <FaEyeSlash /> : <FaEye />}
+                                            </button>
+                                        </div>
+
+                                        <button
+                                            type="submit"
+                                            className={`w-full bg-blue-500 text-white px-4 py-2 rounded focus:outline-none ${loading ? 'opacity-75 cursor-not-allowed' : 'hover:bg-blue-600'
+                                                } transition duration-200`}
+                                            disabled={loading}
+                                        >
+                                            {loading ? 'Signup...' : 'Signup'}
+                                        </button>
+                                    </form>
+                                </div>)}
+                        </div>
                     </div>
-                </div>
                 )}
-
-
             </Drawer>
 
         </>

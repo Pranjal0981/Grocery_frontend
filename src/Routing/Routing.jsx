@@ -45,7 +45,9 @@ import { Business } from '@mui/icons-material'
 import DeliveryInformation from '../components/DeliveryInfo'
 import TermsAndConditions from '../components/TermsandCondition'
 import PaymentSuccessPage from '../Profile/PaymentSuccess'
+import GenerateBill from '../StoreManager/GenerateBill'
 const Routing = () => {
+    
     const { user, isAuth } = useSelector((state) => state.user)
     const isAdmin = isAuth && user?.userType === 'Admin';
     const {store}=useParams()
@@ -87,7 +89,6 @@ const Routing = () => {
             <Route path="/storemanager/forget-link/:id" element={<ResetStoreManagerPassword />} />
             <Route path='/superadmin/forget-password' element={<ForgetSuperAdminPassword/>} />
             <Route path='/superadmin/orders/:store' element={< ManageOrder/>} />
-
             <Route path='/superadmin/login' element={<SuperAdminForm isLogin={true}/>}/>
             <Route path='/superadmin/register' element={<SuperAdminForm isLogin={false} />}/>
             <Route path="/forget-link/:id" element={<ResetPassword/>} />
