@@ -187,16 +187,26 @@ const handleSearch = async(searchTerm, selectedCategory)=> {
         e.preventDefault()
         if (user?.userType === 'Admin') {
             await dispatch(asyncLogoutAdmin());
+            setSecondOpen(false)
+
                 }
         if (user?.userType === 'customer') {
           await  dispatch(asyncSignOut())
+            setSecondOpen(false)
+
         }
         if(user?.userType=='SuperAdmin'){
             await dispatch(asyncSignOutSuperAdmin())
+            setSecondOpen(false)
+
         }
         if(user?.userType==='Storemanager'){
            await dispatch(asyncStoreLogout())
+            setSecondOpen(false)
+
         }
+        navigate('/')
+
     }
     const isAdmin = isAuth && user?.userType === 'Admin';
     const isUser = isAuth && user?.userType === 'customer';
