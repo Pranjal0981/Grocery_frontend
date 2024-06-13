@@ -181,7 +181,11 @@ const handleSearch = async(searchTerm, selectedCategory)=> {
         }
     };
 
-
+    const handleForgetPassword=()=>{
+            setDrawerOpen(false);
+            setSecondOpen(false)
+        
+    }
 
     const handleLogout = async (e) => {
         e.preventDefault()
@@ -640,7 +644,7 @@ const handleSearch = async(searchTerm, selectedCategory)=> {
                             {loading ? 'Signin...' : 'Signin'}
                         </button>
                     </form>
-                    <Link to="/forget-password">Forget Password</Link>
+                    <Link to="/forget-password" onClick={handleForgetPassword}>Forget Password</Link>
                 </div>
             )}
             {selectedTab === 1 && (
