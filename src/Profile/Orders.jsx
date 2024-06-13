@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { asyncFetchCustomerOrder, asyncReturnRequest, asyncUpdateStock } from "../store/actions/userAction";
+import { asyncFetchCustomerOrder, asyncReturnRequest, asyncUpdateStock, asyncCopyStore } from "../store/actions/userAction";
 
 const Order = () => {
     const dispatch = useDispatch();
@@ -13,7 +13,9 @@ const Order = () => {
             dispatch(asyncFetchCustomerOrder(user?._id));
         }
     }, [dispatch, user?._id]);
-
+    const handleCopy=async()=>{
+        await dispatch(asyncCopyStore())
+    }
     const calculateDaysDifference = (date1, date2) => {
         const diffTime = Math.abs(date2 - date1);
         return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
@@ -58,7 +60,7 @@ const Order = () => {
                             <th className="px-4 py-2 border">Status</th>
                             <th className="px-4 py-2 border">Total Grand Price</th>
                             <th className="px-4 py-2 border">User Email</th>
-                            <th className="px-4 py-2 border">Product Details</th>
+                            <th className="px-4 py-2 border">Invoice URL</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -68,27 +70,14 @@ const Order = () => {
                                 <td className="border px-4 py-2">{order?.totalGrandPrice}</td>
                                 <td className="border px-4 py-2">{order?.userId?.email}</td>
                                 <td className="border px-4 py-2">
-                                    <ul className="space-y-4">
-                                        {order?.products?.map((product) => (
-                                            <li key={product?._id} className="border-b py-2">
-                                                <div className="flex items-center space-x-4">
-                                                    <div>
-                                                        <h3 className="text-lg font-semibold">{product?.productId?.productName}</h3>
-                                                        <p className="text-sm text-gray-600">{product?.productId?.description}</p>
-                                                        <p className="text-sm text-gray-700">Price: Rs {product?.productId?.sellingPrice}</p>
-                                                        <p className="text-sm text-gray-700">Quantity: {product?.quantity}</p>
-                                                    </div>
-                                                </div>
-                                            </li>
-                                        ))}
-                                    </ul>
+                                    <a href={order?.pdfUrl} target="_blank" rel="noopener noreferrer" className="text-blue-500 underline">Open PDF</a>
                                 </td>
                             </tr>
                         ))}
                     </tbody>
                 </table>
             </div>
-        
+
         </div>
     );
 };

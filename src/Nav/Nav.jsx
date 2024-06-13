@@ -466,11 +466,17 @@ const handleSearch = async(searchTerm, selectedCategory)=> {
                                 </ListItem>
                             </Link>
 
-                            <Link to="/admin/allOrders" className="" style={{ textDecoration: 'none' }} onClick={toggleSecondDrawer(false)}>
-                                <ListItem button>
+                                <ListItem button onClick={() => handleOrderClick()}>
                                     <ListItemText primary="All Orders" />
+                                    {openOrders ? <ExpandLess /> : <ExpandMore />}
                                 </ListItem>
-                            </Link>
+                                <Collapse in={openOrders} timeout="auto" unmountOnExit>
+                                    {stores.map((store, index) => (
+                                        <ListItemButton key={index} component={Link} to={`/superadmin/orders/${store}`} onClick={toggleSecondDrawer(false)}>
+                                            <ListItemText primary={store} />
+                                        </ListItemButton>
+                                    ))}
+                                </Collapse>
 
                             <Link to="/admin/fetchOutOfStockProducts" className="" style={{ textDecoration: 'none' }} onClick={toggleSecondDrawer(false)}>
                                 <ListItem button>

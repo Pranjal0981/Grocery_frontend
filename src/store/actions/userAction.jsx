@@ -27,6 +27,15 @@ export const asyncCurrentUser = () => async (dispatch) => {
     }
 };
 
+// export const asyncCopyStore=()=>async(dispatch)=>{
+//     try {
+//         const response=await axios.post('/user/copystore')
+//         console.log(response)
+//     } catch (error) {
+//         console.log(error)
+//     }
+// }
+
 export const asyncSignupUser = (data) => async (dispatch) => {
     try {
         const response = await axios.post('/user/signup', data);
@@ -129,13 +138,48 @@ export const asyncAddToCart = (userId, data) => async (dispatch, getState) => {
                 Authorization: `Bearer ${token}`
             }
         });
-        toast.success("Added to cart");
+        toast.success("Added to cart", {
+            position: "top-center",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            style: {
+                backgroundColor: '#F9E0BB', // Sky Blue color
+                color: 'black',
+                fontWeight: '400',
+                padding: '1rem',
+                borderRadius: '0.5rem',
+                boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
+            }
+        });
+
         await dispatch(saveCheckOutCart(response.data));
     } catch (error) {
         console.error(error);
-        toast.error("Login to continue");
+        toast.error("Login to continue", {
+            position: "top-center",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            style: {
+                backgroundColor: '#F87171', // Coral Pink
+                color: 'white',
+                fontWeight: '600',
+                padding: '1rem',
+                borderRadius: '0.5rem',
+                boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
+            }
+        });
+
     }
 };
+
 
 
 export const asyncUpdateCart = (userId, store, productIds) => async (dispatch) => {
@@ -158,27 +202,48 @@ export const asyncUpdateCart = (userId, store, productIds) => async (dispatch) =
         if (response.status === 200) {
             const { data } = response;
             if (data.success) {
-                toast.success('Cart updated successfully');
-               await dispatch(saveUnavailableProduct([])); // Clear unavailable products if the cart is updated successfully
-                await dispatch(asyncFetchCartProduct(userId))
-
+                toast.success('Cart updated successfully', {
+                    position: "top-center",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                });
+                await dispatch(saveUnavailableProduct([])); // Clear unavailable products if the cart is updated successfully
+                await dispatch(asyncFetchCartProduct(userId));
             } else {
                 if (data.unavailableProducts) {
                     const unavailableProductNames = data.unavailableProducts.map(product => product.name).join(', ');
-                    toast.error(`The following products are not available in the selected store: ${unavailableProductNames}`);
-                  await  dispatch(asyncFetchCartProduct(userId))
-
+                    toast.error(`The following products are not available in the selected store: ${unavailableProductNames}`, {
+                        position: "top-center",
+                        autoClose: 5000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                    });
+                    await dispatch(asyncFetchCartProduct(userId));
                 } else {
-                    toast.error(data.message || 'Failed to update the cart');
-                  await  dispatch(asyncFetchCartProduct(userId))
-
+                    toast.error(data.message || 'Failed to update the cart', {
+                        position: "top-center",
+                        autoClose: 5000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                    });
+                    await dispatch(asyncFetchCartProduct(userId));
                 }
             }
 
             // Dispatch action to save unavailable products to Redux store
             if (data.unavailableProducts) {
                 await dispatch(saveUnavailableProduct(data.unavailableProducts));
-                await  dispatch(asyncFetchCartProduct(userId))
+                await dispatch(asyncFetchCartProduct(userId));
             }
         }
     } catch (error) {
@@ -188,17 +253,41 @@ export const asyncUpdateCart = (userId, store, productIds) => async (dispatch) =
             const { data } = error.response;
             if (data.unavailableProducts) {
                 const unavailableProductNames = data.unavailableProducts.map(product => product.name).join(', ');
-                toast.error(`The following products are not available in the selected store: ${unavailableProductNames}`);
+                toast.error(`The following products are not available in the selected store: ${unavailableProductNames}`, {
+                    position: "top-center",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                });
                 // Dispatch action to save unavailable products to Redux store
                 await dispatch(saveUnavailableProduct(data.unavailableProducts));
             } else {
-                toast.error(data.message || 'Error updating cart');
+                toast.error(data.message || 'Error updating cart', {
+                    position: "top-center",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                });
             }
         } else {
-            toast.error('Error updating cart');
+            toast.error('Error updating cart', {
+                position: "top-center",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
         }
     }
-}
+};
 
 
 
@@ -279,13 +368,46 @@ export const asyncDeleteCheckoutCart = (userId, productId) => async (dispatch, g
             }
         });
 
-        toast.success("Product Deleted");
+        toast.success("Product Deleted", {
+            position: "top-center",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            style: {
+                backgroundColor: '#F5EEE6', // Sky Blue
+                color: 'black',
+                fontWeight: '600',
+                padding: '1rem',
+                borderRadius: '0.5rem',
+                boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
+            }
+        });
         dispatch(asyncFetchCartProduct(userId));
     } catch (error) {
         console.error('Error deleting product:', error);
-        toast.error(error.response?.data?.message || "Error deleting product from cart");
+        toast.error(error.response?.data?.message || "Error deleting product from cart", {
+            position: "top-center",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            style: {
+                backgroundColor: '#F5EEE6', // Coral Pink
+                color: 'white',
+                fontWeight: '600',
+                padding: '1rem',
+                borderRadius: '0.5rem',
+                boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
+            }
+        });
     }
 };
+
 
 
 export const asyncAddAddress = (data) => async (dispatch, getState) => {
