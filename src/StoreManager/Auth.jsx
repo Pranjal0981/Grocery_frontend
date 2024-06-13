@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { asyncStoreRegister, asyncStoreLogin } from '../store/actions/storeManagerAction';
 import { Link, useNavigate } from 'react-router-dom';
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
 
 export const StoreManagerLogin = () => {
@@ -11,6 +12,7 @@ export const StoreManagerLogin = () => {
     const [stores, setStores] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
+    const [showPassword, setShowPassword] = useState(false); // State to toggle password visibility
     const [formData, setFormData] = useState({
         email: "",
         password: "",
@@ -55,6 +57,10 @@ export const StoreManagerLogin = () => {
         }
     };
 
+    const handleTogglePassword = () => {
+        setShowPassword(!showPassword);
+    };
+
     return (
         <div className="max-w-md mx-auto mt-10 p-6 bg-gray-50 shadow-md rounded-lg">
             <form onSubmit={handleSubmit} className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
@@ -81,15 +87,24 @@ export const StoreManagerLogin = () => {
                     <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="password">
                         Password
                     </label>
-                    <input
-                        id="password"
-                        type="password"
-                        name="password"
-                        value={formData.password}
-                        placeholder="Password"
-                        className="border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        onChange={handleInputChange}
-                    />
+                    <div className="relative">
+                        <input
+                            id="password"
+                            type={showPassword ? 'text' : 'password'}
+                            name="password"
+                            value={formData.password}
+                            placeholder="Password"
+                            className="border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                            onChange={handleInputChange}
+                        />
+                        <button
+                            type="button"
+                            className="absolute inset-y-0 right-0 px-3 py-2"
+                            onClick={handleTogglePassword}
+                        >
+                            {showPassword ? <FaEyeSlash /> : <FaEye />}
+                        </button>
+                    </div>
                 </div>
 
                 <div className="mb-4">
@@ -133,9 +148,6 @@ export const StoreManagerLogin = () => {
     );
 };
 
-
-
-
 export const StoreManagerRegister = () => {
     const dispatch = useDispatch();
     const [stores, setStores] = useState([]);
@@ -164,10 +176,9 @@ export const StoreManagerRegister = () => {
         e.preventDefault();
         setError('');
         setLoading(true);
-        try{
-        dispatch(asyncStoreRegister(formData));
-        }
-        catch (err) {
+        try {
+            dispatch(asyncStoreRegister(formData));
+        } catch (err) {
             setError('Failed.');
         } finally {
             setLoading(false);
@@ -177,7 +188,7 @@ export const StoreManagerRegister = () => {
     return (
         <div className="max-w-md mx-auto">
             <form onSubmit={handleSubmit} className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-                <h2 className="text-2xl font-bold mb-4">Store Manager Registration</h2>
+                <h2 className="text-2xl font-bold mb-4">Store ManagerRegistration</h2>
 
                 <div className="mb-4">
                     <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">
@@ -197,15 +208,24 @@ export const StoreManagerRegister = () => {
                     <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="password">
                         Password
                     </label>
-                    <input
-                        id="password"
-                        type="password"
-                        name="password"
-                        value={formData.password}
-                        placeholder="Password"
-                        className="border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        onChange={handleInputChange}
-                    />
+                    <div className="relative">
+                        <input
+                            id="password"
+                            type={showPassword ? 'text' : 'password'}
+                            name="password"
+                            value={formData.password}
+                            placeholder="Password"
+                            className="border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                            onChange={handleInputChange}
+                        />
+                        <button
+                            type="button"
+                            className="absolute inset-y-0 right-0 px-3 py-2"
+                            onClick={handleTogglePassword}
+                        >
+                            {showPassword ? <FaEyeSlash /> : <FaEye />}
+                        </button>
+                    </div>
                 </div>
 
                 <div className="mb-4">
@@ -220,7 +240,7 @@ export const StoreManagerRegister = () => {
                         onChange={handleInputChange}
                     >
                         <option value="">Select a store</option>
-                        {stores.map((store,index) => (
+                        {stores.map((store, index) => (
                             <option key={index} value={store}>
                                 {store}
                             </option>
@@ -241,4 +261,4 @@ export const StoreManagerRegister = () => {
             </form>
         </div>
     );
-};
+}

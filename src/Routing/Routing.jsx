@@ -45,7 +45,6 @@ import { Business } from '@mui/icons-material'
 import DeliveryInformation from '../components/DeliveryInfo'
 import TermsAndConditions from '../components/TermsandCondition'
 import PaymentSuccessPage from '../Profile/PaymentSuccess'
-import GenerateBill from '../StoreManager/GenerateBill'
 const Routing = () => {
     
     const { user, isAuth } = useSelector((state) => state.user)
