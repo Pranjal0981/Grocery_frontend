@@ -6,8 +6,9 @@ export const asyncFetchProducts = (page, preferredStore) => async (dispatch, get
         dispatch(setLoading(true));
         const url = preferredStore ? `/products/getproduct?page=${page}&preferredStore=${preferredStore}` : `/products/getproduct?page=${page}`;
         const response = await axios.get(url);
+        console.log(response)
         const totalPages = response.data.totalPages; // Extract totalPages from response
-        await dispatch(saveProduct(response.data.data));
+        await dispatch(saveProduct(response.data.products));
         return totalPages; // Return totalPages to be used in component logic
     } catch (error) {
         toast.error('Error fetching  products:', error.response?.data || error.message);
@@ -54,6 +55,7 @@ export const asyncSearch = (searchTerm, selectedCategory, store) => async (dispa
         }
 
         const response = await axios.get(url);
+        console.log(response)
         dispatch(saveProduct(response.data.products));
     } catch (error) {
         console.log(error);

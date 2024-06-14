@@ -6,12 +6,15 @@ import { Tooltip } from 'react-tippy'; // Import Tooltip component
 import { CiFilter } from "react-icons/ci";
 import { asyncFilterAll, asyncFetchStorebyPID } from '../store/actions/productAction'
 import { asyncAddToCart, } from '../store/actions/userAction';
+import { toast } from 'react-toastify';
+import { motion } from 'framer-motion';
 
 
 
 const Pagination = ({ currentPage, onPageChange }) => {
     const { user } = useSelector((state) => state.user);
     const { product, loading } = useSelector(state => state.product);
+    console.log(product)
     const [selectedStore, setSelectedStore] = useState({});
     const [totalPages, setTotalPages] = useState(1); // Total pages
     const productsPerPage = 8; // Number of products per page
@@ -27,7 +30,6 @@ const Pagination = ({ currentPage, onPageChange }) => {
     const [isMobile, setIsMobile] = useState(false);
     const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
 
-    // Function to toggle the mobile filter
     const toggleMobileFilter = () => {
         setIsMobileFilterOpen(prevState => !prevState);
     };
@@ -75,49 +77,78 @@ const Pagination = ({ currentPage, onPageChange }) => {
     };
 
     const handleFilterSubmit = async () => {
-        // Filter object to be sent to the backend
         const filterObject = {};
 
-        // Add brandName filter if it's not empty
         if (filters.brand.trim() !== '') {
             filterObject.brand = filters.brand.trim();
         }
 
-        // Add store filter if it's not empty
         if (filters.store.trim() !== '') {
             filterObject.store = filters.store.trim();
         }
 
-        // Add price filter if both minPrice and maxPrice are provided
         if (filters.minPrice !== '' && filters.maxPrice !== '') {
             filterObject.minPrice = parseFloat(filters.minPrice);
             filterObject.maxPrice = parseFloat(filters.maxPrice);
         }
 
-        // Dispatch the action to fetch filtered products
-        console.log(filterObject);
         await dispatch(asyncFilterAll(filterObject));
     };
 
     const userId = user?._id;
 
     const handleAddToCart = async (productId) => {
-        setLoadingProductIds(prevState => new Set(prevState).add(productId));
-        const quantity = productQuantities[productId] || 1; // Default to 1 if quantity is not set
+        if (!user) {
+            // Show a toast message for the user to login
+            toast.error('Please login to add products to your cart.', {
+                position: "top-center",
+                autoClose: 3000,
+                hideProgressBar: true,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                style: {
+                    backgroundColor: "#FDDE55",
+                    color: "black",
+                    fontSize: "16px",
+                    fontWeight: "500",
+                    padding: "16px 24px",
+                    borderRadius: "8px",
+                    boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+                    marginBottom: "16px"
+                }
+            });
+            return;
+        }
+
+        setLoadingProductIds((prevState) => new Set(prevState).add(productId));
+        const quantity = productQuantities[productId] || 1;
         await dispatch(asyncAddToCart(userId, { productId, quantity }));
-        setLoadingProductIds(prevState => {
+        setLoadingProductIds((prevState) => {
             const newState = new Set(prevState);
             newState.delete(productId);
             return newState;
         });
-        setAddedProductIds(prevState => new Set(prevState).add(productId));
+        setAddedProductIds((prevState) => new Set(prevState).add(productId));
         setTimeout(() => {
-            setAddedProductIds(prevState => {
+            setAddedProductIds((prevState) => {
                 const newState = new Set(prevState);
                 newState.delete(productId);
                 return newState;
             });
-        }, 3000); // Reset after 3 seconds
+        }, 3000);
+
+        const selectedProduct = product.find((prod) => prod._id === productId);
+        if (selectedProduct) {
+            const productStore = selectedProduct.stores.find((store) => store.storeName === user.PreferredStore);
+            if (productStore && productStore.stock === 0) {
+                setSelectedStore((prevState) => ({
+                    ...prevState,
+                    [productId]: { outOfStock: true },
+                }));
+            }
+        }
     };
 
     useEffect(() => {
@@ -142,7 +173,6 @@ const Pagination = ({ currentPage, onPageChange }) => {
     }, []);
 
     useEffect(() => {
-        // Calculate total pages when products change
         if (product?.length > 0) {
             const totalPages = Math.ceil(product.length / productsPerPage);
             setTotalPages(totalPages);
@@ -151,9 +181,9 @@ const Pagination = ({ currentPage, onPageChange }) => {
 
     if (showSpinner || loading) {
         return (
-        <div className='w-full ml-auto'>
-            <CustomSpinner />
-        </div>
+            <div className='w-full ml-auto'>
+                <CustomSpinner />
+            </div>
         )
     } else if (!product || product.length === 0) {
         return (
@@ -181,11 +211,10 @@ const Pagination = ({ currentPage, onPageChange }) => {
     return (
         <div className="container mx-auto mt-10 grid gap-6 grid-cols-1 lg:grid-cols-3">
             <div className="lg:col-span-1 relative">
-                {/* Sidebar for Filters */}
                 {isMobile && (
                     <>
                         <button
-                            className="block relative translate-x-[40vw] z-[11] md:hidden text-blue-500  font-bold py-2 px-4 rounded "
+                            className="block relative translate-x-[40vw] z-[11] md:hidden text-blue-500 font-bold py-2 px-4 rounded"
                             onClick={toggleMobileFilter}
                         >
                             <CiFilter className="h-6 w-6" />
@@ -234,11 +263,9 @@ const Pagination = ({ currentPage, onPageChange }) => {
                                     name="maxPrice"
                                     value={filters.maxPrice}
                                     onChange={handleFilterChange}
-                                    className="border border-gray-300 rounded px
-                                    px-3 py-2 focus:outline-none focus:border-blue-400"
+                                    className="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:border-blue-400"
                                 />
                             </div>
-
                             <div className="flex flex-col">
                                 <label htmlFor="store" className="text-sm font-medium mb-1">Store</label>
                                 <input
@@ -262,59 +289,90 @@ const Pagination = ({ currentPage, onPageChange }) => {
             </div>
             <div className="lg:col-span-2">
                 <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                    {Array.isArray(product) && product.map((product) => (
-                        <div
-                            key={product?._id}
-                            className="bg-white rounded-lg shadow-md cursor-pointer transition duration-300 ease-in-out transform hover:scale-105 relative"
-                        >
-                            <img
-                                src={product.image.url}
-                                alt={product?.productName}
-                                className="w-full h-64 object-cover rounded-t-lg object-center hover:opacity-90"
-                                onClick={() => handleExploreProduct(product?._id)}
-                            />
-                            <div className="p-4">
-                                <h3 className="text-lg font-semibold mb-2">{product?.productName}</h3>
-                                <p className="text-sm mb-2 text-gray-700">{product?.description}</p>
-                                <p className="text-sm mb-2 text-gray-700">{product?.brand}</p>
-                                <p className="text-sm mb-2 text-gray-700">{product?.size}</p>
-                                <p className="text-sm mb-2 text-gray-700">MRP: Rs {product?.MRP}</p>
-                                <p className="text-sm font-semibold text-blue-600">Selling Price: Rs {product?.sellingPrice}</p>
-                            </div>
+                    {Array.isArray(product) && product.map((product) => {
+                        const preferredStore = product?.stores?.find(store => store?.storeName === user?.PreferredStore);
+                        console.log(preferredStore)
+                        const isOutOfStock = preferredStore ? preferredStore.stock === 0 : false;
 
-                            <div className="px-4 pb-4 flex items-center flex-col gap-2 justify-between">
-                                <div className="flex items-center">
-                                    <button onClick={() => handleDecrementQuantity(product._id)} className="bg-gray-200 text-gray-700 font-bold rounded-md px-3 py-1 mr-2 focus:outline-none">
-                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                                            <path fillRule="evenodd" d="M5 10a1 1 0 0 1 0-2h10a1 1 0 1 1 0 2H5z" />
-                                        </svg>
-                                    </button>
-                                    <span className="text-lg font-bold">{productQuantities[product._id] || 1}</span>
-                                    <button onClick={() => handleIncrementQuantity(product._id)} className="bg-gray-200 text-gray-700 font-bold rounded-md px-3 py-1 ml-2 focus:outline-none">
-                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                                            <path fillRule="evenodd" d="M10 5a1 1 0 0 1 1 1v3h3a1 1 0 1 1 0 2h-3v3a1 1 0 1 1-2 0v-3H6a1 1 0 1 1 0-2h3V6a1 1 0 0 1 1-1z" />
-                                        </svg>
-                                    </button>
+                        return (
+                            <div
+                                key={product?._id}
+                                className="bg-white rounded-lg shadow-md cursor-pointer transition duration-300 ease-in-out transform hover:scale-105 relative"
+                            >
+                                <img
+                                    src={product.image.url}
+                                    alt={product?.productName}
+                                    className="w-full h-64 object-cover rounded-t-lg object-center hover:opacity-90"
+                                    onClick={() => handleExploreProduct(product?._id)}
+                                />
+                                <div className="p-4">
+                                    <h3 className="text-lg font-semibold mb-2">{product?.productName}</h3>
+                                    <p className="text-sm mb-2 text-gray-700">{product?.description}</p>
+                                    <p className="text-sm mb-2 text-gray-700">{product?.brand}</p>
+                                    <p className="text-sm mb-2 text-gray-700">{product?.size}</p>
+                                    <p className="text-sm mb-2 text-gray-700">MRP: Rs {product?.MRP}</p>
+                                    <p className="text-sm font-semibold text-blue-600">Selling Price: Rs {product?.sellingPrice}</p>
                                 </div>
-                                <button
-                                    onClick={() => handleAddToCart(product._id)}
-                                    className={`text-white font-bold rounded-md px-4 py-2 focus:outline-none transition duration-300 ease-in-out 
-                                    ${loadingProductIds.has(product._id) ? 'bg-gray-500 cursor-not-allowed' :
-                                            addedProductIds.has(product._id) ? 'bg-green-500' :
-                                                'bg-blue-500 hover:bg-blue-600 hover:shadow-md'}`}
-                                    disabled={loadingProductIds.has(product._id)}
-                                >
-                                    {loadingProductIds.has(product._id) ? (
-                                        <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
-                                        </svg>
-                                    ) : addedProductIds.has(product._id) ? 'Added' : 'Add to Cart'}
-                                </button>
-                            </div>
 
-                        </div>
-                    ))}
+                                <div className="px-4 pb-4 flex items-center flex-col gap-2 justify-between">
+                                    <div className="flex items-center">
+                                        <button onClick={() => handleDecrementQuantity(product._id)} className="bg-gray-200 text-gray-700 font-bold rounded-md px-3 py-1 mr-2 focus:outline-none">
+                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                                <path fillRule="evenodd" d="M5 10a1 1 0 0 1 0-2h10a1 1 0 1 1 0 2H5z" />
+                                            </svg>
+                                        </button>
+                                        <span className="text-lg font-bold">{productQuantities[product._id] || 1}</span>
+                                        <button onClick={() => handleIncrementQuantity(product._id)} className="bg-gray-200 text-gray-700 font-bold rounded-md px-3 py-1 ml-2 focus:outline-none">
+                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                                <path fillRule="evenodd" d="M10 5a1 1 0 0 1 1 1v3h3a1 1 0 1 1 0 2h-3v3a1 1 0 1 1-2 0v-3H6a1 1 0 1 1 0-2h3V6a1 1 0 0 1 1-1z" />
+                                            </svg>
+                                        </button>
+                                    </div>
+                                    <button
+                                        onClick={() => handleAddToCart(product._id)}
+                                        className={`text-white font-bold rounded-md px-4 py-2 focus:outline-none transition duration-300 ease-in-out 
+                                        ${loadingProductIds.has(product._id) ? 'bg-gray-500 cursor-not-allowed' :
+                                                addedProductIds.has(product._id) ? 'bg-green-500' :
+                                                    'bg-blue-500 hover:bg-blue-600 hover:shadow-md'}`}
+                                        disabled={loadingProductIds.has(product._id) || isOutOfStock}
+                                    >
+                                        {loadingProductIds.has(product._id) ? (
+                                            <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+                                            </svg>
+                                        ) : addedProductIds.has(product._id) ? 'Added' : 'Add to Cart'}
+                                    </button>
+                                    {isOutOfStock && (
+                                        <motion.div
+                                            initial={{ opacity: 0, scale: 0.5 }}
+                                            animate={{ opacity: 1, scale: 1 }}
+                                            exit={{ opacity: 0, scale: 0.5 }}
+                                            transition={{ duration: 0.3 }}
+                                            className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 z-50"
+                                        >
+                                            <motion.div
+                                                initial={{ opacity: 0, y: -20 }}
+                                                animate={{ opacity: 1, y: 0 }}
+                                                exit={{ opacity: 0, y: -20 }}
+                                                transition={{ delay: 0.2, duration: 0.3 }}
+                                                className="bg-white rounded-lg p-8"
+                                            >
+                                                <div className="text-center">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 text-red-500 mx-auto mb-4" viewBox="0 0 20 20" fill="currentColor">
+                                                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm0-2a6 6 0 100-12 6 6 0 000 12zm0-5a1 1 0 011-1h2a1 1 0 110 2h-2a1 1 0 01-1-1zM8 9a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z" clipRule="evenodd" />
+                                                    </svg>
+                                                    <p className="text-lg font-semibold text-red-500 mb-2">Out of Stock</p>
+                                                    <p className="text-sm text-gray-700">Sorry, this product is currently out of stock.</p>
+                                                </div>
+                                            </motion.div>
+                                        </motion.div>
+                                    )}
+
+                                </div>
+                            </div>
+                        );
+                    })}
                 </div>
                 <div className="flex justify-center mt-8">
                     <button
@@ -334,14 +392,14 @@ const Pagination = ({ currentPage, onPageChange }) => {
             </div>
         </div>
     );
-
 };
 
 
 
 
 
-export default Pagination;
+
+
 
 
 const MobileFilter = ({ filters, handleFilterChange, handleFilterSubmit }) => {
@@ -410,3 +468,4 @@ const MobileFilter = ({ filters, handleFilterChange, handleFilterSubmit }) => {
 
 
 
+export default Pagination
