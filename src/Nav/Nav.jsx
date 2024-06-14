@@ -2,7 +2,6 @@ import * as React from 'react';
 import Drawer from '@mui/material/Drawer';
 import List from '@mui/material/List';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
-
 import ListItem from '@mui/material/ListItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText'
@@ -23,6 +22,8 @@ import { asyncSuperAdminSignIn, asyncSuperAdminSignUp, asyncSignOutSuperAdmin } 
 import { asyncStoreLogout } from '../store/actions/storeManagerAction';
 import { useEffect } from 'react';
 import CountdownTimer from './Coundown';
+import { FaCartShopping } from 'react-icons/fa6';
+import { motion } from 'framer-motion';
 
 const Nav = () => {
     const navigate=useNavigate()
@@ -235,7 +236,7 @@ const handleSearch = async(searchTerm, selectedCategory)=> {
 
     return (
         <>
-            <div className="flex gap-[20px] justify-around items-center h-[10vh] w-auto bg-[#96B415] sticky top-[0%] z-[99]">
+            <div className="flex gap-[20px] justify-around items-center h-[10vh] w-full bg-[#96B415]/70 backdrop-blur-lg backdrop-opacity-90 sticky top-0 z-[99] shadow-lg">
                 <button onClick={handleToggleDrawer(true)} className="flex items-center justify-center w-8 h-8 text-white rounded-full border-2 border-white">
                     <FaBars />
                 </button>
@@ -280,12 +281,16 @@ const handleSearch = async(searchTerm, selectedCategory)=> {
                         <p className='hidden md:block'>WISHLIST</p>
                     </Link>
                 </div>
-                <div className="flex bg-white rounded-full w-[100px] h-[35px] justify-center ">
-                    <Link to='/cart' className="flex gap-2 items-center  text-lg ">
-                        <FaShoppingBag />
+                <motion.div
+                    whileHover={{ scale: 1.1, backgroundColor: "#f0f0f0" }}
+                    transition={{ type: "spring", stiffness: 300 }}
+                    className="flex bg-white rounded-full w-[100px] h-[35px] justify-center"
+                >
+                    <Link to='/cart' className="flex gap-2 items-center text-lg">
+                        <FaCartShopping />
                         <p className='hidden md:block'>CART</p>
                     </Link>
-                </div>
+                </motion.div>
             </div>
             <div className="hidden md:flex justify-between p-[10px] ">
                 <div className=" md:left flex w-[50%] justify-evenly">
