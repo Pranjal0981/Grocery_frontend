@@ -4,17 +4,29 @@ import { useSelector, useDispatch } from 'react-redux';
 import CustomSpinner from '../Spinner';
 import { Tooltip } from 'react-tippy'; // Import Tooltip component
 import { CiFilter } from "react-icons/ci";
-import { asyncFilterAll, asyncFetchStorebyPID } from '../store/actions/productAction'
+import { asyncFilterAll, asyncFetchStorebyPID, asyncFetchProducts } from '../store/actions/productAction'
 import { asyncAddToCart, } from '../store/actions/userAction';
 import { toast } from 'react-toastify';
 import { motion } from 'framer-motion';
+import { FiLoader } from 'react-icons/fi';
 
+const buttonVariants = {
+    initial: { opacity: 0, y: 20 },
+    animate: { opacity: 1, y: 0 },
+    exit: { opacity: 0, y: 20 },
+};
+
+const spinnerVariants = {
+    initial: { opacity: 0 },
+    animate: { opacity: 1 },
+    exit: { opacity: 0 },
+};
 
 
 const Pagination = ({ currentPage, onPageChange }) => {
     const { user } = useSelector((state) => state.user);
-    const { product, loading } = useSelector(state => state.product);
-    console.log(product)
+    const { allProducts, loading } = useSelector(state => state.product);
+    console.log(allProducts)
     const [selectedStore, setSelectedStore] = useState({});
     const [totalPages, setTotalPages] = useState(1); // Total pages
     const productsPerPage = 8; // Number of products per page
@@ -173,11 +185,11 @@ const Pagination = ({ currentPage, onPageChange }) => {
     }, []);
 
     useEffect(() => {
-        if (product?.length > 0) {
-            const totalPages = Math.ceil(product.length / productsPerPage);
+        if (allProducts?.length > 0) {
+            const totalPages = Math.ceil(allProducts.length / productsPerPage);
             setTotalPages(totalPages);
         }
-    }, [product, productsPerPage]);
+    }, [allProducts, productsPerPage]);
 
     if (showSpinner || loading) {
         return (
@@ -185,7 +197,7 @@ const Pagination = ({ currentPage, onPageChange }) => {
                 <CustomSpinner />
             </div>
         )
-    } else if (!product || product.length === 0) {
+    } else if (!allProducts || allProducts.length === 0) {
         return (
             <div className="container mx-auto mt-20 flex justify-center items-center">
                 <div className="text-center">
@@ -289,9 +301,8 @@ const Pagination = ({ currentPage, onPageChange }) => {
             </div>
             <div className="lg:col-span-2">
                 <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                    {Array.isArray(product) && product.map((product) => {
+                    {allProducts.map((product) => {
                         const preferredStore = product?.stores?.find(store => store?.storeName === user?.PreferredStore);
-                        console.log(preferredStore)
                         const isOutOfStock = preferredStore ? preferredStore.stock === 0 : false;
 
                         return (
@@ -309,9 +320,8 @@ const Pagination = ({ currentPage, onPageChange }) => {
                                     <h3 className="text-lg font-semibold mb-2">{product?.productName}</h3>
                                     <p className="text-sm mb-2 text-gray-700">{product?.description}</p>
                                     <p className="text-sm mb-2 text-gray-700">{product?.brand}</p>
-                                    <p className="text-sm mb-2 text-gray-700">{product?.size}</p>
-                                    <p className="text-sm mb-2 text-gray-700">MRP: Rs {product?.MRP}</p>
-                                    <p className="text-sm font-semibold text-blue-600">Selling Price: Rs {product?.sellingPrice}</p>
+                                    <p className="text-sm mb-2 text-gray-700">MRP: <span className="line-through">Rs {product?.MRP}</span></p>
+                                    <p className="text-sm font-semibold text-blue-600">Selling Price: <span className="text-blue-600 font-bold">Rs {product?.sellingPrice}</span></p>
                                 </div>
 
                                 <div className="px-4 pb-4 flex items-center flex-col gap-2 justify-between">
@@ -328,12 +338,13 @@ const Pagination = ({ currentPage, onPageChange }) => {
                                             </svg>
                                         </button>
                                     </div>
-                                    <button
+                                    <motion.button
+                                        whileHover={{ scale: 1.1 }}
+                                        whileTap={{ scale: 0.9 }}
                                         onClick={() => handleAddToCart(product._id)}
-                                        className={`text-white font-bold rounded-md px-4 py-2 focus:outline-none transition duration-300 ease-in-out 
-                                        ${loadingProductIds.has(product._id) ? 'bg-gray-500 cursor-not-allowed' :
-                                                addedProductIds.has(product._id) ? 'bg-green-500' :
-                                                    'bg-blue-500 hover:bg-blue-600 hover:shadow-md'}`}
+                                        className={`bg-blue-500 hover:bg-blue-600 text-white font-bold rounded-md px-4 py-2 focus:outline-none transition duration-300 ease-in-out ${loadingProductIds.has(product._id) ? 'bg-gray-500 cursor-not-allowed' :
+                                            addedProductIds.has(product._id) ? 'bg-green-500' :
+                                                'bg-blue-500 hover:bg-blue-600 hover:shadow-md'}`}
                                         disabled={loadingProductIds.has(product._id) || isOutOfStock}
                                     >
                                         {loadingProductIds.has(product._id) ? (
@@ -342,7 +353,7 @@ const Pagination = ({ currentPage, onPageChange }) => {
                                                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
                                             </svg>
                                         ) : addedProductIds.has(product._id) ? 'Added' : 'Add to Cart'}
-                                    </button>
+                                    </motion.button>
                                     {isOutOfStock && (
                                         <motion.div
                                             initial={{ opacity: 0, scale: 0.5 }}
@@ -375,23 +386,18 @@ const Pagination = ({ currentPage, onPageChange }) => {
                     })}
                 </div>
                 <div className="flex justify-center mt-8">
-                    <button
-                        className={`px-4 py-2 mr-2 text-white rounded ${currentPage === 1 ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-500 hover:bg-blue-600 focus:outline-none focus:bg-blue-600'}`}
-                        disabled={currentPage === 1}
-                        onClick={() => onPageChange(currentPage - 1)}
-                    >
-                        Previous
-                    </button>
+
                     <button
                         className="px-4 py-2 bg-blue-500 hover:bg-blue-600 focus:outline-none focus:bg-blue-600 text-white rounded"
                         onClick={() => onPageChange(currentPage + 1)}
                     >
-                        Next
+                        Load More
                     </button>
                 </div>
             </div>
+
         </div>
-    );
+    )
 };
 
 

@@ -8,7 +8,7 @@ const CustomSpinner = ({ loading }) => {
                 <HashLoader color="#16A085" loading={loading} size={50} />
             </div>
         </div>
-        
+
     );
 };
 

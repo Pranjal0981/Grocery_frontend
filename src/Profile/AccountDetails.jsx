@@ -41,7 +41,7 @@ const AccountDetails = () => {
         <div className="container mx-auto py-8 px-4">
             {isAuth ? (
                 <div className="max-w-lg mx-auto bg-white shadow-lg rounded-lg p-6">
-                    <h1 className="text-3xl font-bold mb-4 text-center text-indigo-600">Welcome, {user.email}</h1>
+                    <h1 className="text-3xl font-bold mb-4 text-center text-indigo-600">Welcome, {user?.email}</h1>
                     <div className="border-b border-gray-300 mb-4"></div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
@@ -50,12 +50,12 @@ const AccountDetails = () => {
                                 <input
                                     type="text"
                                     name="firstName"
-                                    value={editedUser.firstName || ''}
+                                    value={editedUser?.firstName || ''}
                                     onChange={handleChange}
                                     className="border border-gray-300 rounded-md px-3 py-2 w-full"
                                 />
                             ) : (
-                                <p className="text-gray-800">{user.firstName}</p>
+                                <p className="text-gray-800">{user?.firstName}</p>
                             )}
                         </div>
                         <div>
@@ -64,12 +64,12 @@ const AccountDetails = () => {
                                 <input
                                     type="text"
                                     name="lastName"
-                                    value={editedUser.lastName || ''}
+                                    value={editedUser?.lastName || ''}
                                     onChange={handleChange}
                                     className="border border-gray-300 rounded-md px-3 py-2 w-full"
                                 />
                             ) : (
-                                <p className="text-gray-800">{user.lastName}</p>
+                                <p className="text-gray-800">{user?.lastName}</p>
                             )}
                         </div>
                         <div>
@@ -78,12 +78,12 @@ const AccountDetails = () => {
                                 <input
                                     type="text"
                                     name="phone"
-                                    value={editedUser.phone || ''}
+                                    value={editedUser?.phone || ''}
                                     onChange={handleChange}
                                     className="border border-gray-300 rounded-md px-3 py-2 w-full"
                                 />
                             ) : (
-                                <p className="text-gray-800">{user.phone}</p>
+                                <p className="text-gray-800">{user?.phone}</p>
                             )}
                         </div>
                         <div>
@@ -92,12 +92,12 @@ const AccountDetails = () => {
                                 <input
                                     type="email"
                                     name="email"
-                                    value={editedUser.email || ''}
+                                    value={editedUser?.email || ''}
                                     onChange={handleChange}
                                     className="border border-gray-300 rounded-md px-3 py-2 w-full"
                                 />
                             ) : (
-                                <p className="text-gray-800">{user.email}</p>
+                                <p className="text-gray-800">{user?.email}</p>
                             )}
                         </div>
                     </div>

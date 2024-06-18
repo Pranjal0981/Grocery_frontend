@@ -1,28 +1,29 @@
-import { saveProduct, removeProduct, setLoading, saveStoreStocks } from "../reducers/productSlice";
+import { saveProduct, removeProduct, saveFilteredProduct, setLoading, saveStoreStocks, saveProductById, setTotalPages } from "../reducers/productSlice";
 import axios from "../../config/axios";
 import { toast } from "react-toastify";
 export const asyncFetchProducts = (page, preferredStore) => async (dispatch, getState) => {
     try {
-        dispatch(setLoading(true));
+        console.log(page)
+        dispatch(setLoading(true)); // Set loading to true before making the request
         const url = preferredStore ? `/products/getproduct?page=${page}&preferredStore=${preferredStore}` : `/products/getproduct?page=${page}`;
         const response = await axios.get(url);
-        console.log(response)
-        const totalPages = response.data.totalPages; // Extract totalPages from response
-        await dispatch(saveProduct(response.data.products));
-        return totalPages; // Return totalPages to be used in component logic
+        console.log(response);
+        const totalPages = response.data.totalPages;
+        await dispatch(saveProduct(response.data.products)); // Save the fetched products
+        await dispatch(setTotalPages(totalPages))
+  
     } catch (error) {
-        toast.error('Error fetching  products:', error.response?.data || error.message);
+        toast.error("Error fetching products:", error.response?.data || error.message);
         throw error;
     } finally {
-        dispatch(setLoading(false));
+        dispatch(setLoading(false)); // Set loading to false after the request is completed
     }
 };
-
 export const asyncExploreById = (id) => async (dispatch, getState) => {
     try {
         dispatch(setLoading(true));
         const response = await axios.get(`/products/explore/${id}`)
-        await dispatch(saveProduct(response.data.data.product));
+        await dispatch(saveProductById(response.data.data.product));
         await dispatch(saveStoreStocks(response.data.data.stores))
     } catch (error) {
         console.log(error)
@@ -37,7 +38,7 @@ export const asyncExploreById = (id) => async (dispatch, getState) => {
 export const asyncFetchCategorisedPro = (category,page) => async (dispatch, getState) => {
     try {
         const response = await axios.get(`/products/category/${category}?page=${page}`)
-        dispatch(saveProduct(response?.data?.data))
+        dispatch(saveFilteredProduct(response?.data?.data))
     } catch (error) {
 toast.error(error.response.data.message)
 
@@ -56,7 +57,7 @@ export const asyncSearch = (searchTerm, selectedCategory, store) => async (dispa
 
         const response = await axios.get(url);
         console.log(response)
-        dispatch(saveProduct(response.data.products));
+        dispatch(saveFilteredProduct(response.data.products));
     } catch (error) {
         console.log(error);
     }
@@ -77,7 +78,8 @@ export const asyncFetchStorePro = (store,page) => async (dispatch, getState) => 
 export const asyncFilterAll = (queryParams) => async (dispatch, getState) => {
     try {
         const response = await axios.get('/products/filter', { params: queryParams });
-        dispatch(saveProduct(response.data.data))
+
+        dispatch(saveFilteredProduct(response.data.data))
     } catch (error) {
         toast.error(error.response.data.message)
     }
@@ -86,7 +88,7 @@ export const asyncFilterAll = (queryParams) => async (dispatch, getState) => {
 export const asyncFetchProdByBrand=(brand)=>async(dispatch,getState)=>{
     try {
         const response=await axios.get(`/products/brand/${brand}`)
-        dispatch(saveProduct(response.data.products))
+        dispatch(saveFilteredProduct(response.data.products))
     } catch (error) {
         toast.error(error.response.data.message)
     }
@@ -95,7 +97,7 @@ export const asyncFetchProdByBrand=(brand)=>async(dispatch,getState)=>{
 export const asyncFetchStorebyPID=(productId)=>async(dispatch,getState)=>{
     try {
         const response=await axios.get(`/products/stores/${productId}`)
-        dispatch(saveStoreStocks(response.data.stores))
+        dispatch(saveFilteredProduct(response.data.stores))
     } catch (error) {
         console.log(error)
     }
