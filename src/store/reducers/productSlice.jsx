@@ -15,9 +15,7 @@ export const productSlice = createSlice({
     initialState,
     reducers: {
         saveProduct: (state, action) => {
-            const newProducts = action?.payload?.filter(product => !state.allProducts.some(p => p._id === product._id));
-            state.allProducts = [...state.allProducts, ...newProducts];
-            state.currentPageProducts = [...state.allProducts];
+            state.allProducts = action.payload
             state.loading = false;
         },
         setLoading: (state, action) => {

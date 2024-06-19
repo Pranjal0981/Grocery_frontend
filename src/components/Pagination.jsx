@@ -321,6 +321,7 @@ const Pagination = ({ currentPage, onPageChange }) => {
                                     <p className="text-sm mb-2 text-gray-700">{product?.description}</p>
                                     <p className="text-sm mb-2 text-gray-700">{product?.brand}</p>
                                     <p className="text-sm mb-2 text-gray-700">MRP: <span className="line-through">Rs {product?.MRP}</span></p>
+                                    <p className="text-sm mb-2 text-gray-700"> <span className='font-bold'> {product?.size}</span></p>
                                     <p className="text-sm font-semibold text-blue-600">Selling Price: <span className="text-blue-600 font-bold">Rs {product?.sellingPrice}</span></p>
                                 </div>
 
@@ -387,12 +388,7 @@ const Pagination = ({ currentPage, onPageChange }) => {
                 </div>
                 <div className="flex justify-center mt-8">
 
-                    <button
-                        className="px-4 py-2 bg-blue-500 hover:bg-blue-600 focus:outline-none focus:bg-blue-600 text-white rounded"
-                        onClick={() => onPageChange(currentPage + 1)}
-                    >
-                        Load More
-                    </button>
+
                 </div>
             </div>
 
