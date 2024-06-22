@@ -369,6 +369,16 @@ const Cart = () => {
                 invoiceNumber
             }, user._id, pdfBlob));
 
+            for (const item of checkOutCart.products) {
+                if (!unavailableProduct.find(up => up.productId._id === item.productId._id)) {
+                    const stock = item.stock ?? 0; // Ensure stock is defined and is a number
+                    if (stock > 0) {
+                        const newStock = stock - item.quantity;
+                        await dispatch(asyncUpdateStock(item.productId._id, newStock, selectedStore, user._id));
+                    }
+                }
+            }
+
             Swal.fire({
                 icon: 'success',
                 title: 'Order Placed!',
