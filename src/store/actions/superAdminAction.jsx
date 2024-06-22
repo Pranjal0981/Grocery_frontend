@@ -6,7 +6,6 @@ import { saveDashBoardInfo } from '../reducers/superAdminSlice';
 import { toast } from 'react-toastify';
 export const asyncCurrentSuperAdmin = (token) => async (dispatch, getState) => {
     try {
-console.log(token)
         const response = await axios.post('/superadmin/currentsuperAdmin', null, {
             headers: { Authorization: `Bearer ${token}` }
         });
@@ -30,9 +29,8 @@ export const asyncSuperAdminSignUp = (data) => async (dispatch, getState) => {
 
 export const asyncSuperAdminSignIn = (data, navigate) => async (dispatch, getState) => {
     try {
-        const res = await axios.post('/superadmin/login', data,{
-            headers: { Authorization: `Bearer ${token}` }
-        });
+        const res = await axios.post('/superadmin/login', data,);
+        console.log(res)
         await dispatch(asyncCurrentSuperAdmin(res.data.token));
         // const expiresInMilliseconds = res.data.expiresIn;
         // const expirationTime = Date.now() + expiresInMilliseconds;
