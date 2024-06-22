@@ -4,9 +4,8 @@ import { saveProduct } from '../reducers/productSlice';
 import { saveUser, removeUser, saveTokenExpiration } from '../reducers/userSlice'
 import { saveDashBoardInfo } from '../reducers/superAdminSlice';
 import { toast } from 'react-toastify';
-export const asyncCurrentSuperAdmin = () => async (dispatch, getState) => {
+export const asyncCurrentSuperAdmin = (token) => async (dispatch, getState) => {
     try {
-        const token = localStorage.getItem('token')
 console.log(token)
         const response = await axios.post('/superadmin/currentsuperAdmin', null, {
             headers: { Authorization: `Bearer ${token}` }
