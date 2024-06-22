@@ -25,7 +25,7 @@ const AdminDashboard = () => {
                                     </div>
             ) : (
                 <div className="container mx-auto px-4 py-8">
-                    <h1 className="text-3xl font-semibold mb-8 text-center">Admin Dashboard</h1>
+                    <h1 className="text-3xl font-semibold mb-8 text-center">Super Admin Dashboard</h1>
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                         {/* Total Members Card */}
                         <div className="bg-blue-100 shadow-lg rounded-lg overflow-hidden">
