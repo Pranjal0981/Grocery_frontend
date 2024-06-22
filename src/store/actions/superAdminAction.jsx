@@ -4,6 +4,8 @@ import { saveProduct } from '../reducers/productSlice';
 import { saveUser, removeUser, saveTokenExpiration } from '../reducers/userSlice'
 import { saveDashBoardInfo } from '../reducers/superAdminSlice';
 import { toast } from 'react-toastify';
+const token = localStorage.getItem('token')
+
 export const asyncCurrentSuperAdmin = (token) => async (dispatch, getState) => {
     try {
         const response = await axios.post('/superadmin/currentsuperAdmin', null, {
@@ -160,6 +162,7 @@ export const asyncDelProduct = (productId) => async (dispatch, getState) => {
 
 export const fetchDashBoardInfo = () => async (dispatch, getState) => {
     try {
+        const token=localStorage.getItem('token')
         const response = await axios.get('/superadmin/dashboard/fetchAllInfo',{
             headers: { Authorization: `Bearer ${token}` }
 
@@ -168,8 +171,7 @@ export const fetchDashBoardInfo = () => async (dispatch, getState) => {
         dispatch(saveDashBoardInfo(response.data.data))
 
     } catch (error) {
-        toast.error(error.response.data.message)
-    }
+console.log(error)    }
 }
 
 export const asyncSuperAdminBlockUser = (userId) => async (dispatch, getState) => {
