@@ -578,8 +578,9 @@ const Cart = () => {
 
     return (
         <div className="container mx-auto p-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div>
+            <div className="md:grid md:grid-cols-2 md:gap-8">
+                {/* Left Column (Your Order Details) */}
+                <div className="md:col-span-1">
                     <h2 className="text-2xl font-bold mb-4 text-indigo-800">Your Order Details</h2>
                     {checkOutCart?.products?.length > 0 ? (
                         <ul className="divide-y divide-gray-200">
@@ -631,10 +632,30 @@ const Cart = () => {
                         <p className="italic text-gray-500">No items in the cart</p>
                     )}
                 </div>
-                <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white shadow-md p-4">
-                    <h2 className="text-2xl font-bold mb-4 text-indigo-800">Order Summary</h2>
-                    <div className="flex justify-between mb-4">
-                        <p className="text-lg font-bold text-gray-800">Total Grand Price: Rs {checkOutCart?.totalGrandPrice}</p>
+
+                {/* Right Column (Order Summary) */}
+                <div className="md:col-span-1">
+                    {/* Order Summary on Mobile View */}
+                    <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white shadow-md p-4">
+                        <h2 className="text-2xl font-bold mb-4 text-indigo-800">Order Summary</h2>
+                        <div className="flex justify-between mb-4">
+                            <p className="text-lg font-bold text-gray-800">Total Grand Price: Rs {checkOutCart?.totalGrandPrice}</p>
+                            <button
+                                onClick={handlePlaceOrder}
+                                className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ${checkOutCart?.totalGrandPrice <= 1 && "opacity-50 cursor-not-allowed"}`}
+                                disabled={checkOutCart?.totalGrandPrice <= 1}
+                            >
+                                Place Order
+                            </button>
+                        </div>
+                    </div>
+
+                    {/* Order Summary on Desktop View */}
+                    <div className="hidden md:block">
+                        <h2 className="text-2xl font-bold mb-4 text-indigo-800">Order Summary</h2>
+                        <div className="bg-white shadow-md rounded-lg p-4 mb-4">
+                            <p className="text-gray-800 font-bold">Total Grand Price: Rs {checkOutCart?.totalGrandPrice}</p>
+                        </div>
                         <button
                             onClick={handlePlaceOrder}
                             className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ${checkOutCart?.totalGrandPrice <= 1 && "opacity-50 cursor-not-allowed"}`}
@@ -684,6 +705,7 @@ const Cart = () => {
             )}
         </div>
     );
+
 
 };
 
