@@ -192,8 +192,8 @@ export const asyncFetchOutOfStock = (page) => async (dispatch, getState) => {
             }
         });
 
-        const { outOfStockProducts, totalPages } = response.data;
-        dispatch(saveOutOfstock({ outOfStockProducts, totalPages }));
+        const { outOfStock, totalPages } = response.data;
+        dispatch(saveOutOfstock({ outOfStock, totalPages }));
         console.log(response);
     } catch (error) {
         toast.error(error.response.data.message); // Display error message using toast

@@ -5,7 +5,10 @@ const initialState = {
     loading: false,
     users: null,
     dashboardinfo: null,
-    totalPages: 0 // Initialize totalPages in the initial state
+    totalPages: 0 ,// Initialize totalPages in the initial state
+    duplicateProductsByName: [],
+    duplicateProductsByCode: [],
+    invalidStockOrMissingStoreNameProducts: [],
 
 }
 
@@ -35,10 +38,13 @@ export const adminSlice = createSlice({
         saveAllProducts: (state, action) => {
             state.products = action.payload
         },
-        saveOutOfstock:(state,action)=>{
-            state.products = action.payload.outOfStockProducts
-            state.totalPages=action.payload.totalPages
-        }
+        saveOutOfstock(state, action) {
+            console.log(action.payload)
+            state.duplicateProductsByName = action.payload.outOfStock.duplicateProductsByName;
+            state.duplicateProductsByCode = action.payload.outOfStock.duplicateProductsByCode;
+            state.invalidStockOrMissingStoreNameProducts = action.payload.outOfStock.invalidStockOrMissingStoreNameProducts;
+            state.totalPages = action.payload.totalPages;
+        },
     },
 });
 
