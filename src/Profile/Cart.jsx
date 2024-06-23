@@ -268,13 +268,14 @@ const Cart = () => {
             toast.success('Checkout cart is empty');
             return;
         }
-        if (unavailableProduct?.length > 0) {
-            toast.error('Some products are unavailable in the selected store. Please remove them before placing the order.');
-            return;
-        }
-
-        // Check if any product quantity exceeds stock
-        const productIds = checkOutCart?.products?.map(item => item.productId._id);
+        // console.log(unavailableProduct)
+        // if (unavailableProduct?.length > 0) {
+        //     toast.error('Some products are unavailable in the selected store. Please remove them before placing the order.');
+        //     return;
+        // }
+// console.log(unavailableProduct)
+      const productIds = checkOutCart?.products?.map(item => item.productId._id);
+      console.log(selectedStore)
       await  dispatch(asyncUpdateCart(user._id, selectedStore, productIds)); // Dispatch update with selectedStore
 
         const outOfStockProducts = checkOutCart.products.filter(item => item.quantity > item.stock);
