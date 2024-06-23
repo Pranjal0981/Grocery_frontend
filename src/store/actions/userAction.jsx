@@ -202,15 +202,15 @@ export const asyncUpdateCart = (userId, store, productIds) => async (dispatch) =
         if (response.status === 200) {
             const { data } = response;
             if (data.success) {
-                toast.success('Cart updated successfully', {
-                    position: "top-center",
-                    autoClose: 5000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                });
+                // toast.success('Cart updated successfully', {
+                //     position: "top-center",
+                //     autoClose: 5000,
+                //     hideProgressBar: false,
+                //     closeOnClick: true,
+                //     pauseOnHover: true,
+                //     draggable: true,
+                //     progress: undefined,
+                // });
                 await dispatch(saveUnavailableProduct([])); // Clear unavailable products if the cart is updated successfully
                 await dispatch(asyncFetchCartProduct(userId));
             } else {

@@ -202,6 +202,7 @@ const Cart = () => {
     const dispatch = useDispatch();
     const { checkOutCart, user, unavailableProduct = [] } = useSelector(state => state.user);
     console.log(checkOutCart)
+    console.log(user)
 
     // console.log(checkOutCart)
     const navigate = useNavigate();
@@ -214,11 +215,10 @@ const Cart = () => {
     }, [dispatch, user?._id]);
 
     useEffect(() => {
-        fetch('/stores.json')
-            .then(response => response.json())
-            .then(data => setStores(data))
-            .catch(error => console.error('Error fetching stores:', error));
-    }, []);
+        if (user.PreferredStore) {
+            setSelectedStore(user.PreferredStore);
+        }
+    }, [user.PreferredStore]);
 
     useEffect(() => {
         return () => {
@@ -258,7 +258,7 @@ const Cart = () => {
         return invoiceNumber;
     };
 
-    const handlePlaceOrder = () => {
+    const handlePlaceOrder = async() => {
         if (!user.address || user.address.length === 0) {
             toast.error('Please add your details and phone number before placing the order.');
             navigate('/edit-address');
@@ -274,6 +274,9 @@ const Cart = () => {
         }
 
         // Check if any product quantity exceeds stock
+        const productIds = checkOutCart?.products?.map(item => item.productId._id);
+      await  dispatch(asyncUpdateCart(user._id, selectedStore, productIds)); // Dispatch update with selectedStore
+
         const outOfStockProducts = checkOutCart.products.filter(item => item.quantity > item.stock);
         if (outOfStockProducts.length > 0) {
             const productNames = outOfStockProducts.map(item => item.productId.productName).join(', ');
@@ -551,11 +554,11 @@ const Cart = () => {
         dispatch(asyncDeleteCheckoutCart(user?._id, itemId));
     };
 
-    const handleSelectStore = e => {
-        setSelectedStore(e.target.value);
-        const productIds = checkOutCart?.products?.map(item => item.productId._id);
-        dispatch(asyncUpdateCart(user._id, e.target.value, productIds));
-    };
+    // const handleSelectStore = e => {
+    //     setSelectedStore(e.target.value);
+    //     const productIds = checkOutCart?.products?.map(item => item.productId._id);
+    //     dispatch(asyncUpdateCart(user._id, user?.PreferredStore, productIds));
+    // };
 
     const handleIncrementQuantity = (productId) => {
         console.log(productId)
@@ -573,132 +576,118 @@ const Cart = () => {
         }
     };
 
-
-        return (
-            <div className="container mx-auto p-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <div>
-                        <h2 className="text-2xl font-bold mb-4 text-indigo-800">Your Order Details</h2>
-                        {checkOutCart?.products?.length > 0 ? (
-                            <ul>
-                                {checkOutCart.products.map((item, index) => (
-                                    <li key={index} className="bg-white shadow-md rounded-lg overflow-hidden mb-4">
-                                        <img src={item.productId.image.url} alt={item.productId.productName} className="h-48 w-full object-cover rounded-t-lg" />
-                                        <div className="p-4">
-                                            <h2 className="text-xl font-bold mb-2 text-indigo-800">{item.productId.productName}</h2>
-                                            <p className="text-gray-700 mb-2">{item.productId.description}</p>
-                                            <div className="flex justify-between items-center mb-2">
-                                                <p className="text-gray-800 font-bold">Product Code: {item.productId.productCode}</p>
-                                            </div>
-                                            <div className="flex justify-between items-center">
-                                                <p className="text-gray-800">Total Price: Rs {item.totalPrice}</p>
-                                            </div>
-                                            <div className="flex justify-between items-center">
-                                                <h2 className="text-xl font-bold mb-2 text-indigo-800">Quantity: {item.quantity}</h2>
-                                                <div className="flex items-center">
-                                                    <button
-                                                        onClick={() => handleDecrementQuantity(item.productId._id)}
-                                                        className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-l"
-                                                    >
-                                                        -
-                                                    </button>
-                                                    <span className="px-4">{item.quantity}</span>
-                                                    <button
-                                                        onClick={() => handleIncrementQuantity(item.productId._id)}
-                                                        className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-r"
-                                                    >
-                                                        +
-                                                    </button>
-                                                </div>
-
-                                            </div>
-                                            <button onClick={() => handleDeleteItem(item._id)} className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mt-2">
+    return (
+        <div className="container mx-auto p-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                    <h2 className="text-2xl font-bold mb-4 text-indigo-800">Your Order Details</h2>
+                    {checkOutCart?.products?.length > 0 ? (
+                        <ul className="divide-y divide-gray-200">
+                            {checkOutCart.products.map((item, index) => (
+                                <li key={index} className="py-4 flex">
+                                    <img
+                                        src={item.productId.image.url}
+                                        alt={item.productId.productName}
+                                        className="h-24 w-24 object-cover rounded-lg"
+                                    />
+                                    <div className="ml-4 flex-1">
+                                        <div className="flex justify-between">
+                                            <h2 className="text-lg font-bold text-gray-800">{item.productId.productName}</h2>
+                                            <button
+                                                onClick={() => handleDeleteItem(item._id)}
+                                                className="text-red-500 hover:text-red-700 font-bold"
+                                            >
                                                 Delete
                                             </button>
                                         </div>
-                                      
-                                    </li>
-                                ))}
-                            </ul>
-                        ) : (
-                            <p className="italic text-gray-500">No items in the cart</p>
-                        )}
-                    </div>
-                    <div>
-                        {/* <button onClick={handleGeneratePDF}>Generate pdf</button>
-                        <button onClick={handleOpenPDF}>Open pdf</button> */}
-
-                        <h2 className="text-2xl font-bold mb-4 text-indigo-800">Store Selection</h2>
-                        <div className="flex flex-col items-start">
-                            <select
-                                value={selectedStore}
-                                onChange={handleSelectStore}
-                                className="border border-gray-300 px-4 py-2 rounded focus:outline-none w-full"
-                            >
-                                <option value="">Select Store</option>
-                                {stores.map((store, index) => (
-                                    <option key={index} value={store}>{store}</option>
-                                ))}
-                            </select>
-                        </div>
-                        <div className="mt-8">
-                            <h3 className="text-xl font-bold text-indigo-800">Order Summary</h3>
-                            <div className="bg-white shadow-md rounded-lg p-4 mt-4">
-                                <p className="text-gray-800 font-bold">Total Grand Price: Rs {checkOutCart?.totalGrandPrice}</p>
-                            </div>
-                            <button
-                                onClick={handlePlaceOrder}
-                                className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4 ${checkOutCart?.totalGrandPrice <= 1 && "opacity-50 cursor-not-allowed"}`}
-                                disabled={checkOutCart?.totalGrandPrice <= 1}
-                            >
-                                Place Order
-                            </button>
-                        </div>
+                                        <p className="text-gray-600">{item.productId.description}</p>
+                                        <div className="flex items-center mt-2">
+                                            <p className="text-gray-800">Product Code: {item.productId.productCode}</p>
+                                        </div>
+                                        <div className="flex items-center mt-2">
+                                            <p className="text-gray-800">Quantity:</p>
+                                            <div className="flex items-center ml-2">
+                                                <button
+                                                    onClick={() => handleDecrementQuantity(item.productId._id)}
+                                                    className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-1 px-2 rounded-l"
+                                                >
+                                                    -
+                                                </button>
+                                                <span className="px-3">{item.quantity}</span>
+                                                <button
+                                                    onClick={() => handleIncrementQuantity(item.productId._id)}
+                                                    className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-1 px-2 rounded-r"
+                                                >
+                                                    +
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <p className="text-gray-800 mt-2">Total Price: Rs {item.totalPrice}</p>
+                                    </div>
+                                </li>
+                            ))}
+                        </ul>
+                    ) : (
+                        <p className="italic text-gray-500">No items in the cart</p>
+                    )}
+                </div>
+                <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white shadow-md p-4">
+                    <h2 className="text-2xl font-bold mb-4 text-indigo-800">Order Summary</h2>
+                    <div className="flex justify-between mb-4">
+                        <p className="text-lg font-bold text-gray-800">Total Grand Price: Rs {checkOutCart?.totalGrandPrice}</p>
+                        <button
+                            onClick={handlePlaceOrder}
+                            className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ${checkOutCart?.totalGrandPrice <= 1 && "opacity-50 cursor-not-allowed"}`}
+                            disabled={checkOutCart?.totalGrandPrice <= 1}
+                        >
+                            Place Order
+                        </button>
                     </div>
                 </div>
- 
-
-                {showModal && (
-                    <div className="fixed z-50 inset-0 flex items-center justify-center bg-black bg-opacity-50">
-                        <div className="bg-white p-8 rounded shadow-md w-full max-w-md">
-                            <h2 className="text-xl font-bold mb-4 text-indigo-800">Choose Payment Method</h2>
-                            <>
-                                {isCashOnDeliveryProcessing ? (
-                                    <button
-                                        className="bg-gray-500 text-white font-bold py-2 px-4 rounded mb-4 w-full"
-                                        disabled
-                                    >
-                                        Loading...
-                                    </button>
-                                ) : (
-                                    <button
-                                        onClick={handleCashOnDelivery}
-                                        className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mb-4 w-full"
-                                    >
-                                        Cash on Delivery
-                                    </button>
-                                )}
-                                <button
-                                    onClick={() => handleOnlinePayment(checkOutCart?.totalGrandPrice)}
-                                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-full"
-                                    disabled={isPaymentLoading}
-                                >
-                                    {isPaymentLoading ? <Loader /> : 'Online Payment'}
-                                </button>
-                                <button
-                                    onClick={handleCloseModal}
-                                    className="mt-4 text-gray-600 underline w-full text-center"
-                                >
-                                    Cancel
-                                </button>
-                               
-                            </>
-                        </div>
-                    </div>
-                )}
             </div>
-        );
+
+            {/* Payment Modal */}
+            {showModal && (
+                <div className="fixed z-50 inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                    <div className="bg-white p-8 rounded shadow-md max-w-sm">
+                        <h2 className="text-xl font-bold mb-4 text-indigo-800">Choose Payment Method</h2>
+                        {isCashOnDeliveryProcessing ? (
+                            <button
+                                className="bg-gray-300 text-white font-bold py-2 px-4 rounded mb-2 w-full"
+                                disabled
+                            >
+                                Loading...
+                            </button>
+                        ) : (
+                            <button
+                                onClick={handleCashOnDelivery}
+                                className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded mb-2 w-full"
+                            >
+                                Cash on Delivery
+                            </button>
+                        )}
+                        <button
+                            onClick={() => handleOnlinePayment(checkOutCart?.totalGrandPrice)}
+                            className={`bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded w-full ${isPaymentLoading && 'opacity-50 cursor-not-allowed'}`}
+                            disabled={isPaymentLoading}
+                        >
+                            {isPaymentLoading ? 'Processing...' : 'Online Payment'}
+                        </button>
+                        <button
+                            onClick={handleCloseModal}
+                            className="text-gray-600 underline mt-4 w-full text-center"
+                        >
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+            )}
+        </div>
+    );
+
 };
+
+
 
 
 
