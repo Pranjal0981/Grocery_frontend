@@ -8,6 +8,7 @@ const initialState = {
     checkOutCart: null,
     tokenExpiration: null,
     unavailableProduct: null,
+    referralCode:null,
     isCashOnDeliveryProcessing: false // New state to manage the loading state for cash on delivery
 };
 
@@ -40,6 +41,9 @@ export const userSlice = createSlice({
         },
         setCashOnDeliveryProcessing: (state, action) => {
             state.isCashOnDeliveryProcessing = action.payload;
+        },
+        saveReferralCode:(state,action)=>{
+            state.referralCode=action.payload
         }
     },
 });
@@ -51,7 +55,8 @@ export const {
     saveCheckOutCart,
     saveTokenExpiration,
     saveUnavailableProduct,
-    setCashOnDeliveryProcessing
+    setCashOnDeliveryProcessing,
+    saveReferralCode
 } = userSlice.actions;
 
 export default userSlice.reducer;

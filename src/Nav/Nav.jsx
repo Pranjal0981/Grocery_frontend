@@ -453,6 +453,11 @@ const handleSearch = async(searchTerm, selectedCategory)=> {
                                     <ListItemText primary="WISHLIST" />
                                 </ListItem>
                             </Link>
+                            <Link to="/referral" className="" style={{ textDecoration: 'none' }} onClick={toggleSecondDrawer(false)}>
+                            <ListItem button>
+                                <ListItemText primary="REFERRAL" />
+                            </ListItem>
+                        </Link>
 
                             <Link to="/logout" className="" style={{ textDecoration: 'none' }} onClick={handleLogout}>
                                 <ListItem button>

@@ -1,4 +1,4 @@
-import { saveUser, removeUser, saveWishlist, saveCheckOutCart, saveTokenExpiration, saveUnavailableProduct, setCashOnDeliveryProcessing } from "../reducers/userSlice";
+import { saveUser, removeUser, saveWishlist, saveCheckOutCart, saveTokenExpiration, saveUnavailableProduct, setCashOnDeliveryProcessing, saveReferralCode } from "../reducers/userSlice";
 import axios from '../../config/axios'
 import { saveProduct } from "../reducers/productSlice";
 import { saveOrders } from "../reducers/adminSlice";
@@ -673,3 +673,17 @@ export const asyncUpdateCartQuantity = (userId, productId, quantity) => async (d
         console.error(error);
     }
 };
+
+export const generateReferralCode=(userId)=>async(dispatch,getState)=>{
+    try {
+        const token=localStorage.getItem('token')
+        console.log(token)
+        const response=await axios.post('/user/generateReferralCode',{userId},{
+            headers: { Authorization: `Bearer ${token}` }
+        })
+        dispatch(saveReferralCode(response.data.referralCode))
+    } catch (error) {
+        console.log(error)
+        
+    }
+}

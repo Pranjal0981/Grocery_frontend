@@ -45,6 +45,7 @@ import { Business } from '@mui/icons-material'
 import DeliveryInformation from '../components/DeliveryInfo'
 import TermsAndConditions from '../components/TermsandCondition'
 import PaymentSuccessPage from '../Profile/PaymentSuccess'
+import GenerateReferralLink from '../Profile/Referral'
 const Routing = () => {
     
     const { user, isAuth } = useSelector((state) => state.user)
@@ -54,7 +55,8 @@ const Routing = () => {
     const isStoreManager=isAuth && user?.userType==='Storemanager'
     const isUser = isAuth && user?.userType === 'customer';
     const isSuperAdmin=isAuth && user?.userType==='SuperAdmin'
-    const { id } = useParams();
+    const { id,referralCode } = useParams();
+    console.log(referralCode)
     const categories = [
         { label: "Oral Care & Wellness", link: "/oral-care-wellness" },
         { label: "Atta, Rice & Dal", link: "/atta-rice-dal" },
@@ -119,6 +121,8 @@ const Routing = () => {
             <Route path='/cart' element={isUser ? <Cart /> : <Unauthorized />} />
             <Route path='/edit-address' element={<AddressForm />} />
             <Route path='/address' element={<Address />} />
+            <Route path='/referral' element={<GenerateReferralLink />} />
+            <Route path='/referral-link/:referralCode' element={<HomePage/>}/>
             <Route path='/stores/fetchProducts/:store' element={isAdmin || isSuperAdmin? <ProductStore />:<Unauthorized/>} />
             <Route path='/shop' element={<Product />} />
             <Route path='/account-details' element={<AccountDetails />} />

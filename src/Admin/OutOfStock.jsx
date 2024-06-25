@@ -54,7 +54,7 @@ const OutOfStockPage = () => {
             </div>
 
             {/* Duplicate Products by Name */}
-            <section className="mb-12">
+            {/* <section className="mb-12">
                 <h3 className="text-lg font-semibold mb-4">Duplicate Products by Name</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {filteredProductsByName.map((group) => (
@@ -87,7 +87,7 @@ const OutOfStockPage = () => {
                         </div>
                     ))}
                 </div>
-            </section>
+            </section> */}
 
             {/* Duplicate Products by Code */}
             <section className="mb-12">
@@ -105,6 +105,8 @@ const OutOfStockPage = () => {
                                         />
                                     </div>
                                     <div className="md:w-2/3 mt-4 md:mt-0">
+                                        <h4 className="text-lg font-semibold mb-2">{product?.size}</h4>
+
                                         <h4 className="text-lg font-semibold mb-2">{product.productCode}</h4>
                                         <div className="flex gap-4">
                                             <button
