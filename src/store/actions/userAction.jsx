@@ -510,7 +510,7 @@ export const asyncCustomerOrder = (data, userId, pdfBlob) => async (dispatch, ge
             },
         });
 
-        // await dispatch(asyncClearCart(userId)); // Clear the cart after successful order placement
+        await dispatch(asyncClearCart(userId)); // Clear the cart after successful order placement
 
         // dispatch(setCashOnDeliveryProcessing(false));
         toast.success(response.data.message);
