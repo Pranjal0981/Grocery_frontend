@@ -44,7 +44,7 @@ export const asyncSignupUser = (data) => async (dispatch) => {
         toast.success("SignUp Successfully !")
     } catch (error) {
         console.error(error);
-        toast.error('Email Already exist.');
+        toast.error(error.response.data.message);
     }
 };
 
@@ -486,7 +486,7 @@ export const asyncDeleteAccount = (userId) => async (dispatch, getState) => {
 
 export const asyncCustomerOrder = (data, userId, pdfBlob) => async (dispatch, getState) => {
     try {
-        dispatch(setCashOnDeliveryProcessing(true)); // Set loading state to true for cash on delivery
+        // dispatch(setCashOnDeliveryProcessing(true)); // Set loading state to true for cash on delivery
 
         const formData = new FormData();
 
@@ -512,13 +512,13 @@ export const asyncCustomerOrder = (data, userId, pdfBlob) => async (dispatch, ge
 
         // await dispatch(asyncClearCart(userId)); // Clear the cart after successful order placement
 
-        dispatch(setCashOnDeliveryProcessing(false));
-        toast.success('Order placed successfully');
+        // dispatch(setCashOnDeliveryProcessing(false));
+        toast.success(response.data.message);
         await dispatch(asyncClearCart(userId))
     } catch (error) {
         console.error('Error placing order:', error);
-        toast.error('Failed to place order. Please try again.');
-        dispatch(setCashOnDeliveryProcessing(false)); // Set loading state to false in case of error
+        toast.error(error.response.data.message);
+        // dispatch(setCashOnDeliveryProcessing(false)); // Set loading state to false in case of error
     }
 }
 
@@ -682,6 +682,16 @@ export const generateReferralCode=(userId)=>async(dispatch,getState)=>{
             headers: { Authorization: `Bearer ${token}` }
         })
         dispatch(saveReferralCode(response.data.referralCode))
+    } catch (error) {
+        console.log(error)
+        
+    }
+}
+
+export const asyncAddMoneyToWallet=(amount,userId)=>async(dispatch,getState)=>{
+    try {
+        const response=await axios.post(`/user/addToWallet/${userId}`,amount)
+       await dispatch(asyncCurrentUser())
     } catch (error) {
         console.log(error)
         

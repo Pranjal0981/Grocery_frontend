@@ -88,6 +88,7 @@ const handleSearch = async(searchTerm, selectedCategory)=> {
         name: '',
         email: '',
         password: '',
+        referralCode:'',
         userType: '',
         store:''
     });
@@ -433,6 +434,11 @@ const handleSearch = async(searchTerm, selectedCategory)=> {
                                     <ListItemText primary="DASHBOARD" />
                                 </ListItem>
                             </Link>
+                            <Link to="/wallet" className="" style={{ textDecoration: 'none' }} onClick={toggleSecondDrawer(false)}>
+                                <ListItem button>
+                                    <ListItemText primary="WALLET" />
+                                </ListItem>
+                            </Link>
                             <Link to="/orders" className="" style={{ textDecoration: 'none' }} onClick={toggleSecondDrawer(false)}>
                                 <ListItem button>
                                     <ListItemText primary="ORDERS" />
@@ -683,6 +689,8 @@ const handleSearch = async(searchTerm, selectedCategory)=> {
                                 className="border border-gray-300 px-4 py-2 rounded focus:outline-none"
                                 onChange={handleInputChange}
                             />
+
+                            
                             <button
                                 type="button"
                                 className="absolute inset-y-0 right-0 px-3 py-2"
@@ -691,7 +699,14 @@ const handleSearch = async(searchTerm, selectedCategory)=> {
                                 {showPassword ? <FaEyeSlash /> : <FaEye />}
                             </button>
                         </div>
-
+                         <input
+                                                            type="text"
+                                                            name="referralCode"
+                                                            value={formData.referralCode}
+                                                            placeholder="Referral Code if Applicable"
+                                                            className="border border-gray-300 px-4 py-2 rounded focus:outline-none"
+                                                            onChange={handleInputChange}
+                                                        />
                         <button
                             type="submit"
                             className={`w-full bg-blue-500 text-white px-4 py-2 rounded focus:outline-none ${loading ? 'opacity-75 cursor-not-allowed' : 'hover:bg-blue-600'

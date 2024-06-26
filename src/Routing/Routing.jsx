@@ -46,6 +46,8 @@ import DeliveryInformation from '../components/DeliveryInfo'
 import TermsAndConditions from '../components/TermsandCondition'
 import PaymentSuccessPage from '../Profile/PaymentSuccess'
 import GenerateReferralLink from '../Profile/Referral'
+import Nav from '../Nav/Nav'
+import Wallet from '../Profile/Wallet'
 const Routing = () => {
     
     const { user, isAuth } = useSelector((state) => state.user)
@@ -74,12 +76,14 @@ const Routing = () => {
         // Add more categories as needed
     ];
     return <>
+    <Nav/>
         <Routes>
             <Route path='/' element={<HomePage />} />
             <Route path='/About Us' element={<About/>}/>
             <Route path='/brand/:title' element={<BrandProducts/>}/>
             <Route path='/Support Center' element={<SupportCenter/>}/>
             <Route path='/dashboard' element={<Dashboard />} />
+            <Route path='/wallet' element={<Wallet />} />
             <Route path='/store/:store' element={<Storeproduct/>}/>
             <Route path='/forget-password' element={<ForgetPassword />} />
             <Route path='/storemanager/login' element={<StoreManagerLogin/>}/>

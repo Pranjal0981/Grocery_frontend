@@ -6,6 +6,7 @@ import Div3 from './Div3'
 import Div4 from './Div4'
 import Shopbybrand from './Shopbybrand'
 import {Product} from './Product'
+import Nav from '../Nav/Nav'
 function HomePage() {
   return (
     <>

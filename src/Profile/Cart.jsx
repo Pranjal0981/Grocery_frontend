@@ -197,8 +197,9 @@ const Cart = () => {
     const [showModal, setShowModal] = useState(false);
     const [selectedStore, setSelectedStore] = useState('');
     const [isPaymentLoading, setIsPaymentLoading] = useState(false);
+    const [isWalletPayment,setIsWalletLoading]=useState(false)
     const [pdfDataUrl, setPdfDataUrl] = useState('');
-    const isCashOnDeliveryProcessing = useSelector(state => state.user.isCashOnDeliveryProcessing);
+    const [isCashOnDeliveryProcessing,setIsCashOnDelivery] = useState(false)
     const dispatch = useDispatch();
     const { checkOutCart, user, unavailableProduct = [] } = useSelector(state => state.user);
     console.log(checkOutCart)
@@ -223,6 +224,8 @@ const Cart = () => {
     useEffect(() => {
         return () => {
             setIsPaymentLoading(false);
+            setIsWalletLoading(false)
+            setIsCashOnDelivery(false)
         };
     }, []);
 
@@ -293,7 +296,61 @@ const Cart = () => {
         setShowModal(true);
     };
 
+    const generateOrderDetails = async () => {
+        const orderId = generateOrderId();
+        const invoiceNumber = generateInvoiceNumber();
+        const pdfBlob = await generatePDF(checkOutCart, user, orderId, invoiceNumber);
 
+        return { orderId, invoiceNumber, pdfBlob };
+    };
+
+    const checkProductAvailability = () => {
+        const unavailableStockProducts = checkOutCart.products.filter(item => {
+            const stock = item.stock ?? 0;
+            return stock <= 0;
+        });
+
+        if (unavailableStockProducts.length > 0) {
+            const productNames = unavailableStockProducts.map(item => item.productId.productName).join(', ');
+            toast.error(`The following products have unavailable stock: ${productNames}`);
+            return false;
+        }
+
+        const outOfStockProducts = checkOutCart.products.filter(item => item.quantity > item.stock);
+        if (outOfStockProducts.length > 0) {
+            const productNames = outOfStockProducts.map(item => item.productId.productName).join(', ');
+            toast.error(`The following products have insufficient stock: ${productNames}`);
+            return false;
+        }
+
+        return true;
+    };
+
+    const getAvailableProducts = () => {
+        return checkOutCart.products
+            .filter(item => {
+                const stock = item.stock ?? 0;
+                return stock > 0 && !unavailableProduct.find(up => up.productId._id === item.productId._id);
+            })
+            .map(item => ({
+                productId: item.productId._id,
+                quantity: item.quantity,
+                totalPrice: item.totalPrice,
+                store: item.store
+            }));
+    };
+
+    const updateStock = async () => {
+        for (const item of checkOutCart.products) {
+            if (!unavailableProduct.find(up => up.productId._id === item.productId._id)) {
+                const stock = item.stock ?? 0;
+                if (stock > 0) {
+                    const newStock = stock - item.quantity;
+                    await dispatch(asyncUpdateStock(item.productId._id, newStock, selectedStore, user._id));
+                }
+            }
+        }
+    };
 
     const handleCloseModal = () => {
         setShowModal(false);
@@ -317,53 +374,30 @@ const Cart = () => {
         }
     };
 
+
     const handleCashOnDelivery = async () => {
+        setIsCashOnDelivery(true);
+        if (!selectedStore) {
+            toast.error('Please select a store before proceeding with payment.');
+            setIsCashOnDelivery(false);
+            return;
+        }
+
+        if (!checkProductAvailability()) {
+            setIsCashOnDelivery(false);
+            return;
+        }
+
+        const availableProducts = getAvailableProducts();
+        if (availableProducts.length === 0) {
+            toast.error('No available products to place an order.');
+            setIsCashOnDelivery(false);
+            return;
+        }
+
+        const { orderId, invoiceNumber, pdfBlob } = await generateOrderDetails();
+
         try {
-            const orderId = generateOrderId();
-            const invoiceNumber = generateInvoiceNumber();
-            const pdfBlob = await generatePDF(checkOutCart, user, orderId, invoiceNumber);
-
-            if (!selectedStore) {
-                toast.error('Please select a store before proceeding with payment.');
-                return;
-            }
-
-            const unavailableStockProducts = checkOutCart.products.filter(item => {
-                const stock = item.stock ?? 0;
-                return stock <= 0;
-            });
-
-            if (unavailableStockProducts.length > 0) {
-                const productNames = unavailableStockProducts.map(item => item.productId.productName).join(', ');
-                toast.error(`The following products have unavailable stock: ${productNames}`);
-                return;
-            }
-
-            // Check if any product quantity exceeds stock
-            const outOfStockProducts = checkOutCart.products.filter(item => item.quantity > item.stock);
-            if (outOfStockProducts.length > 0) {
-                const productNames = outOfStockProducts.map(item => item.productId.productName).join(', ');
-                toast.error(`The following products have insufficient stock: ${productNames}`);
-                return;
-            }
-
-            const availableProducts = checkOutCart.products
-                .filter(item => {
-                    const stock = item.stock ?? 0;
-                    return stock > 0 && !unavailableProduct.find(up => up.productId._id === item.productId._id);
-                })
-                .map(item => ({
-                    productId: item.productId._id,
-                    quantity: item.quantity,
-                    totalPrice: item.totalPrice,
-                    store: item.store
-                }));
-
-            if (availableProducts.length === 0) {
-                toast.error('No available products to place an order.');
-                return;
-            }
-
             await dispatch(asyncCustomerOrder({
                 checkOutCart: JSON.stringify(availableProducts),
                 totalGrandPrice: checkOutCart?.totalGrandPrice,
@@ -373,22 +407,13 @@ const Cart = () => {
                 invoiceNumber
             }, user._id, pdfBlob));
 
-            for (const item of checkOutCart.products) {
-                if (!unavailableProduct.find(up => up.productId._id === item.productId._id)) {
-                    const stock = item.stock ?? 0; // Ensure stock is defined and is a number
-                    if (stock > 0) {
-                        const newStock = stock - item.quantity;
-                        await dispatch(asyncUpdateStock(item.productId._id, newStock, selectedStore, user._id));
-                    }
-                }
-            }
+            await updateStock();
 
             Swal.fire({
                 icon: 'success',
                 title: 'Order Placed!',
                 text: 'Your order has been successfully placed.',
             });
-
         } catch (error) {
             console.error('Error placing order:', error);
             Swal.fire({
@@ -396,16 +421,14 @@ const Cart = () => {
                 title: 'Error',
                 text: 'There was an error placing your order. Please try again later.',
             });
+        } finally {
+            setIsCashOnDelivery(false);
         }
     };
-
     const handleOnlinePayment = async (amount) => {
         setIsPaymentLoading(true);
         try {
-            const orderId = generateOrderId();
-            const invoiceNumber = generateInvoiceNumber();
-
-            const pdfBlob = await generatePDF(checkOutCart, user, orderId, invoiceNumber);
+            const { orderId, invoiceNumber, pdfBlob } = await generateOrderDetails();
 
             if (!selectedStore) {
                 toast.error('Please select a store before proceeding with payment.');
@@ -413,44 +436,18 @@ const Cart = () => {
                 return;
             }
 
-            const unavailableStockProducts = checkOutCart.products.filter(item => {
-                const stock = item.stock ?? 0;
-                return stock <= 0;
-            });
-
-            if (unavailableStockProducts.length > 0) {
-                const productNames = unavailableStockProducts.map(item => item.productId.productName).join(', ');
-                toast.error(`The following products have unavailable stock: ${productNames}`);
+            if (!checkProductAvailability()) {
                 setIsPaymentLoading(false);
                 return;
             }
 
-            // Check if any product quantity exceeds stock
-            const outOfStockProducts = checkOutCart.products.filter(item => item.quantity > item.stock);
-            if (outOfStockProducts.length > 0) {
-                const productNames = outOfStockProducts.map(item => item.productId.productName).join(', ');
-                toast.error(`The following products have insufficient stock: ${productNames}`);
-                setIsPaymentLoading(false);
-                return;
-            }
-
-            const availableProducts = checkOutCart.products
-                .filter(item => {
-                    const stock = item.stock ?? 0;
-                    return stock > 0 && !unavailableProduct.find(up => up.productId._id === item.productId._id);
-                })
-                .map(item => ({
-                    productId: item.productId._id,
-                    quantity: item.quantity,
-                    totalPrice: item.totalPrice,
-                    store: item.store
-                }));
-
+            const availableProducts = getAvailableProducts();
             if (availableProducts.length === 0) {
                 toast.error('No available products to place an order.');
                 setIsPaymentLoading(false);
                 return;
             }
+
             const token = localStorage.getItem('token')
 
             const { data } = await axios.get("/api/getkey", {
@@ -501,16 +498,8 @@ const Cart = () => {
                             invoiceNumber
                         }, user._id, pdfBlob));
 
-                        for (const item of checkOutCart.products) {
-                            if (!unavailableProduct.find(up => up.productId._id === item.productId._id)) {
-                                const stock = item.stock ?? 0; // Ensure stock is defined and is a number
-                                if (stock > 0) {
-                                    const newStock = stock - item.quantity;
-                                    console.log(`Updating stock for ${item.productId._id}: Old stock ${stock}, Quantity ${item.quantity}, New stock ${newStock}`);
-                                    await dispatch(asyncUpdateStock(item.productId._id, newStock, selectedStore, user._id));
-                                }
-                            }
-                        }
+                           await updateStock();
+
 
                         setShowModal(false);
                         Swal.fire({
@@ -544,6 +533,72 @@ const Cart = () => {
         } catch (error) {
             console.error("Error in checkout:", error);
             setIsPaymentLoading(false);
+        }
+    };
+
+
+    const handleWalletPayment = async (amount) => {
+        setIsWalletLoading(true);
+
+        if (!selectedStore) {
+            toast.error('Please select a store before proceeding with payment.');
+            setIsWalletLoading(false);
+            return;
+        }
+
+        if (!checkProductAvailability()) {
+            setIsWalletLoading(false);
+            return;
+        }
+
+        const availableProducts = getAvailableProducts();
+        if (availableProducts.length === 0) {
+            toast.error('No available products to place an order.');
+            setIsWalletLoading(false);
+            return;
+        }
+
+        const { orderId, invoiceNumber, pdfBlob } = await generateOrderDetails();
+
+        try {
+            // Replace with actual wallet payment logic
+            // For example, deduct from user's wallet balance
+            // and update the order status accordingly
+
+            // Simulating a delay for demonstration purposes
+            setTimeout(async () => {
+                try {
+                    const response = await dispatch(asyncCustomerOrder({
+                        checkOutCart: JSON.stringify(availableProducts),
+                        totalGrandPrice: checkOutCart?.totalGrandPrice,
+                        paymentType: 'Wallet Payment',
+                        email: user.email,
+                        orderId,
+                        invoiceNumber
+                    }, user._id, pdfBlob));
+
+                    if (response && response.success) {
+                        await updateStock(); // Call updateStock only if order placement was successful
+
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Order Placed!',
+                            text: 'Your order has been successfully placed.',
+                        });
+                    } 
+                } catch (error) {
+                    console.error('Error processing wallet payment:', error);
+                    toast.error('Failed to process wallet payment. Please try again later.');
+                } finally {
+                    setIsWalletLoading(false);
+                    setShowModal(false);
+                }
+            }, 2000); // Simulating a 2 second delay
+
+        } catch (error) {
+            console.error('Error generating order details:', error);
+            toast.error('Failed to generate order details. Please try again later.');
+            setIsWalletLoading(false);
         }
     };
 
@@ -690,10 +745,17 @@ const Cart = () => {
                         )}
                         <button
                             onClick={() => handleOnlinePayment(checkOutCart?.totalGrandPrice)}
-                            className={`bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded w-full ${isPaymentLoading && 'opacity-50 cursor-not-allowed'}`}
+                            className={`bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded mb-2 w-full ${isPaymentLoading && 'opacity-50 cursor-not-allowed'}`}
                             disabled={isPaymentLoading}
                         >
                             {isPaymentLoading ? 'Processing...' : 'Online Payment'}
+                        </button>
+                        <button
+                            onClick={() => handleWalletPayment(checkOutCart?.totalGrandPrice)}
+                            className={`bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded mb-2 w-full ${isWalletPayment && 'opacity-50 cursor-not-allowed'}`}
+                            disabled={isWalletPayment}
+                        >
+                            {isWalletPayment ? 'Processing...' : 'Wallet Payment'}
                         </button>
                         <button
                             onClick={handleCloseModal}
