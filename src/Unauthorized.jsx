@@ -1,21 +1,52 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { motion } from 'framer-motion';
+import { gsap } from 'gsap';
 
 const Unauthorized = () => {
+    useEffect(() => {
+        gsap.fromTo('.error-code', { scale: 0 }, { scale: 1, duration: 1, ease: 'elastic.out(1, 0.3)' });
+        gsap.fromTo('.error-message', { y: 50, opacity: 0 }, { y: 0, opacity: 1, duration: 1, delay: 0.5 });
+        gsap.fromTo('.error-description', { y: 50, opacity: 0 }, { y: 0, opacity: 1, duration: 1, delay: 1 });
+        gsap.fromTo('.back-button', { scale: 0.5, opacity: 0 }, { scale: 1, opacity: 1, duration: 1, delay: 1.5 });
+    }, []);
+
     return (
-        <div className="flex flex-col items-center justify-center h-screen bg-gradient-to-br from-red-500 to-yellow-500 text-white p-4">
-            <div className="bg-white p-6 rounded-lg shadow-lg text-center text-gray-900 max-w-md">
-                <h2 className="text-4xl font-bold mb-4">Uh-oh! Access Denied</h2>
-                <p className="text-lg mb-4">It looks like you don't have the required permissions to view this page.</p>
-                <p className="text-lg mb-4">If you think this is a mistake, please reach out to our support team.</p>
-                <p className="text-lg mb-4">We're here to help!</p>
-                <button
-                    onClick={() => window.history.back()}
-                    className="mt-6 px-4 py-2 bg-red-500 hover:bg-red-600 text-white font-semibold rounded shadow"
+        <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.5 }}
+            className="flex flex-col items-center justify-center h-screen bg-white text-gray-900 p-4"
+        >
+            <div className="text-center">
+                <motion.div
+                    className="error-code text-6xl font-bold mb-4 text-red-500"
                 >
-                    Go Back
-                </button>
+                    401
+                </motion.div>
+                <motion.div
+                    className="error-message text-2xl font-semibold mb-4"
+                >
+                    Access Denied
+                </motion.div>
+                <motion.div
+                    className="error-description text-lg mb-4"
+                >
+                    Your session has expired or you don't have the required permissions.
+                </motion.div>
+                <motion.div
+                    className="error-description text-lg mb-4"
+                >
+                    Please log in again to continue.
+                </motion.div>
+                <motion.button
+                    className="back-button mt-6 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded shadow"
+                    onClick={() => window.location.href = '/'}
+                >
+Go to Home
+                </motion.button>
             </div>
-        </div>
+        </motion.div>
     );
 };
 
