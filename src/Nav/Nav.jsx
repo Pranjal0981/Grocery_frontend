@@ -387,29 +387,31 @@ const handleSearch = async(searchTerm, selectedCategory)=> {
                                     <ListItemText primary="Join Our Business" />
                                 </ListItem>
                             </Link>
+                            {user && (
+                                <form
+                                    onSubmit={handleSubmitPreferredStore}
+                                    className="flex flex-col items-center mt-8 gap-4 w-full"
+                                >
+                                    <select
+                                        value={selectedStore}
+                                        onChange={(e) => handleStoreChange(e.target.value)}
+                                        className="text-black border-2 border-gray-300 px-4 py-2 rounded-lg shadow-md focus:outline-none focus:border-blue-500 transition-colors w-full md:w-2/3"
+                                    >
+                                        <option value="" disabled>Select Store</option>
+                                        {preferredStore.map((store, index) => (
+                                            <option key={index} value={store}>{store}</option>
+                                        ))}
+                                    </select>
+                                    <button
+                                        type="submit"
+                                        className={`bg-blue-500 text-white py-2 px-6 rounded-lg shadow-md hover:shadow-lg transform hover:scale-105 transition-transform w-full md:w-2/3 ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                        disabled={isLoading}
+                                    >
+                                        {isLoading ? 'Setting...' : 'Set Preferred Store'}
+                                    </button>
+                                </form>
+                            )}
 
-                            <form
-                                onSubmit={handleSubmitPreferredStore}
-                                className="flex flex-col items-center mt-8 gap-4 w-full"
-                            >
-                                <select
-                                    value={selectedStore}
-                                    onChange={(e) => handleStoreChange(e.target.value)}
-                                    className="text-black border-2 border-gray-300 px-4 py-2 rounded-lg shadow-md focus:outline-none focus:border-blue-500 transition-colors w-full md:w-2/3"
-                                >
-                                    <option value="" disabled>Select Store</option>
-                                    {preferredStore.map((store, index) => (
-                                        <option key={index} value={store}>{store}</option>
-                                    ))}
-                                </select>
-                                <button
-                                    type="submit"
-                                    className={`bg-blue-500 text-white py-2 px-6 rounded-lg shadow-md hover:shadow-lg transform hover:scale-105 transition-transform w-full md:w-2/3 ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
-                                    disabled={isLoading}
-                                >
-                                    {isLoading ? 'Setting...' : 'Set Preferred Store'}
-                                </button>
-                            </form>
 
                             <Link to="/shop" style={{ textDecoration: 'none', color: 'inherit' }}>
                                 <ListItem button onClick={handleToggleDrawer(false)} className="hover:bg-blue-500 transition duration-200 rounded-lg">
