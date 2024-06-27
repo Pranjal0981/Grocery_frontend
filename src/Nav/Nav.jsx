@@ -16,7 +16,7 @@ import { MdOutlineShoppingBag } from 'react-icons/md';
 import { FaInstagram, FaTwitter, FaFacebook, FaYoutube } from 'react-icons/fa';
 import { useSelector, useDispatch } from 'react-redux'
 import { asyncAdminLogin, asyncAdminRegister, asyncLogoutAdmin } from '../store/actions/adminAction';
-import { asyncSignIn, asyncSignOut, asyncSignupUser } from '../store/actions/userAction';
+import { asyncSetPreferredStore, asyncSignIn, asyncSignOut, asyncSignupUser } from '../store/actions/userAction';
 import { asyncSearch } from '../store/actions/productAction';
 import { asyncSuperAdminSignIn, asyncSuperAdminSignUp, asyncSignOutSuperAdmin } from '../store/actions/superAdminAction';
 import { asyncStoreLogout } from '../store/actions/storeManagerAction';
@@ -24,6 +24,7 @@ import { useEffect } from 'react';
 import CountdownTimer from './Coundown';
 import { FaCartShopping } from 'react-icons/fa6';
 import { motion } from 'framer-motion';
+import { toast } from 'react-toastify';
 
 const Nav = () => {
     const navigate=useNavigate()
@@ -233,8 +234,34 @@ const handleSearch = async(searchTerm, selectedCategory)=> {
         { label: "Body & Skin Care", link: "/body-skin-care" },
         { label: "Hair Care", link: "/hair-care" },
     ];
+    const [preferredStore, setPreferredStore] = useState([]);
+    const [selectedStore, setSelectedStore] = useState(user?.PreferredStore || '');
+    const [products, setProducts] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
 
+    useEffect(() => {
+        // Fetch the list of stores from the JSON file
+        fetch('/stores.json')
+            .then((response) => response.json())
+            .then((data) => setPreferredStore(data))
+            .catch((error) => console.error('Error fetching stores:', error));
+    }, []);
+    const handleStoreChange = (store) => {
+        setSelectedStore(store);
+    }
 
+    const handleSubmitPreferredStore = async (e) => {
+        e.preventDefault();
+        setIsLoading(true);
+        try {
+            await dispatch(asyncSetPreferredStore({ selectedStore }, user._id));
+            toast.success("Store Set");
+        } catch (error) {
+            toast.error("Failed to set store");
+        } finally {
+            setIsLoading(false);
+        }
+    }
     return (
         <>
             <div className="flex gap-[20px] justify-around items-center h-[10vh] w-full bg-[#96B415]/70 backdrop-blur-lg backdrop-opacity-90 sticky top-0 z-[99] shadow-lg">
@@ -324,67 +351,101 @@ const handleSearch = async(searchTerm, selectedCategory)=> {
                 <Tabs
                     value={selectedTab}
                     onChange={handleTabChange}
-                    sx={{ backgroundColor: '#96B415', color: 'white', width: '300px' }}
+                    sx={{ backgroundColor: '#96B415', color: 'white', width: '350px' }}
                 >
-                    <Tab label="Menu" sx={{ color: 'white', width: '150px' }} />
-                    <Tab label="Categories" sx={{ color: 'white', width: '150px' }} />
+                    <Tab label="Menu" sx={{ color: 'white', width: '170px' }} />
+                    <Tab label="Categories" sx={{ color: 'white', width: '170px' }} />
                 </Tabs>
 
                 {selectedTab === 0 ? (
-                    <div className='h-full bg-[#96B415]'>
+                    <div className='h-full bg-[#96B415] p-6'>
                         <List className='text-white flex flex-col w-full justify-center items-center'>
-                            <div className="mt-5 mb-5 flex items-center justify-center ">
+                            <div className="mt-5 mb-5 flex items-center justify-center w-full">
                                 <input
                                     type="text"
-                                    className="w-[80%] px-3 py-1 bg-white border-none focus:outline-none text-lg text-black"
-                                    placeholder="Search" value={searchTerm}
+                                    className="w-[75%] px-4 py-2 bg-white border-none focus:outline-none text-lg text-black rounded-lg shadow-md focus:shadow-lg transition-shadow duration-200"
+                                    placeholder="Search"
+                                    value={searchTerm}
                                     onChange={handleChangeSearchTerm}
                                 />
-                                <button className="px-3 py-1 bg-transparent border-none focus:outline-none" onClick={() => handleSearch(searchTerm, selectedCategory)}>
+                                <button
+                                    className="px-4 py-2 ml-2 bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-600 hover:shadow-lg transition duration-200"
+                                    onClick={() => handleSearch(searchTerm, selectedCategory)}
+                                >
                                     <FaSearchengin className="text-lg" />
                                 </button>
                             </div>
+
                             <Link to="/" style={{ textDecoration: 'none', color: 'inherit' }}>
-                                <ListItem button onClick={handleToggleDrawer(false)}>
+                                <ListItem button onClick={handleToggleDrawer(false)} className="hover:bg-blue-500 transition duration-200 rounded-lg">
                                     <ListItemText primary="Home" />
                                 </ListItem>
                             </Link>
+
                             <Link to="/our-business" style={{ textDecoration: 'none', color: 'inherit' }}>
-                                <ListItem button onClick={handleToggleDrawer(false)}>
+                                <ListItem button onClick={handleToggleDrawer(false)} className="hover:bg-blue-500 transition duration-200 rounded-lg">
                                     <ListItemText primary="Join Our Business" />
                                 </ListItem>
                             </Link>
+
+                            <form
+                                onSubmit={handleSubmitPreferredStore}
+                                className="flex flex-col items-center mt-8 gap-4 w-full"
+                            >
+                                <select
+                                    value={selectedStore}
+                                    onChange={(e) => handleStoreChange(e.target.value)}
+                                    className="text-black border-2 border-gray-300 px-4 py-2 rounded-lg shadow-md focus:outline-none focus:border-blue-500 transition-colors w-full md:w-2/3"
+                                >
+                                    <option value="" disabled>Select Store</option>
+                                    {preferredStore.map((store, index) => (
+                                        <option key={index} value={store}>{store}</option>
+                                    ))}
+                                </select>
+                                <button
+                                    type="submit"
+                                    className={`bg-blue-500 text-white py-2 px-6 rounded-lg shadow-md hover:shadow-lg transform hover:scale-105 transition-transform w-full md:w-2/3 ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                    disabled={isLoading}
+                                >
+                                    {isLoading ? 'Setting...' : 'Set Preferred Store'}
+                                </button>
+                            </form>
+
                             <Link to="/shop" style={{ textDecoration: 'none', color: 'inherit' }}>
-                                <ListItem button onClick={handleToggleDrawer(false)}>
+                                <ListItem button onClick={handleToggleDrawer(false)} className="hover:bg-blue-500 transition duration-200 rounded-lg">
                                     <ListItemText primary="Shop" />
                                 </ListItem>
                             </Link>
-                            <Link to="/About Us" style={{ textDecoration: 'none', color: 'inherit' }}>
-                                <ListItem button onClick={handleToggleDrawer(false)}>
+
+                            <Link to="/about-us" style={{ textDecoration: 'none', color: 'inherit' }}>
+                                <ListItem button onClick={handleToggleDrawer(false)} className="hover:bg-blue-500 transition duration-200 rounded-lg">
                                     <ListItemText primary="About Us" />
                                 </ListItem>
                             </Link>
+
                             <Link to="/contact" style={{ textDecoration: 'none', color: 'inherit' }}>
-                                <ListItem button onClick={handleToggleDrawer(false)}>
+                                <ListItem button onClick={handleToggleDrawer(false)} className="hover:bg-blue-500 transition duration-200 rounded-lg">
                                     <ListItemText primary="Contact Us" />
                                 </ListItem>
                             </Link>
+
                             <Link to="/storemanager/login" style={{ textDecoration: 'none', color: 'inherit' }}>
-                                <ListItem button onClick={handleToggleDrawer(false)}>
+                                <ListItem button onClick={handleToggleDrawer(false)} className="hover:bg-blue-500 transition duration-200 rounded-lg">
                                     <ListItemText primary="Store Login" />
                                 </ListItem>
                             </Link>
-                            <div className="flex mt-auto mb-5">
-                                <a href="https://www.instagram.com/" target="_blank" rel="noopener noreferrer" className="text-white mx-2">
+
+                            <div className="flex mt-auto mb-5 justify-center gap-4">
+                                <a href="https://www.instagram.com/" target="_blank" rel="noopener noreferrer" className="text-white">
                                     <FaInstagram />
                                 </a>
-                                <a href="https://twitter.com/" target="_blank" rel="noopener noreferrer" className="text-white mx-2">
+                                <a href="https://twitter.com/" target="_blank" rel="noopener noreferrer" className="text-white">
                                     <FaTwitter />
                                 </a>
-                                <a href="https://www.facebook.com/" target="_blank" rel="noopener noreferrer" className="text-white mx-2">
+                                <a href="https://www.facebook.com/" target="_blank" rel="noopener noreferrer" className="text-white">
                                     <FaFacebook />
                                 </a>
-                                <a href="https://www.youtube.com/" target="_blank" rel="noopener noreferrer" className="text-white mx-2">
+                                <a href="https://www.youtube.com/" target="_blank" rel="noopener noreferrer" className="text-white">
                                     <FaYoutube />
                                 </a>
                             </div>

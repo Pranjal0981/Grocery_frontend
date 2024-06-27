@@ -102,7 +102,7 @@ const Dashboard = () => {
                             Account Details
                         </Link>
                     </div>
-                    <form onSubmit={handleSubmitPreferredStore} className="flex flex-col md:flex-row items-center mt-8 gap-4">
+                    {/* <form onSubmit={handleSubmitPreferredStore} className="flex flex-col md:flex-row items-center mt-8 gap-4">
                         <select
                             value={selectedStore}
                             onChange={(e) => handleStoreChange(e.target.value)}
@@ -117,7 +117,7 @@ const Dashboard = () => {
                             {isLoading ? 'Setting...' : 'Set Preferred Store'}
                         </button>
                 </form>
-                    
+                     */}
                 </div>
             </div>
         </div>
