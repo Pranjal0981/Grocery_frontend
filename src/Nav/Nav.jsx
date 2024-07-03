@@ -721,7 +721,7 @@ const handleSearch = async(searchTerm, selectedCategory)=> {
                                 name="password"
                                 value={formData.password}
                                 placeholder="Minimum 4 Characters"
-                                className="border border-gray-300 px-4 py-2 rounded focus:outline-none"
+                                className="border border-gray-300 px-6 py-2 rounded focus:outline-none"
                                 onChange={handleInputChange}
                             />
                             <button
