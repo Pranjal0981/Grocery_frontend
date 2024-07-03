@@ -9,7 +9,7 @@ import { Collapse, ListItemButton} from '@mui/material';
 import { ExpandLess, ExpandMore } from '@mui/icons-material';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { FaBars, FaUser, FaHeart, FaShoppingBag, FaSearchengin, FaSearch } from 'react-icons/fa';
 import { MdOutlineShoppingBag } from 'react-icons/md';
@@ -29,6 +29,7 @@ import { toast } from 'react-toastify';
 const Nav = () => {
     const navigate=useNavigate()
     const [expirationTime, setExpirationTime] = useState();
+    const location = useLocation(); // Get current location
 
     useEffect(() => {
         const timer = setInterval(() => {
@@ -38,6 +39,18 @@ const Nav = () => {
 
         return () => clearInterval(timer);
     }, []);  
+    useEffect(() => {
+        const queryParams = new URLSearchParams(location.search);
+        const referralCodeParam = queryParams.get('referralCode');
+
+        if (referralCodeParam) {
+            setFormData((prevFormData) => ({
+                ...prevFormData,
+                referralCode: referralCodeParam,
+            }));
+        }
+    }, [location.search]);
+
     const [drawerOpen, setDrawerOpen] = React.useState(false);
     const [selectedTab, setSelectedTab] = React.useState(0);
     const [secondOpen, setSecondOpen] = React.useState(false)
@@ -747,7 +760,7 @@ const handleSearch = async(searchTerm, selectedCategory)=> {
                             <input
                                 type={showPassword ? 'text' : 'password'}
                                 name="password"
-                                value={formData.password}
+                                value={formData.password} 
                                 placeholder="Minimum 8 Characters"
                                 className="border border-gray-300 px-4 py-2 rounded focus:outline-none"
                                 onChange={handleInputChange}
@@ -764,7 +777,7 @@ const handleSearch = async(searchTerm, selectedCategory)=> {
                         </div>
                          <input
                                                             type="text"
-                                                            name="referralCode"
+                                                            name="referralCode" disabled
                                                             value={formData.referralCode}
                                                             placeholder="Referral Code if Applicable"
                                                             className="border border-gray-300 px-4 py-2 rounded focus:outline-none"
