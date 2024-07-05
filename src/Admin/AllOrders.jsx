@@ -283,7 +283,6 @@ const ManageOrder = () => {
                             <button
                                 className={`px-3 py-1 bg-gray-300 text-gray-700 rounded hover:bg-gray-400 ${currentPage === totalPages && 'cursor-not-allowed opacity-50'}`}
                                 onClick={() => setCurrentPage(currentPage + 1)}
-                                disabled={currentPage === totalPages}
                             >
                                 Next
                             </button>

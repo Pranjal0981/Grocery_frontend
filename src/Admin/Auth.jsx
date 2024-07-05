@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { asyncAdminLogin } from '../store/actions/adminAction';
+import { asyncAdminLogin, asyncAdminRegister } from '../store/actions/adminAction';
 import { Link, useNavigate } from 'react-router-dom';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
