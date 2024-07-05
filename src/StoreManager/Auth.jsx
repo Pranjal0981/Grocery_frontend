@@ -153,6 +153,8 @@ export const StoreManagerRegister = () => {
     const [stores, setStores] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
+    const [showPassword, setShowPassword] = useState(false); // State to toggle password visibility
+
     useEffect(() => {
         // Fetch the list of stores from the JSON file
         fetch('/stores.json')
@@ -166,7 +168,9 @@ export const StoreManagerRegister = () => {
         password: '',
         store: ''
     });
-
+    const handleTogglePassword = () => {
+        setShowPassword(!showPassword);
+    };
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
