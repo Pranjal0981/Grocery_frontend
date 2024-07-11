@@ -5,7 +5,7 @@ import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import ListItem from '@mui/material/ListItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText'
-import { Collapse, ListItemButton} from '@mui/material';
+import { Collapse, ListItemButton } from '@mui/material';
 import { ExpandLess, ExpandMore } from '@mui/icons-material';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
@@ -27,7 +27,7 @@ import { motion } from 'framer-motion';
 import { toast } from 'react-toastify';
 
 const Nav = () => {
-    const navigate=useNavigate()
+    const navigate = useNavigate()
     const [expirationTime, setExpirationTime] = useState();
     const location = useLocation(); // Get current location
 
@@ -38,7 +38,7 @@ const Nav = () => {
         }, 1000);
 
         return () => clearInterval(timer);
-    }, []);  
+    }, []);
     useEffect(() => {
         const queryParams = new URLSearchParams(location.search);
         const referralCodeParam = queryParams.get('referralCode');
@@ -62,7 +62,7 @@ const Nav = () => {
 
     const [selectedCategory, setSelectedCategory] = useState('All categories');
     const [searchResults, setSearchResults] = useState([]);
-    const [searchTerm,setSearchTerm]=useState([])
+    const [searchTerm, setSearchTerm] = useState([])
     const [stores, setStores] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
@@ -81,11 +81,11 @@ const Nav = () => {
     const handleChangeCategory = (event) => {
         setSelectedCategory(event.target.value);
     };
- const { user, isAuth } = useSelector((state) => state.user)
-// conso
-   
-const handleSearch = async(searchTerm, selectedCategory)=> {
-       
+    const { user, isAuth } = useSelector((state) => state.user)
+    // conso
+
+    const handleSearch = async (searchTerm, selectedCategory) => {
+
         await dispatch(asyncSearch(searchTerm, selectedCategory, user?.PreferredStore));
         navigate(`/search-results?searchTerm=${searchTerm}&category=${selectedCategory}&store=${user?.PreferredStore}`)
     }
@@ -95,16 +95,16 @@ const handleSearch = async(searchTerm, selectedCategory)=> {
     const handleOrderClick = () => {
         setOpenOrders(!openOrders);
     };
-    const handleSheet=()=>{
+    const handleSheet = () => {
         setOpenSheet(!openSheet)
     }
     const [formData, setFormData] = useState({
         name: '',
         email: '',
         password: '',
-        referralCode:'',
+        referralCode: '',
         userType: '',
-        store:''
+        store: ''
     });
     // console.log(user.store)
 
@@ -164,14 +164,14 @@ const handleSearch = async(searchTerm, selectedCategory)=> {
     };
 
 
-    const handleCustomerSubmit = async(e) => {
+    const handleCustomerSubmit = async (e) => {
         e.preventDefault();
         setError('');
         setLoading(true)
-        try{
-        await dispatch(asyncSignupUser({ formData }))
+        try {
+            await dispatch(asyncSignupUser({ formData }))
         }
-         catch (err) {
+        catch (err) {
             setError('Error sending reset link. Please try again.');
         } finally {
             setLoading(false);
@@ -197,10 +197,10 @@ const handleSearch = async(searchTerm, selectedCategory)=> {
         }
     };
 
-    const handleForgetPassword=()=>{
-            setDrawerOpen(false);
-            setSecondOpen(false)
-        
+    const handleForgetPassword = () => {
+        setDrawerOpen(false);
+        setSecondOpen(false)
+
     }
 
     const handleLogout = async (e) => {
@@ -209,19 +209,19 @@ const handleSearch = async(searchTerm, selectedCategory)=> {
             await dispatch(asyncLogoutAdmin());
             setSecondOpen(false)
 
-                }
+        }
         if (user?.userType === 'customer') {
-          await  dispatch(asyncSignOut())
+            await dispatch(asyncSignOut())
             setSecondOpen(false)
 
         }
-        if(user?.userType=='SuperAdmin'){
+        if (user?.userType == 'SuperAdmin') {
             await dispatch(asyncSignOutSuperAdmin())
             setSecondOpen(false)
 
         }
-        if(user?.userType==='Storemanager'){
-           await dispatch(asyncStoreLogout())
+        if (user?.userType === 'Storemanager') {
+            await dispatch(asyncStoreLogout())
             setSecondOpen(false)
 
         }
@@ -230,7 +230,7 @@ const handleSearch = async(searchTerm, selectedCategory)=> {
     }
     const isAdmin = isAuth && user?.userType === 'Admin';
     const isUser = isAuth && user?.userType === 'customer';
-    const isSuperAdmin=isAuth && user?.userType==='SuperAdmin'
+    const isSuperAdmin = isAuth && user?.userType === 'SuperAdmin'
 
     const categories = [
         { label: "Oral Care & Wellness", link: "/oral-care-wellness" },
@@ -284,7 +284,7 @@ const handleSearch = async(searchTerm, selectedCategory)=> {
                 <div className="flex items-center gap-5">
                     <h1 className="ml-5 text-xl">
                         <Link to='/'>
-                            <img src="/RGS-New-Logo.webp" className="h-12" alt="" />
+                            <img src="/grocery.png" className="h-[150px] w-[150px]" alt="" />
                         </Link>
                     </h1>
                 </div>
@@ -536,10 +536,10 @@ const handleSearch = async(searchTerm, selectedCategory)=> {
                                 </ListItem>
                             </Link>
                             <Link to="/referral" className="" style={{ textDecoration: 'none' }} onClick={toggleSecondDrawer(false)}>
-                            <ListItem button>
-                                <ListItemText primary="REFERRAL" />
-                            </ListItem>
-                        </Link>
+                                <ListItem button>
+                                    <ListItemText primary="REFERRAL" />
+                                </ListItem>
+                            </Link>
 
                             <Link to="/logout" className="" style={{ textDecoration: 'none' }} onClick={handleLogout}>
                                 <ListItem button>
@@ -548,7 +548,7 @@ const handleSearch = async(searchTerm, selectedCategory)=> {
                             </Link>
                         </List>
                     </div>
-                ) : user?.email === "yadavpremvati641@gmail.com" && user?.userType === "Admin"? (
+                ) : user?.email === "yadavpremvati641@gmail.com" && user?.userType === "Admin" ? (
                     <div className="admin-dashboard h-full w-[300px] p-[40px]">
                         <List className='flex flex-col w-full gap-[20px]'>
                             <h1 className='text-center'>ADMIN ACCOUNT</h1>
@@ -558,17 +558,17 @@ const handleSearch = async(searchTerm, selectedCategory)=> {
                                 </ListItem>
                             </Link>
 
-                                <ListItem button onClick={() => handleOrderClick()}>
-                                    <ListItemText primary="All Orders" />
-                                    {openOrders ? <ExpandLess /> : <ExpandMore />}
-                                </ListItem>
-                                <Collapse in={openOrders} timeout="auto" unmountOnExit>
-                                    {stores.map((store, index) => (
-                                        <ListItemButton key={index} component={Link} to={`/superadmin/orders/${store}`} onClick={toggleSecondDrawer(false)}>
-                                            <ListItemText primary={store} />
-                                        </ListItemButton>
-                                    ))}
-                                </Collapse>
+                            <ListItem button onClick={() => handleOrderClick()}>
+                                <ListItemText primary="All Orders" />
+                                {openOrders ? <ExpandLess /> : <ExpandMore />}
+                            </ListItem>
+                            <Collapse in={openOrders} timeout="auto" unmountOnExit>
+                                {stores.map((store, index) => (
+                                    <ListItemButton key={index} component={Link} to={`/superadmin/orders/${store}`} onClick={toggleSecondDrawer(false)}>
+                                        <ListItemText primary={store} />
+                                    </ListItemButton>
+                                ))}
+                            </Collapse>
 
                             <Link to="/admin/fetchOutOfStockProducts" className="" style={{ textDecoration: 'none' }} onClick={toggleSecondDrawer(false)}>
                                 <ListItem button>
@@ -586,22 +586,108 @@ const handleSearch = async(searchTerm, selectedCategory)=> {
                                     </ListItemButton>
                                 ))}
                             </Collapse>
-                            <Link to="/admin/logout" className="" style={{textDecoration: 'none' }} onClick={handleLogout}>
-                                    <ListItem button>
+                            <Link to="/admin/logout" className="" style={{ textDecoration: 'none' }} onClick={handleLogout}>
+                                <ListItem button>
                                     < ListItemText primary="Logout" />
-                        </ListItem>
-                    </Link>
+                                </ListItem>
+                            </Link>
                         </List>
-        </div >
+                    </div >
                 ) : user?.email === "durgeshpatelrgsgroup@gmail.com" && user?.userType === "Admin" ? (
+                    <div className="admin-dashboard h-full w-[300px] p-[40px]">
+                        <List className='flex flex-col w-full gap-[20px]'>
+                            <h1 className='text-center'>ADMIN ACCOUNT</h1>
+
+
+
+
+
+                            <ListItem button onClick={() => handleSheet()}>
+                                <ListItemText primary="Stores Sheet" />
+                                {openSheet ? <ExpandLess /> : <ExpandMore />}
+                            </ListItem>
+                            <Collapse in={openSheet} timeout="auto" unmountOnExit>
+                                {stores.map((store, index) => (
+                                    <ListItemButton key={index} component={Link} to={`/superadmin/stores/${store}`} onClick={toggleSecondDrawer(false)}>
+                                        <ListItemText primary={store} />
+                                    </ListItemButton>
+                                ))}
+                            </Collapse>
+
+                            <Link to="/admin/logout" className="" style={{ textDecoration: 'none' }} onClick={handleLogout}>
+                                <ListItem button>
+                                    <ListItemText primary="Logout" />
+                                </ListItem>
+                            </Link>
+                        </List>
+                    </div>
+
+                ) :
+
+                    user?.userType === "SuperAdmin" ? (
                         <div className="admin-dashboard h-full w-[300px] p-[40px]">
                             <List className='flex flex-col w-full gap-[20px]'>
-                                <h1 className='text-center'>ADMIN ACCOUNT</h1>
-                              
+                                <h1 className='text-center'>SUPER ADMIN ACCOUNT</h1>
+                                <Link to="/superadmin/dashboard" className="" style={{ textDecoration: 'none' }} onClick={toggleSecondDrawer(false)}>
+                                    <ListItem button>
+                                        <ListItemText primary="Super Admin Dashboard" />
+                                    </ListItem>
+                                </Link>
+                                <ListItem button onClick={() => handleOrderClick()}>
+                                    <ListItemText primary="All Orders" />
+                                    {openOrders ? <ExpandLess /> : <ExpandMore />}
+                                </ListItem>
+                                <Collapse in={openOrders} timeout="auto" unmountOnExit>
+                                    {stores.map((store, index) => (
+                                        <ListItemButton key={index} component={Link} to={`/superadmin/orders/${store}`} onClick={toggleSecondDrawer(false)}>
+                                            <ListItemText primary={store} />
+                                        </ListItemButton>
+                                    ))}
+                                </Collapse>
+                                <Link to="/admin/upload-products" className="" style={{ textDecoration: 'none' }} onClick={toggleSecondDrawer(false)}>
+                                    <ListItem button>
+                                        <ListItemText primary="Upload Products" />
+                                    </ListItem>
+                                </Link>
+                                <ListItem button onClick={() => handleStoreClick()}>
+                                    <ListItemText primary="Stores" />
+                                    {openStore ? <ExpandLess /> : <ExpandMore />}
+                                </ListItem>
+                                <Collapse in={openStore} timeout="auto" unmountOnExit>
+                                    {stores.map((store, index) => (
+                                        <ListItemButton key={index} component={Link} to={`/stores/fetchProducts/${store}`} onClick={toggleSecondDrawer(false)}>
+                                            <ListItemText primary={store} />
+                                        </ListItemButton>
+                                    ))}
+                                </Collapse>
+                                <Link to="/admin/fetchOutOfStockProducts" className="" style={{ textDecoration: 'none' }} onClick={toggleSecondDrawer(false)}>
+                                    <ListItem button>
+                                        <ListItemText primary="Out Of Stock" />
+                                    </ListItem>
+                                </Link>
 
-                            
+                                <Link to="/superadmin/fetchAllUsers" className="" style={{ textDecoration: 'none' }} onClick={toggleSecondDrawer(false)}>
+                                    <ListItem button>
+                                        <ListItemText primary="All Users" />
+                                    </ListItem>
+                                </Link>
 
-                             
+                                <Link to="/superadmin/activeMembers" className="" style={{ textDecoration: 'none' }} onClick={toggleSecondDrawer(false)}>
+                                    <ListItem button>
+                                        <ListItemText primary="Active Users" />
+                                    </ListItem>
+                                </Link>
+                                <Link to="/superadmin/inactiveMembers" className="" style={{ textDecoration: 'none' }} onClick={toggleSecondDrawer(false)}>
+                                    <ListItem button>
+                                        <ListItemText primary="InActive Users" />
+                                    </ListItem>
+                                </Link>
+
+                                <Link to="/superadmin/getUserQuery" className="" style={{ textDecoration: 'none' }} onClick={toggleSecondDrawer(false)}>
+                                    <ListItem button>
+                                        <ListItemText primary="User Query" />
+                                    </ListItem>
+                                </Link>
                                 <ListItem button onClick={() => handleSheet()}>
                                     <ListItemText primary="Stores Sheet" />
                                     {openSheet ? <ExpandLess /> : <ExpandMore />}
@@ -613,220 +699,134 @@ const handleSearch = async(searchTerm, selectedCategory)=> {
                                         </ListItemButton>
                                     ))}
                                 </Collapse>
-
-                                <Link to="/admin/logout" className="" style={{ textDecoration: 'none' }} onClick={handleLogout}>
+                                <Link to="/superadmin/logout" className="" style={{ textDecoration: 'none' }} onClick={handleLogout}>
                                     <ListItem button>
                                         <ListItemText primary="Logout" />
                                     </ListItem>
                                 </Link>
                             </List>
                         </div>
-                
-):
-                   
-                    user?.userType === "SuperAdmin" ? (
-    <div className="admin-dashboard h-full w-[300px] p-[40px]">
-        <List className='flex flex-col w-full gap-[20px]'>
-            <h1 className='text-center'>SUPER ADMIN ACCOUNT</h1>
-            <Link to="/superadmin/dashboard" className="" style={{ textDecoration: 'none' }} onClick={toggleSecondDrawer(false)}>
-                <ListItem button>
-                    <ListItemText primary="Super Admin Dashboard" />
-                </ListItem>
-            </Link>
-            <ListItem button onClick={() => handleOrderClick()}>
-                <ListItemText primary="All Orders" />
-                {openOrders ? <ExpandLess /> : <ExpandMore />}
-            </ListItem>
-            <Collapse in={openOrders} timeout="auto" unmountOnExit>
-                {stores.map((store, index) => (
-                    <ListItemButton key={index} component={Link} to={`/superadmin/orders/${store}`} onClick={toggleSecondDrawer(false)}>
-                        <ListItemText primary={store} />
-                    </ListItemButton>
-                ))}
-            </Collapse>
-            <Link to="/admin/upload-products" className="" style={{ textDecoration: 'none' }} onClick={toggleSecondDrawer(false)}>
-                <ListItem button>
-                    <ListItemText primary="Upload Products" />
-                </ListItem>
-            </Link>
-            <ListItem button onClick={() => handleStoreClick()}>
-                <ListItemText primary="Stores" />
-                {openStore ? <ExpandLess /> : <ExpandMore />}
-            </ListItem>
-            <Collapse in={openStore} timeout="auto" unmountOnExit>
-                {stores.map((store, index) => (
-                    <ListItemButton key={index} component={Link} to={`/stores/fetchProducts/${store}`} onClick={toggleSecondDrawer(false)}>
-                        <ListItemText primary={store} />
-                    </ListItemButton>
-                ))}
-            </Collapse>
-            <Link to="/admin/fetchOutOfStockProducts" className="" style={{ textDecoration: 'none' }} onClick={toggleSecondDrawer(false)}>
-                <ListItem button>
-                    <ListItemText primary="Out Of Stock" />
-                </ListItem>
-            </Link>
-
-            <Link to="/superadmin/fetchAllUsers" className="" style={{ textDecoration: 'none' }} onClick={toggleSecondDrawer(false)}>
-                <ListItem button>
-                    <ListItemText primary="All Users" />
-                </ListItem>
-            </Link>
-
-            <Link to="/superadmin/activeMembers" className="" style={{ textDecoration: 'none' }} onClick={toggleSecondDrawer(false)}>
-                <ListItem button>
-                    <ListItemText primary="Active Users" />
-                </ListItem>
-            </Link>
-            <Link to="/superadmin/inactiveMembers" className="" style={{ textDecoration: 'none' }} onClick={toggleSecondDrawer(false)}>
-                <ListItem button>
-                    <ListItemText primary="InActive Users" />
-                </ListItem>
-            </Link>
-
-            <Link to="/superadmin/getUserQuery" className="" style={{ textDecoration: 'none' }} onClick={toggleSecondDrawer(false)}>
-                <ListItem button>
-                    <ListItemText primary="User Query" />
-                </ListItem>
-            </Link>
-            <ListItem button onClick={() => handleSheet()}>
-                <ListItemText primary="Stores Sheet" />
-                {openSheet ? <ExpandLess /> : <ExpandMore />}
-            </ListItem>
-            <Collapse in={openSheet} timeout="auto" unmountOnExit>
-                {stores.map((store, index) => (
-                    <ListItemButton key={index} component={Link} to={`/superadmin/stores/${store}`} onClick={toggleSecondDrawer(false)}>
-                        <ListItemText primary={store} />
-                    </ListItemButton>
-                ))}
-            </Collapse>
-            <Link to="/superadmin/logout" className="" style={{ textDecoration: 'none' }} onClick={handleLogout}>
-                <ListItem button>
-                    <ListItemText primary="Logout" />
-                </ListItem>
-            </Link>
-        </List>
-    </div>
-) : user?.userType === "Storemanager" ? (
-    <div className="store-manager-dashboard h-full w-[300px] p-[40px]">
-        <Link to={`/store/allOrders/${user?.store}`} className="" style={{ textDecoration: 'none' }} onClick={toggleSecondDrawer(false)}>
-            <ListItem button>
-                <ListItemText primary="All Orders" />
-            </ListItem>
-        </Link>
-        <Link to={`/store/allproducts/${user?.store}`} className="" style={{ textDecoration: 'none' }} onClick={toggleSecondDrawer(false)}>
-            <ListItem button>
-                <ListItemText primary="All Products" />
-            </ListItem>
-        </Link>
-        <Link to="" className="" style={{ textDecoration: 'none' }} onClick={handleLogout}>
-            <ListItem button>
-                <ListItemText primary="Logout" />
-            </ListItem>
-        </Link>
-    </div>
-) : (
-    <div className="flex justify-center items-center h-screen">
-        <div className="bg-gray-200  rounded-lg shadow-md">
-            <Tabs
-                value={selectedTab}
-                onChange={handleTabChange}
-                sx={{ backgroundColor: '#dadada', color: 'black', width: '350px' }}
-            >
-                <Tab label="Sign In" sx={{ color: 'black', width: '50%' }} />
-                <Tab label="Sign Up" sx= {{ color: 'black', width: '50%' }} />
-            </Tabs>
-            {selectedTab === 0 && (
-                <div className='p-5'>
-                    <form className="flex flex-col space-y-4" onSubmit={handleLogin}>
-                        <input
-                            type="email"
-                            name="email"
-                            value={formData.email}
-                            placeholder="Email"
-                            className="border border-gray-300 px-4 py-2 rounded focus:outline-none"
-                            onChange={handleInputChange}
-                        />
-                        <div className="relative">
-                            <input
-                                type={showPassword ? 'text' : 'password'}
-                                name="password"
-                                value={formData.password}
-                                placeholder="Minimum 4 Characters"
-                                className="border border-gray-300 px-6 py-2 rounded focus:outline-none"
-                                onChange={handleInputChange}
-                            />
-                            <button
-                                type="button"
-                                className="absolute inset-y-0 right-0 px-3 py-2"
-                                onClick={handleTogglePassword}
-                            >
-                                {showPassword ? <FaEyeSlash /> : <FaEye />}
-                            </button>
+                    ) : user?.userType === "Storemanager" ? (
+                        <div className="store-manager-dashboard h-full w-[300px] p-[40px]">
+                            <Link to={`/store/allOrders/${user?.store}`} className="" style={{ textDecoration: 'none' }} onClick={toggleSecondDrawer(false)}>
+                                <ListItem button>
+                                    <ListItemText primary="All Orders" />
+                                </ListItem>
+                            </Link>
+                            <Link to={`/store/allproducts/${user?.store}`} className="" style={{ textDecoration: 'none' }} onClick={toggleSecondDrawer(false)}>
+                                <ListItem button>
+                                    <ListItemText primary="All Products" />
+                                </ListItem>
+                            </Link>
+                            <Link to="" className="" style={{ textDecoration: 'none' }} onClick={handleLogout}>
+                                <ListItem button>
+                                    <ListItemText primary="Logout" />
+                                </ListItem>
+                            </Link>
                         </div>
+                    ) : (
+                        <div className="flex justify-center items-center h-screen">
+                            <div className="bg-gray-200  rounded-lg shadow-md">
+                                <Tabs
+                                    value={selectedTab}
+                                    onChange={handleTabChange}
+                                    sx={{ backgroundColor: '#dadada', color: 'black', width: '350px' }}
+                                >
+                                    <Tab label="Sign In" sx={{ color: 'black', width: '50%' }} />
+                                    <Tab label="Sign Up" sx={{ color: 'black', width: '50%' }} />
+                                </Tabs>
+                                {selectedTab === 0 && (
+                                    <div className='p-5'>
+                                        <form className="flex flex-col space-y-4" onSubmit={handleLogin}>
+                                            <input
+                                                type="email"
+                                                name="email"
+                                                value={formData.email}
+                                                placeholder="Email"
+                                                className="border border-gray-300 px-4 py-2 rounded focus:outline-none"
+                                                onChange={handleInputChange}
+                                            />
+                                            <div className="relative">
+                                                <input
+                                                    type={showPassword ? 'text' : 'password'}
+                                                    name="password"
+                                                    value={formData.password}
+                                                    placeholder="Minimum 4 Characters"
+                                                    className="border border-gray-300 px-6 py-2 rounded focus:outline-none"
+                                                    onChange={handleInputChange}
+                                                />
+                                                <button
+                                                    type="button"
+                                                    className="absolute inset-y-0 right-0 px-3 py-2"
+                                                    onClick={handleTogglePassword}
+                                                >
+                                                    {showPassword ? <FaEyeSlash /> : <FaEye />}
+                                                </button>
+                                            </div>
 
-                        <button
-                            type="submit"
-                            className={`w-full bg-blue-500 text-white px-4 py-2 rounded focus:outline-none ${loading ? 'opacity-75 cursor-not-allowed' : 'hover:bg-blue-600'
-                                } transition duration-200`}
-                            disabled={loading}
-                        >
-                            {loading ? 'Signin...' : 'Signin'}
-                        </button>
-                    </form>
-                    <Link to="/forget-password" onClick={handleForgetPassword}>Forget Password</Link>
-                </div>
-            )}
-            {selectedTab === 1 && (
-                <div className='p-5'>
-                    <form className="flex flex-col space-y-4" onSubmit={handleCustomerSubmit}>
-                        <input
-                            type="email"
-                            name="email"
-                            value={formData.email}
-                            placeholder="Email"
-                            className="border border-gray-300 px-4 py-2 rounded focus:outline-none"
-                            onChange={handleInputChange}
-                        />
-                        <div className="relative">
-                            <input
-                                type={showPassword ? 'text' : 'password'}
-                                name="password"
-                                value={formData.password} 
-                                placeholder="Minimum 8 Characters"
-                                className="border border-gray-300 px-4 py-2 rounded focus:outline-none"
-                                onChange={handleInputChange}
-                            />
+                                            <button
+                                                type="submit"
+                                                className={`w-full bg-blue-500 text-white px-4 py-2 rounded focus:outline-none ${loading ? 'opacity-75 cursor-not-allowed' : 'hover:bg-blue-600'
+                                                    } transition duration-200`}
+                                                disabled={loading}
+                                            >
+                                                {loading ? 'Signin...' : 'Signin'}
+                                            </button>
+                                        </form>
+                                        <Link to="/forget-password" onClick={handleForgetPassword}>Forget Password</Link>
+                                    </div>
+                                )}
+                                {selectedTab === 1 && (
+                                    <div className='p-5'>
+                                        <form className="flex flex-col space-y-4" onSubmit={handleCustomerSubmit}>
+                                            <input
+                                                type="email"
+                                                name="email"
+                                                value={formData.email}
+                                                placeholder="Email"
+                                                className="border border-gray-300 px-4 py-2 rounded focus:outline-none"
+                                                onChange={handleInputChange}
+                                            />
+                                            <div className="relative">
+                                                <input
+                                                    type={showPassword ? 'text' : 'password'}
+                                                    name="password"
+                                                    value={formData.password}
+                                                    placeholder="Minimum 8 Characters"
+                                                    className="border border-gray-300 px-4 py-2 rounded focus:outline-none"
+                                                    onChange={handleInputChange}
+                                                />
 
-                            
-                            <button
-                                type="button"
-                                className="absolute inset-y-0 right-0 px-3 py-2"
-                                onClick={handleTogglePassword}
-                            >
-                                {showPassword ? <FaEyeSlash /> : <FaEye />}
-                            </button>
+
+                                                <button
+                                                    type="button"
+                                                    className="absolute inset-y-0 right-0 px-3 py-2"
+                                                    onClick={handleTogglePassword}
+                                                >
+                                                    {showPassword ? <FaEyeSlash /> : <FaEye />}
+                                                </button>
+                                            </div>
+                                            <input
+                                                type="text"
+                                                name="referralCode" disabled
+                                                value={formData.referralCode}
+                                                placeholder="Referral Code if Applicable"
+                                                className="border border-gray-300 px-4 py-2 rounded focus:outline-none"
+                                                onChange={handleInputChange}
+                                            />
+                                            <button
+                                                type="submit"
+                                                className={`w-full bg-blue-500 text-white px-4 py-2 rounded focus:outline-none ${loading ? 'opacity-75 cursor-not-allowed' : 'hover:bg-blue-600'
+                                                    } transition duration-200`}
+                                                disabled={loading}
+                                            >
+                                                {loading ? 'Signup...' : 'Signup'}
+                                            </button>
+                                        </form>
+                                    </div>)}
+                            </div>
                         </div>
-                         <input
-                                                            type="text"
-                                                            name="referralCode" disabled
-                                                            value={formData.referralCode}
-                                                            placeholder="Referral Code if Applicable"
-                                                            className="border border-gray-300 px-4 py-2 rounded focus:outline-none"
-                                                            onChange={handleInputChange}
-                                                        />
-                        <button
-                            type="submit"
-                            className={`w-full bg-blue-500 text-white px-4 py-2 rounded focus:outline-none ${loading ? 'opacity-75 cursor-not-allowed' : 'hover:bg-blue-600'
-                                } transition duration-200`}
-                            disabled={loading}
-                        >
-                            {loading ? 'Signup...' : 'Signup'}
-                        </button>
-                    </form>
-                </div>)}
-        </div>
-    </div>
-)}
+                    )}
             </Drawer >
 
         </>
