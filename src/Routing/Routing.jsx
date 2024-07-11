@@ -51,7 +51,7 @@ import Wallet from '../Profile/Wallet'
 const Routing = () => {
     
     const { user, isAuth } = useSelector((state) => state.user)
-    const isAdmin = isAuth && user?.userType === 'Admin';
+    const isAdmin = isAuth && user?.userType === 'Admin'  ;
     const {store}=useParams()
     console.log(store)
     const isStoreManager=isAuth && user?.userType==='Storemanager'
@@ -137,6 +137,8 @@ const Routing = () => {
             <Route path='/admin/update-product/:id' element={isAdmin || isSuperAdmin ? <UpdateProduct /> : <Unauthorized />} />
             <Route path='/superadmin/dashboard' element={isSuperAdmin ? <AdminDashboard /> : <Unauthorized />} />
             <Route path='/admin/allOrders' element={isAdmin || isSuperAdmin ?<ManageOrder/>:<Unauthorized/>}/>
+            <Route path='/superAdmin/managepermissions' element={ isSuperAdmin ? <ManagePermissions /> : <Unauthorized />} />
+
             <Route path='/store/allOrders/:store' element={isStoreManager ? <ManageOrder /> : <Unauthorized />} />
             <Route path='/all-departments' element={<Product/>}/>
             <Route path='/shopbycategory/:category' element={<ShopByCategoryProduct/>}/>

@@ -16,9 +16,17 @@ function App() {
   const params = new URLSearchParams(location.search);
   console.log(params)
   const referralCode = params.get('referralCode'); // This will extract the referralCode from the query string
+  const [ipAddresses, setIpAddresses] = useState([]);
 
+  useEffect(() => {
+    fetch('/api/ip-addresses')
+      .then(response => response.json())
+      .then(data => setIpAddresses(data))
+      .catch(error => console.error('Error fetching IP addresses:', error));
+  }, []);
   console.log('Referral Code:', referralCode);
   return (
+    
     <>
 
     <ScrollToTop/>

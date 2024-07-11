@@ -593,28 +593,13 @@ const handleSearch = async(searchTerm, selectedCategory)=> {
                     </Link>
                         </List>
         </div >
-                ) : 
-                    user?.email === "durgeshpatelrgsgroup@gmail.com" && user?.userType === "Admin" ? (
+                ) : user?.email === "durgeshpatelrgsgroup@gmail.com" && user?.userType === "Admin" ? (
                         <div className="admin-dashboard h-full w-[300px] p-[40px]">
                             <List className='flex flex-col w-full gap-[20px]'>
                                 <h1 className='text-center'>ADMIN ACCOUNT</h1>
-                                <Link to="/admin/upload-products" className="" style={{ textDecoration: 'none' }} onClick={toggleSecondDrawer(false)}>
-                                    <ListItem button>
-                                        <ListItemText primary="Upload Products" />
-                                    </ListItem>
-                                </Link>
+                              
 
-                                <ListItem button onClick={() => handleOrderClick()}>
-                                    <ListItemText primary="All Orders" />
-                                    {openOrders ? <ExpandLess /> : <ExpandMore />}
-                                </ListItem>
-                                <Collapse in={openOrders} timeout="auto" unmountOnExit>
-                                    {stores.map((store, index) => (
-                                        <ListItemButton key={index} component={Link} to={`/superadmin/orders/${store}`} onClick={toggleSecondDrawer(false)}>
-                                            <ListItemText primary={store} />
-                                        </ListItemButton>
-                                    ))}
-                                </Collapse>
+                            
 
                              
                                 <ListItem button onClick={() => handleSheet()}>
@@ -638,7 +623,7 @@ const handleSearch = async(searchTerm, selectedCategory)=> {
                         </div>
                 
 ):
-                    
+                   
                     user?.userType === "SuperAdmin" ? (
     <div className="admin-dashboard h-full w-[300px] p-[40px]">
         <List className='flex flex-col w-full gap-[20px]'>

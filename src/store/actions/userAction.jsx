@@ -697,3 +697,11 @@ export const asyncAddMoneyToWallet=(amount,userId)=>async(dispatch,getState)=>{
         
     }
 }
+
+export const asyncTrackVisitor=()=>async(dispatch,getState)=>{
+    try {
+        const response=await axios.post('/user/trackVisior')
+    } catch (error) {
+        console.log(error)
+    }
+}
