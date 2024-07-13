@@ -48,6 +48,8 @@ import PaymentSuccessPage from '../Profile/PaymentSuccess'
 import GenerateReferralLink from '../Profile/Referral'
 import Nav from '../Nav/Nav'
 import Wallet from '../Profile/Wallet'
+import ManagePermissions from '../SuperAdmin/ManagePermissions'
+import ManageAdmin from '../SuperAdmin/ManageAdmin'
 const Routing = () => {
     
     const { user, isAuth } = useSelector((state) => state.user)
@@ -82,27 +84,30 @@ const Routing = () => {
             <Route path='/About Us' element={<About/>}/>
             <Route path='/brand/:title' element={<BrandProducts/>}/>
             <Route path='/Support Center' element={<SupportCenter/>}/>
-            <Route path='/dashboard' element={<Dashboard />} />
-            <Route path='/wallet' element={<Wallet />} />
+            <Route path='/dashboard' element={isUser ?<Dashboard />:<Unauthorized/>} />
+            <Route path='/wallet' element={isUser ?<Wallet />:<Unauthorized/>} />
+            {/* <Route path='/superadmin/manageadmin' element={isSuperAdmin?} */}
             <Route path='/store/:store' element={<Storeproduct/>}/>
             <Route path='/forget-password' element={<ForgetPassword />} />
             <Route path='/storemanager/login' element={<StoreManagerLogin/>}/>
-            <Route path='/store/allproducts/:store' element={<AllProductsBystore />} />
-            <Route path='/superadmin/stores/:store' element={<AllProductsBystore />} />
+            <Route path='/store/allproducts/:store' element={isSuperAdmin || isStoreManager? <AllProductsBystore />:<Unauthorized/>} />
+            <Route path='/superadmin/stores/:store' element={isSuperAdmin ?<AllProductsBystore />:<Unauthorized/>} />
             <Route path='/storemanager/register' element={<StoreManagerRegister/>}/>
             <Route path='/storemanager/forget-password' element={<ForgetStoreManagerPassword />} />
             <Route path="/storemanager/forget-link/:id" element={<ResetStoreManagerPassword />} />
             <Route path='/superadmin/forget-password' element={<ForgetSuperAdminPassword/>} />
-            <Route path='/superadmin/orders/:store' element={< ManageOrder/>} />
+            <Route path='/superadmin/orders/:store' element={isSuperAdmin ?< ManageOrder/>:<Unauthorized/>} />
+            <Route path='/superadmin/managepermissions' element={isSuperAdmin?< ManagePermissions />:<Unauthorized/>} />
             <Route path='/superadmin/login' element={<SuperAdminForm isLogin={true}/>}/>
             <Route path='/superadmin/register' element={<SuperAdminForm isLogin={false} />}/>
             <Route path="/forget-link/:id" element={<ResetPassword/>} />
             <Route path='/admin/forget-password' element={<ForgetAdminPassword />} />
             <Route path="/admin/forget-link/:id" element={<ResetAdminPassword />} />
-            <Route path='/superadmin/getUserQuery' element={<UserQuery/>}/>
+            <Route path='/superadmin/getUserQuery' element={isSuperAdmin ?<UserQuery/>:<Unauthorized/>}/>
             <Route path="/superadmin/forget-link/:id" element={<ResetSuperAdminPassword />} />
             <Route path='/superadmin/allproducts' element={isSuperAdmin ? <AllProducts /> : <Unauthorized />} />
             <Route path='/admin/upload-products' element={isAdmin || isSuperAdmin ? <AddProductForm /> : <Unauthorized />} />
+            <Route path='/superadmin/manageadmin' element={isSuperAdmin?<ManageAdmin/>:<Unauthorized/>}/>
             <Route path='/wishlist' element={isUser ? <Wishlist /> : <Unauthorized />} />
             <Route path='/products/:id' element={<ExploreProductById />} />
             <Route path='/Return Policy' element={<ReturnPolicy/>}/>
@@ -123,9 +128,9 @@ const Routing = () => {
             <Route path="/search-results" element={<SearchResult />} />
             
             <Route path='/cart' element={isUser ? <Cart /> : <Unauthorized />} />
-            <Route path='/edit-address' element={<AddressForm />} />
-            <Route path='/address' element={<Address />} />
-            <Route path='/referral' element={<GenerateReferralLink />} />
+            <Route path='/edit-address' element={isUser?<AddressForm />:<Unauthorized/>} />
+            <Route path='/address' element={isUser ?<Address />:<Unauthorized/>} />
+            <Route path='/referral' element={isUser ?<GenerateReferralLink />:<Unauthorized/>} />
             <Route path='/referral-link/:referralCode' element={<HomePage/>}/>
             <Route path='/stores/fetchProducts/:store' element={isAdmin || isSuperAdmin? <ProductStore />:<Unauthorized/>} />
             <Route path='/shop' element={<Product />} />
@@ -136,8 +141,8 @@ const Routing = () => {
             <Route path='/superadmin/inactiveMembers' element={isSuperAdmin ? <InactiveUser /> : <Unauthorized />} />
             <Route path='/admin/update-product/:id' element={isAdmin || isSuperAdmin ? <UpdateProduct /> : <Unauthorized />} />
             <Route path='/superadmin/dashboard' element={isSuperAdmin ? <AdminDashboard /> : <Unauthorized />} />
-            <Route path='/admin/allOrders' element={isAdmin || isSuperAdmin ?<ManageOrder/>:<Unauthorized/>}/>
-            <Route path='/superAdmin/managepermissions' element={ isSuperAdmin ? <ManagePermissions /> : <Unauthorized />} />
+            <Route path='/admin/allOrders/:store' element={isAdmin || isSuperAdmin ?<ManageOrder/>:<Unauthorized/>}/>
+            <Route path='/superAdmin/managepermissions' element={  <ManagePermissions /> } />
 
             <Route path='/store/allOrders/:store' element={isStoreManager ? <ManageOrder /> : <Unauthorized />} />
             <Route path='/all-departments' element={<Product/>}/>

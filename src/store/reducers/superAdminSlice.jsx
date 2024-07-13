@@ -5,7 +5,8 @@ const initialState = {
     loading: false,
     users: null,
     dashboardinfo: null,
-    queries:null
+    queries:null,
+    admins:[]
 }
 
 export const superAdminSlice = createSlice({
@@ -34,11 +35,14 @@ export const superAdminSlice = createSlice({
         },
         saveUserQuery:(state,action)=>{
             state.queries=action.payload
+        },
+        saveAdmins:(state,action)=>{
+            state.admins=action.payload
         }
     },
 });
 
 
-export const { saveStoreProducts, saveAllUsers, saveOrders, saveUserQuery,saveDashBoardInfo, setLoading, saveAllProducts } = superAdminSlice.actions;
+export const { saveAdmins, saveStoreProducts, saveAllUsers, saveOrders, saveUserQuery,saveDashBoardInfo, setLoading, saveAllProducts } = superAdminSlice.actions;
 
 export default superAdminSlice.reducer;

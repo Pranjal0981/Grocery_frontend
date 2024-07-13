@@ -1,5 +1,5 @@
 import axios from '../../config/axios'
-import { saveStoreProducts, saveAllUsers, saveOrders, setLoading, saveUserQuery } from '../reducers/superAdminSlice';
+import { saveStoreProducts, saveAllUsers, saveOrders, setLoading, saveUserQuery, saveAdmins } from '../reducers/superAdminSlice';
 import { saveProduct } from '../reducers/productSlice';
 import { saveUser, removeUser, saveTokenExpiration } from '../reducers/userSlice'
 import { saveDashBoardInfo } from '../reducers/superAdminSlice';
@@ -269,3 +269,56 @@ export const asyncContactQuery=()=>async(dispatch,getState)=>{
         
     }
 }
+
+export const asyncCreateStores=(data)=>async(dispatch,getState)=>{
+    try {
+        const response=await axios.post('/superadmin/createStores',data)
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+export const asyncGetStores = () => async (dispatch, getState) => {
+    try {
+        const response = await axios.get('/superadmin/getStores')
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+export const asyncGetAdmins=()=>async(dispatch,getState)=>{
+    try {
+        const response = await axios.get('/superadmin/getAllAdmins',{
+            headers: { Authorization: `Bearer ${token}` }
+        })
+        console.log(response)
+       await dispatch(saveAdmins(response.data.data))
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+export const asyncCreateAdmin = () => async (dispatch, getState) => {
+    try {
+        const response = await axios.get('/superadmin/createAdmin')
+        dispatch(saveAdmins(response.data.data))
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+export const asyncUpdatePermission = (adminId, permissions) => async (dispatch, getState) => {
+    try {
+        const response = await axios.post('/superadmin/updatePermissions', {
+            adminId,
+            permissions
+        }, {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+
+        console.log(response);
+        await dispatch(asyncGetAdmins());
+    } catch (error) {
+        console.log(error);
+    }
+};

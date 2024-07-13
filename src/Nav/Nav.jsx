@@ -25,6 +25,7 @@ import CountdownTimer from './Coundown';
 import { FaCartShopping } from 'react-icons/fa6';
 import { motion } from 'framer-motion';
 import { toast } from 'react-toastify';
+import AdminNav from './AdminNav';
 
 const Nav = () => {
     const navigate = useNavigate()
@@ -548,83 +549,12 @@ const Nav = () => {
                             </Link>
                         </List>
                     </div>
-                ) : user?.email === "yadavpremvati641@gmail.com" && user?.userType === "Admin" ? (
-                    <div className="admin-dashboard h-full w-[300px] p-[40px]">
-                        <List className='flex flex-col w-full gap-[20px]'>
-                            <h1 className='text-center'>ADMIN ACCOUNT</h1>
-                            <Link to="/admin/upload-products" className="" style={{ textDecoration: 'none' }} onClick={toggleSecondDrawer(false)}>
-                                <ListItem button>
-                                    <ListItemText primary="Upload Products" />
-                                </ListItem>
-                            </Link>
-
-                            <ListItem button onClick={() => handleOrderClick()}>
-                                <ListItemText primary="All Orders" />
-                                {openOrders ? <ExpandLess /> : <ExpandMore />}
-                            </ListItem>
-                            <Collapse in={openOrders} timeout="auto" unmountOnExit>
-                                {stores.map((store, index) => (
-                                    <ListItemButton key={index} component={Link} to={`/superadmin/orders/${store}`} onClick={toggleSecondDrawer(false)}>
-                                        <ListItemText primary={store} />
-                                    </ListItemButton>
-                                ))}
-                            </Collapse>
-
-                            <Link to="/admin/fetchOutOfStockProducts" className="" style={{ textDecoration: 'none' }} onClick={toggleSecondDrawer(false)}>
-                                <ListItem button>
-                                    <ListItemText primary="Out Of Stock" />
-                                </ListItem>
-                            </Link>
-                            <ListItem button onClick={() => handleStoreClick()}>
-                                <ListItemText primary="Stores" />
-                                {openStore ? <ExpandLess /> : <ExpandMore />}
-                            </ListItem>
-                            <Collapse in={openStore} timeout="auto" unmountOnExit>
-                                {stores.map((store, index) => (
-                                    <ListItemButton key={index} component={Link} to={`/stores/fetchProducts/${store}`} onClick={toggleSecondDrawer(false)}>
-                                        <ListItemText primary={store} />
-                                    </ListItemButton>
-                                ))}
-                            </Collapse>
-                            <Link to="/admin/logout" className="" style={{ textDecoration: 'none' }} onClick={handleLogout}>
-                                <ListItem button>
-                                    < ListItemText primary="Logout" />
-                                </ListItem>
-                            </Link>
-                        </List>
-                    </div >
-                ) : user?.email === "durgeshpatelrgsgroup@gmail.com" && user?.userType === "Admin" ? (
-                    <div className="admin-dashboard h-full w-[300px] p-[40px]">
-                        <List className='flex flex-col w-full gap-[20px]'>
-                            <h1 className='text-center'>ADMIN ACCOUNT</h1>
-
-
-
-
-
-                            <ListItem button onClick={() => handleSheet()}>
-                                <ListItemText primary="Stores Sheet" />
-                                {openSheet ? <ExpandLess /> : <ExpandMore />}
-                            </ListItem>
-                            <Collapse in={openSheet} timeout="auto" unmountOnExit>
-                                {stores.map((store, index) => (
-                                    <ListItemButton key={index} component={Link} to={`/superadmin/stores/${store}`} onClick={toggleSecondDrawer(false)}>
-                                        <ListItemText primary={store} />
-                                    </ListItemButton>
-                                ))}
-                            </Collapse>
-
-                            <Link to="/admin/logout" className="" style={{ textDecoration: 'none' }} onClick={handleLogout}>
-                                <ListItem button>
-                                    <ListItemText primary="Logout" />
-                                </ListItem>
-                            </Link>
-                        </List>
-                    </div>
-
-                ) :
-
-                    user?.userType === "SuperAdmin" ? (
+                ) : user?.userType === "Admin" ? (
+                        <AdminNav toggleSecondDrawer={toggleSecondDrawer} /> 
+                
+                )
+                    :
+           user?.userType === "SuperAdmin" ? (
                         <div className="admin-dashboard h-full w-[300px] p-[40px]">
                             <List className='flex flex-col w-full gap-[20px]'>
                                 <h1 className='text-center'>SUPER ADMIN ACCOUNT</h1>
@@ -633,6 +563,11 @@ const Nav = () => {
                                         <ListItemText primary="Super Admin Dashboard" />
                                     </ListItem>
                                 </Link>
+                                        <Link to="/superadmin/managepermissions" className="" style={{ textDecoration: 'none' }} onClick={toggleSecondDrawer(false)}>
+                                            <ListItem button>
+                                                <ListItemText primary="Manage Permissions" />
+                                            </ListItem>
+                                        </Link>
                                 <ListItem button onClick={() => handleOrderClick()}>
                                     <ListItemText primary="All Orders" />
                                     {openOrders ? <ExpandLess /> : <ExpandMore />}
